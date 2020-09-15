@@ -1,0 +1,22 @@
+<ion-content fullscreen>
+  <div id="container">
+    <img src="assets/images/logo.png" class="logo-img">
+    <form [formGroup]="loginForm" novalidate class="ion-margin ion-text-start">
+      <ion-input mode='ios' formControlName="account" type="text" placeholder="账号" class="form-input"
+        spellcheck="false" autocapitalize="off" required clearInput>
+      </ion-input>
+      <ion-text color="danger" *ngIf="loginForm.get('account').dirty && loginForm.get('account').invalid">
+        请输入正确邮件信息
+      </ion-text>
+      <ion-input mode='ios' formControlName="password" type="password" placeholder="密码" class="form-input"
+        required clearInput>
+      </ion-input>
+      <ion-text color="danger" *ngIf="loginForm.get('password').dirty && loginForm.get('password').invalid">
+        请输入正确密码信息
+      </ion-text>
+      <ion-button expand="block" mode='ios' (click)="onLogin(loginForm)" [disabled]="loginForm.invalid">
+        登录</ion-button>
+
+    </form>
+  </div>
+</ion-content>

@@ -1,0 +1,7 @@
+{
+  "name": "t101-app",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

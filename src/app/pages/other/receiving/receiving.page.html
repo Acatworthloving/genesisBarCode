@@ -1,0 +1,64 @@
+<ion-header>
+    <ion-toolbar mode="ios">
+        <ion-buttons slot="start">
+            <ion-back-button mode="md"></ion-back-button>
+        </ion-buttons>
+        <ion-title>其他收货</ion-title>
+    </ion-toolbar>
+    <ion-segment (ionChange)="segmentChanged($event)" [value]="pageType">
+        <ion-segment-button value="getOrder">
+            <ion-label>扫描界面</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="documentDetails">
+            <ion-label>单据明细</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="orderDetails">
+            <ion-label>汇总界面</ion-label>
+        </ion-segment-button>
+    </ion-segment>
+</ion-header>
+<ion-content>
+    <div *ngIf="pageType== 'getOrder'">
+        <form class="ion-margin ion-text-start scan-from">
+            <ion-list>
+
+                <app-scan-input (addBar)="scanInput($event)" [infoObj]="infoObj" (funcDocEntry)="getBillData()"
+                                [scanType]="scanTypeArr"></app-scan-input>
+
+                <ion-item>
+                    <ion-label>其他入库类型</ion-label>
+                    <ion-select placeholder="选择入库类型" okText="确认" cancelText="取消">
+                        <ion-select-option value="f">供应商赠品</ion-select-option>
+                        <ion-select-option value="m">客供料到货</ion-select-option>
+                    </ion-select>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        收货数
+                    </ion-label>
+                    <ion-input placeholder="收货数" (change)="changeQTY($event)" mode="ios" slot="end" type="number"
+                               [value]="maxNum" pattern="[0-9]*"
+                               [disabled]="!maxNum"
+                               class="ion-text-right ion-padding-start"></ion-input>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        已扫描数量
+                    </ion-label>
+                    <ion-label color="primary" slot="end" class="ion-text-right pr-8">{{scanNum}}</ion-label>
+                </ion-item>
+            </ion-list>
+        </form>
+        <ion-button expand="block" class="ion-margin" mode='ios' (click)="submit()"
+                    [disabled]="!scanList.length">
+            提交数据
+        </ion-button>
+    </div>
+    <div *ngIf="pageType==='documentDetails'">
+        <app-table [columns]="documentColumns" [tableList]="documentList" tableId="documentId"></app-table>
+    </div>
+    <div *ngIf="pageType==='orderDetails'">
+        <app-table [columns]="columns" [tableList]="scanList" tableId="scanId" hasDel="true"
+                   [documentList]="documentList"></app-table>
+    </div>
+</ion-content>
