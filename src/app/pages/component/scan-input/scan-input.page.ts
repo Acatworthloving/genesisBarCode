@@ -16,6 +16,8 @@ export class ScanInputPage implements OnInit {
     @Output() addBar = new EventEmitter();
     @Output() funcDocEntry = new EventEmitter();
 
+    @ViewChild('inputElement', {static: true}) inputView: ElementRef;
+
 
     constructor(private el: ElementRef,
                 public presentService: PresentService,
@@ -25,11 +27,11 @@ export class ScanInputPage implements OnInit {
     }
 
     ngOnInit() {
-
+        console.log(this.inputView);
+        this.inputView.nativeElement.focus();
     }
 
     func_addBar(val, scanArr) {
-        console.log('value', val, scanArr);
         const obj = {
             value: val,
             arr: scanArr
@@ -41,7 +43,13 @@ export class ScanInputPage implements OnInit {
         this.funcDocEntry.emit();
     }
 
+    selected() {
+        this.inputView.nativeElement.focus();
+        this.inputView.nativeElement.select();
+    }
+
     scan(event) {
+        this.selected();
         const value = event.target.value,
             scanArr = this.publicService.splitStr(value),
             hasUser = this.publicService.hasKey(this.scanType, 'User'),
@@ -63,8 +71,9 @@ export class ScanInputPage implements OnInit {
                 if (type === 'DocEntry') {
                     if (hasDocEntry) {
                         this.infoObj['Bils_No'] = scanArr[1];
-                        this.presentService.presentToast('单号标签扫描成功');
+                        this.selected();
                         this.func_DocEntry();
+                        this.presentService.presentToast('单号标签扫描成功');
                     } else {
                         this.presentService.presentToast('不需要扫描单号标签');
                     }
