@@ -76,11 +76,12 @@ export class ReceivingPage implements OnInit {
     scanTypeArr = ['User', 'DocEntry', 'Whs'];
     infoObj: any = {
         Bil_ID: 'WHSH',
-        User: null,
+        User: '001',
         Bils_No: null,
         Cus_No: 'C001',
-        Whs: null,
+        Whs: 'W01',
     };
+    LineNumberList = [];
 
     constructor(
         public presentService: PresentService,
@@ -167,23 +168,47 @@ export class ReceivingPage implements OnInit {
             BarcodeText: any = this.publicService.getArrInfo(arr, 'Barcode');
         let selectItem = {}, documentIndex = null;
 
-        if (ItemCodeText) {
-            this.documentList.forEach((item, index) => {
-                if (item.ItemCode === ItemCodeText) {
-                    selectItem = item;
-                    documentIndex = index;
-                }
-            });
-        } else {
-            return false;
-        }
-
         const scanItem = this.publicService.arrSameId(this.scanList, 'Barcode', BarcodeText);
         if (scanItem) {
             this.presentService.presentToast('当前物料已存在', 'warning');
             return false;
         }
 
+        if (ItemCodeText) {
+            // 查找单号中是否包含此物料编码
+            this.documentList.forEach((item, index) => {
+                if (item.ItemCode === ItemCodeText) {
+                    item['index'] = index;
+                    this.LineNumberList.push(item);
+                    // selectItem = item;
+                    // documentIndex = index;
+                }
+            });
+
+            if (this.LineNumberList.length > 1) {
+                // 如果同物料编码多行的情况才需要选择行号
+                this.presentService.presentAlertRadio(this.LineNumberList).then((res) => {
+                    // 选择行号
+                    if (res || res == 0) {
+                        console.log(res);
+                        selectItem = this.LineNumberList[res];
+                        documentIndex = this.LineNumberList[res]['index'];
+                        this.addBarDetail(selectItem, documentIndex, BarcodeText, ItemCodeText, val, arr);
+                    }
+                });
+            } else if (this.LineNumberList.length == 1) {
+                // 只有一个物料编码的情况
+                selectItem = this.LineNumberList[0];
+                documentIndex = this.LineNumberList[0]['index'];
+                this.addBarDetail(selectItem, documentIndex, BarcodeText, ItemCodeText, val, arr);
+            }
+        } else {
+            return false;
+        }
+
+    }
+
+    addBarDetail(selectItem, documentIndex, BarcodeText, ItemCodeText, val, arr) {
         if (selectItem['ItemName']) {
             if (this.documentList[documentIndex]['QTY_NC'] == 0) {
                 this.presentService.presentToast('当前物料扫描完毕', 'warning');

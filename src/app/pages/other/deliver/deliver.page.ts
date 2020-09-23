@@ -3,6 +3,7 @@ import {PresentService} from '../../../providers/present.service';
 import {PublicService} from '../../../providers/public.service';
 import {DataService} from '../../../api/data.service';
 import {GetDataService} from '../../../providers/get-data.service';
+import {AlertController} from '@ionic/angular';
 
 @Component({
     selector: 'app-deliver',
@@ -81,12 +82,13 @@ export class DeliverPage implements OnInit {
         Whs: 'W01',
     };
     BFlagObj = {};
+    LineNumberList = [];
 
     constructor(
         public presentService: PresentService,
         public publicService: PublicService,
         public dataService: DataService,
-        public getDataService: GetDataService,
+        public getDataService: GetDataService
     ) {
     }
 
@@ -187,10 +189,26 @@ export class DeliverPage implements OnInit {
             // 查找单号中是否包含此物料编码
             this.documentList.forEach((item, index) => {
                 if (item.ItemCode === ItemCodeText) {
+                    item['index'] = index;
+                    this.LineNumberList.push(item);
                     selectItem = item;
                     documentIndex = index;
                 }
             });
+
+            if (this.LineNumberList.length > 1) {
+                // 如果同物料编码多行的情况才需要选择行号
+                this.presentService.presentAlertRadio(this.LineNumberList).then((res) => {
+                    // 选择行号
+                    if (res || res == 0) {
+                        console.log(res);
+                    }
+                });
+            } else if (this.LineNumberList.length == 1) {
+                // 只有一个物料编码的情况
+                selectItem = this.LineNumberList[0];
+                documentIndex = this.LineNumberList[0]['index'];
+            }
         } else {
             return false;
         }

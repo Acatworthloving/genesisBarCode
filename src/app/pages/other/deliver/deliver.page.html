@@ -23,7 +23,6 @@
             <ion-list>
                 <app-scan-input (addBar)="scanInput($event)" [infoObj]="infoObj" (funcDocEntry)="getBillData()"
                                 [scanType]="scanTypeArr"></app-scan-input>
-
                 <ion-item>
                     <ion-label>其他入库类型</ion-label>
                     <ion-select placeholder="选择入库类型" okText="确认" cancelText="取消">
