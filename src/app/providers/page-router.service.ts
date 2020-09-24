@@ -6,16 +6,18 @@
  * @Date: 2020-02-27 14:06:26
  * @LastEditTime: 2020-03-06 12:09:19
  */
-import { Injectable } from '@angular/core';
-import { Observable, Subject} from 'rxjs';
-import { Router, ActivatedRoute, NavigationExtras, NavigationEnd } from '@angular/router';
-import { filter } from 'rxjs/operators';
-import { NavController} from '@ionic/angular';
+import {Injectable} from '@angular/core';
+import {Observable, Subject} from 'rxjs';
+import {Router, ActivatedRoute, NavigationExtras, NavigationEnd} from '@angular/router';
+import {filter} from 'rxjs/operators';
+import {NavController} from '@ionic/angular';
+
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class PageRouterService {
     public history = [];
+
     constructor(
         public activatedRoute: ActivatedRoute,
         public router: Router,
@@ -26,14 +28,17 @@ export class PageRouterService {
         });
     }
 
+    getSnapshotId() {
+        const id = this.activatedRoute.snapshot.params['id'] || null;
+        return id;
+    }
+
 
     getPageParams() {
         // const tempSub = new Subject<any>();
         // this.activatedRoute.queryParams.subscribe(params => {
-        //     console.log('11111');
         //     if (this.router.getCurrentNavigation().extras.state) {
         //         const state = this.router.getCurrentNavigation().extras.state;
-        //         console.log('22222', state.data);
         //         tempSub.next(state.data);
         //     }
         //     tempSub.next('444');

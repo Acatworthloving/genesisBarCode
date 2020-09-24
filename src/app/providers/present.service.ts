@@ -41,6 +41,12 @@ export class PresentService {
         });
     }
 
+    presentAlertBaseRadio(list, title) {
+        return new Promise((resolve, reject) => {
+            this.AlertBaseRadio(list, title, resolve);
+        });
+    }
+
     async Alert(message: string, resolve) {
         const alert = await this.alertController.create({
             header: '提示',
@@ -78,6 +84,39 @@ export class PresentService {
         const alert = await this.alertController.create({
             cssClass: 'my-custom-class',
             header: '请选择行号，记录当前扫描物料到指定行',
+            inputs: inputList,
+            buttons: [
+                {
+                    text: '取消',
+                    role: 'cancel',
+                    cssClass: 'secondary',
+                    handler: () => {
+                        resolve(false);
+                    }
+                }, {
+                    text: '确定',
+                    handler: (resp) => {
+                        resolve(resp);
+                    }
+                }
+            ]
+        });
+        await alert.present();
+    }
+
+    async AlertBaseRadio(list, title, resolve) {
+        const inputList = [];
+        list.forEach((val, index) => {
+            inputList.push({
+                name: val.title,
+                type: 'radio',
+                label: val.title,
+                value: val.value,
+            });
+        });
+        const alert = await this.alertController.create({
+            cssClass: 'my-custom-class',
+            header: title,
             inputs: inputList,
             buttons: [
                 {

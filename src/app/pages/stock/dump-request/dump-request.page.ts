@@ -1,16 +1,17 @@
 import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {ToastController} from '@ionic/angular';
 import {PresentService} from '../../../providers/present.service';
 import {PublicService} from '../../../providers/public.service';
 import {GetDataService} from '../../../providers/get-data.service';
-import {PageRouterService} from '../../../providers/page-router.service';
 import {DataService} from '../../../api/data.service';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
-    selector: 'app-receiving',
-    templateUrl: './receiving.page.html'
+    selector: 'app-dump-request',
+    templateUrl: './dump-request.page.html'
 })
-export class ReceivingPage implements OnInit {
+export class DumpRequestPage implements OnInit {
     pageType: string = 'getOrder';
     // orderForm: FormGroup;
     documentColumns = [
@@ -79,11 +80,11 @@ export class ReceivingPage implements OnInit {
     maxNum: number = 0;
     scanTypeArr = ['User', 'DocEntry', 'Whs'];
     infoObj: any = {
-        Bil_ID: '',
-        User: '',
+        Bil_ID: 'WHSH',
+        User: '001',
         Bils_No: null,
-        Cus_No: '',
-        Whs: '',
+        Cus_No: 'C001',
+        Whs: 'W01',
     };
     LineNumberList: any = [];
 
@@ -123,16 +124,16 @@ export class ReceivingPage implements OnInit {
         this.scanList.forEach((val) => {
             LstDetail.push({
                 Bils_No: val.Bils_No,
-                Wh: this.infoObj.Whs,
-                Wh_To: this.infoObj.Wh_To,
+                Wh: val.Wh,
+                Wh_To: val.Wh_To,
                 Itm: val.Itm,
                 Barcode: val.Barcode,
                 BarcodeText: val.BarcodeText,
                 ItemCode: val.ItemCode,
                 ItemName: val.ItemName,
                 QTY: val.QTY,
-                Kuwei: this.infoObj.Kuwei,
-                ToKuwei: this.infoObj.ToKuwei,
+                Kuwei: val.Kuwei,
+                ToKuwei: val.ToKuwei,
                 BFlag: val.BFlag,
                 BatchNo: val.BatchNo,
                 LiuNo: val.LiuNo,
@@ -148,7 +149,6 @@ export class ReceivingPage implements OnInit {
         const request = this.dataService.postData('WH/SubmitScanData', config);
         request.subscribe(resp => {
             if (resp.ErrCode == 0) {
-                this.clearData();
                 this.presentService.presentToast(resp.ErrMsg);
             } else {
                 this.presentService.presentToast(resp.ErrMsg, 'warning');
@@ -232,6 +232,8 @@ export class ReceivingPage implements OnInit {
             }
             const obj = {
                 Bils_No: this.infoObj.Bils_No,
+                Wh: this.infoObj.Whs,
+                Wh_To: '',
                 Itm: selectItem['LineNum'],
                 Barcode: BarcodeText,
                 BarcodeText: val,

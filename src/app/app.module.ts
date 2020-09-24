@@ -12,7 +12,7 @@ import {IonicStorageModule} from '@ionic/storage';
 import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
 import {CacheModule} from 'ionic-cache';
 import {HttpsInterceptor} from './interceptors/https.interceptor';
-// import {PresentService} from './providers/present.service';
+import {SharedModule} from './module/shared.module';
 
 @NgModule({
     declarations: [AppComponent],
@@ -29,11 +29,11 @@ import {HttpsInterceptor} from './interceptors/https.interceptor';
             }
         ),
         CacheModule.forRoot(),
+        SharedModule
     ],
     providers: [
         StatusBar,
         SplashScreen,
-        // PresentService,
         {
             provide: HTTP_INTERCEPTORS,
             useClass: HttpsInterceptor,

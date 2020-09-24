@@ -29,7 +29,6 @@ export class HttpsInterceptor implements HttpInterceptor {
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         let token = localStorage.getItem(this.userData.TOKEN);
-        console.log('token', token);
         if (!token) {
             this.storage.get(this.userData.TOKEN).then(res => {
                 if (res) {

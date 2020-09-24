@@ -4,6 +4,7 @@ import {PublicService} from '../../../providers/public.service';
 import {DataService} from '../../../api/data.service';
 import {GetDataService} from '../../../providers/get-data.service';
 import {AlertController} from '@ionic/angular';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
     selector: 'app-deliver',
@@ -79,11 +80,11 @@ export class DeliverPage implements OnInit {
     scanBFlagS: boolean = false;
     scanTypeArr = ['User', 'DocEntry', 'Whs'];
     infoObj: any = {
-        Bil_ID: 'WHFH',
-        User: '001',
+        Bil_ID: '',
+        User: '',
         Bils_No: null,
-        Cus_No: 'C001',
-        Whs: 'W01',
+        Cus_No: '',
+        Whs: '',
     };
     BFlagObj = {};
     LineNumberList = [];
@@ -92,11 +93,13 @@ export class DeliverPage implements OnInit {
         public presentService: PresentService,
         public publicService: PublicService,
         public dataService: DataService,
-        public getDataService: GetDataService
+        public getDataService: GetDataService,
+        public activatedRoute: ActivatedRoute
     ) {
     }
 
     ngOnInit() {
+        this.infoObj.Bil_ID = this.activatedRoute.snapshot.params['id'];
     }
 
 
@@ -135,16 +138,22 @@ export class DeliverPage implements OnInit {
                 BFlag: val.BFlag,
                 BatchNo: val.BatchNo,
                 LiuNo: val.LiuNo,
-                QUA_DocEntry: val.QUA_DocEntry,
-                QUA_LineNum: val.QUA_LineNum,
+                OrderEntry: val.OrderEntry,
+                OrderLine: val.OrderLine,
+                NumPerMsr: val.NumPerMsr,
+                // QUA_DocEntry: val.QUA_DocEntry,
+                // QUA_LineNum: val.QUA_LineNum,
             });
         });
         const config = this.infoObj;
         config['LstDetail'] = LstDetail;
         const request = this.dataService.postData('WH/SubmitScanData', config);
         request.subscribe(resp => {
-            if (resp) {
-
+            if (resp.ErrCode == 0) {
+                this.clearData();
+                this.presentService.presentToast(resp.ErrMsg);
+            } else {
+                this.presentService.presentToast(resp.ErrMsg, 'warning');
             }
         }, error => {
             this.presentService.presentToast(error.message);
@@ -216,14 +225,14 @@ export class DeliverPage implements OnInit {
                     if (index || index == 0) {
                         selectItem = this.LineNumberList[index];
                         documentIndex = this.LineNumberList[index]['index'];
-                        this.addBarDetail(selectItem, documentIndex, BarcodeText, ItemCodeText, val, arr);
+                        this.addBarDetail(selectItem, documentIndex, BarcodeText, ItemCodeText, val, arr, key);
                     }
                 });
             } else if (this.LineNumberList.length == 1) {
                 // 只有一个物料编码的情况
                 selectItem = this.LineNumberList[0];
                 documentIndex = this.LineNumberList[0]['index'];
-                this.addBarDetail(selectItem, documentIndex, BarcodeText, ItemCodeText, val, arr);
+                this.addBarDetail(selectItem, documentIndex, BarcodeText, ItemCodeText, val, arr, key);
             } else {
                 this.presentService.presentToast('当前物料扫描完毕', 'warning');
             }
@@ -232,7 +241,8 @@ export class DeliverPage implements OnInit {
         }
     }
 
-    addBarDetail(selectItem, documentIndex, BarcodeText, ItemCodeText, val, arr) {
+    addBarDetail(selectItem, documentIndex, BarcodeText, ItemCodeText, val, arr, key) {
+        const BFlag = this.publicService.getArrInfo(arr, 'BFlag');
         //  判断是否存在物料编码
         if (selectItem['ItemName']) {
             //判断单号中该物料未清量是否大于0
@@ -245,7 +255,7 @@ export class DeliverPage implements OnInit {
                 Bils_No: this.infoObj.Bils_No,
                 Wh: this.infoObj.Whs,
                 Wh_To: '',
-                Itm: 0,
+                Itm: selectItem['LineNum'],
                 Barcode: BarcodeText,
                 BarcodeText: val,
                 ItemCode: ItemCodeText,
@@ -256,6 +266,9 @@ export class DeliverPage implements OnInit {
                 BFlag: this.publicService.getArrInfo(arr, 'BFlag'),
                 BatchNo: this.publicService.getArrInfo(arr, 'DistNumber'),
                 LiuNo: this.publicService.getArrInfo(arr, 'LiuNo'),
+                OrderEntry: selectItem['OrderEntry'],
+                OrderLine: selectItem['OrderLine'],
+                NumPerMsr: selectItem['NumPerMsr'],
                 QUA_DocEntry: 0,
                 QUA_LineNum: 0,
                 // QTYNumber: this.publicService.getArrInfo(arr, 'QTY'),

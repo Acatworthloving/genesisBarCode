@@ -11,11 +11,11 @@ const routes: Routes = [
     component: OtherPage
   },
   {
-    path: 'receiving',
+    path: 'receiving/:id',
     component: ReceivingPage
   },
   {
-    path: 'deliver',
+    path: 'deliver/:id',
     component: DeliverPage
   }
 ];

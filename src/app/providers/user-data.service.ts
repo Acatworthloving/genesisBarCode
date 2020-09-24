@@ -159,9 +159,7 @@ export class UserDataService {
         if (user && user.employee_id) {
             const ID = user.employee_id;
             const key = ID + '-' + role + '-' + module + '-filter';
-            // console.log('key', key);
             this.storage.get(key).then(resp => {
-                // console.log('resp', resp);
                 if (resp) {
                     resp = JSON.parse(resp);
                     filterData = resp;

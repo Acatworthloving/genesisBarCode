@@ -42,12 +42,14 @@ export class HomePage implements OnInit {
         },
         {
             name: '仓库库存转储',
-            prop: '',
+            prop: 'WHSQZC',
+            href: 'stock/transfer-order',
             icon: 'assets/svg/svg7.svg'
         },
         {
             name: '执行库存转储请求',
-            prop: '',
+            prop: 'WHZCNO',
+            href: 'stock/dump-request',
             icon: 'assets/svg/svg8.svg'
         },
         {
@@ -112,13 +114,13 @@ export class HomePage implements OnInit {
         },
         {
             name: '其他收货',
-            prop: '',
+            prop: 'WHSH',
             href: 'other/receiving',
             icon: 'assets/svg/svg21.svg'
         },
         {
             name: '其他发货',
-            prop: '',
+            prop: 'WHFH',
             href: 'other/deliver',
             icon: 'assets/svg/svg22.svg'
         },
@@ -153,7 +155,7 @@ export class HomePage implements OnInit {
     goPage(item) {
         console.log(item);
         if (item.href) {
-            this.router.navigateByUrl(item.href);
+            this.router.navigate([item.href, item.prop]);
         }
     }
 }

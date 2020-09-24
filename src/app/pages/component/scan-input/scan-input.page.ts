@@ -13,6 +13,7 @@ import {PublicService} from '../../../providers/public.service';
 export class ScanInputPage implements OnInit {
     @Input() infoObj = {};
     @Input() scanType = [];
+    @Input() hasTwoWh: boolean = false;
     @Output() addBar = new EventEmitter();
     @Output() funcDocEntry = new EventEmitter();
 
@@ -27,7 +28,6 @@ export class ScanInputPage implements OnInit {
     }
 
     ngOnInit() {
-        console.log(this.inputView);
         this.inputView.nativeElement.focus();
     }
 
@@ -81,8 +81,35 @@ export class ScanInputPage implements OnInit {
                     if (this.infoObj['Bils_No'] || !hasDocEntry) {
                         if (type === 'Whs') {
                             if (hasWhs) {
-                                this.infoObj['Whs'] = scanArr[1];
-                                this.presentService.presentToast('仓库标签扫描成功');
+                                if (this.hasTwoWh) {
+                                    const list = [
+                                        {
+                                            title: '从仓库',
+                                            value: 'Whs'
+                                        },
+                                        {
+                                            title: '到仓库',
+                                            value: 'Wh_To'
+                                        }
+                                    ];
+                                    // 需要扫描两个仓库时，需要选择仓库
+                                    this.presentService.presentAlertBaseRadio(list, '选择仓库').then((res) => {
+                                        if (res === 'Whs') {
+                                            this.infoObj['Whs'] = scanArr[1];
+                                            if (scanArr[2]) {
+                                                this.infoObj['Kuwei'] = scanArr[2];
+                                            }
+                                            this.presentService.presentToast('仓库标签扫描成功');
+                                        } else if (res === 'Wh_To') {
+                                            this.infoObj['Wh_To'] = scanArr[1];
+                                            this.infoObj['ToKuwei'] = scanArr[2];
+                                            this.presentService.presentToast('仓库标签扫描成功');
+                                        }
+                                    });
+                                } else {
+                                    this.infoObj['Whs'] = scanArr[1];
+                                    this.presentService.presentToast('仓库标签扫描成功');
+                                }
                             } else {
                                 this.presentService.presentToast('不需要扫描仓库标签');
                             }

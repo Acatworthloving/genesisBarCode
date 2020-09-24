@@ -100,9 +100,7 @@ export class PublicService {
 
     arrSameId(arr, id, ItemCode) {
         let obj: any = null;
-        console.log(arr, id, ItemCode);
         for (const item of arr) {
-            console.log(item[id]);
             if (item[id] === ItemCode) {
                 obj = item;
                 break;

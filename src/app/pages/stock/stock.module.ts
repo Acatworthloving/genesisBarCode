@@ -4,11 +4,11 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import {IonicModule} from '@ionic/angular';
 
-import {OtherRoutingModule} from './other-routing.module';
+import {StockRoutingModule} from './stock-routing.module';
 
-import {OtherPage} from './other.page';
-import {ReceivingPage} from './receiving/receiving.page';
-import {DeliverPage} from './deliver/deliver.page';
+import {StockPage} from './stock.page';
+import {DumpRequestPage} from './dump-request/dump-request.page';
+import {TransferOrderPage} from './transfer-order/transfer-order.page';
 import {SharedModule} from '../../module/shared.module';
 
 @NgModule({
@@ -16,11 +16,11 @@ import {SharedModule} from '../../module/shared.module';
         CommonModule,
         FormsModule,
         IonicModule,
-        OtherRoutingModule,
+        StockRoutingModule,
         ReactiveFormsModule,
         SharedModule
     ],
-    declarations: [OtherPage, ReceivingPage, DeliverPage]
+    declarations: [StockPage, DumpRequestPage, TransferOrderPage]
 })
-export class OtherModule {
+export class StockModule {
 }
