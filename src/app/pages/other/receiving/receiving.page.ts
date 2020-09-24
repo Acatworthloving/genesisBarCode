@@ -81,7 +81,7 @@ export class ReceivingPage implements OnInit {
         Cus_No: 'C001',
         Whs: 'W01',
     };
-    LineNumberList = [];
+    LineNumberList: any = [];
 
     constructor(
         public presentService: PresentService,
@@ -189,10 +189,11 @@ export class ReceivingPage implements OnInit {
                 // 如果同物料编码多行的情况才需要选择行号
                 this.presentService.presentAlertRadio(this.LineNumberList).then((res) => {
                     // 选择行号
-                    if (res || res == 0) {
+                    const index = Number(res);
+                    if (index || index == 0) {
                         console.log(res);
-                        selectItem = this.LineNumberList[res];
-                        documentIndex = this.LineNumberList[res]['index'];
+                        selectItem = this.LineNumberList[index];
+                        documentIndex = this.LineNumberList[index]['index'];
                         this.addBarDetail(selectItem, documentIndex, BarcodeText, ItemCodeText, val, arr);
                     }
                 });
