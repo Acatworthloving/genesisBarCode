@@ -38,6 +38,10 @@ export class DeliverPage implements OnInit {
             prop: 'DocNum',
         },
         {
+            name: '行号',
+            prop: 'LineNum',
+        },
+        {
             name: '物料名称',
             prop: 'ItemName',
         },
@@ -171,6 +175,8 @@ export class DeliverPage implements OnInit {
             DistNumber = this.publicService.getArrInfo(arr, 'DistNumber'),
             key = BFlag + DistNumber;
         let selectItem = {}, documentIndex = null;
+        // 清空行号
+        this.LineNumberList = [];
 
         // // 序列号管理，只能存在一条数据
         // if (BFlag === 'S') {
@@ -183,16 +189,22 @@ export class DeliverPage implements OnInit {
         if (BFlag === 'S' && this.BFlagObj[key]) {
             this.presentService.presentToast('当前物料已存在', 'warning');
         }
+        // 判断是否扫描重复物料
+        const scanItem = this.publicService.arrSameId(this.scanList, 'Barcode', BarcodeText);
+        if (scanItem) {
+            this.presentService.presentToast('当前物料已存在', 'warning');
+            return false;
+        }
 
         //  判断是否存在物料编码
         if (ItemCodeText) {
             // 查找单号中是否包含此物料编码
             this.documentList.forEach((item, index) => {
                 if (item.ItemCode === ItemCodeText) {
-                    item['index'] = index;
-                    this.LineNumberList.push(item);
-                    selectItem = item;
-                    documentIndex = index;
+                    if (item['QTY_NC'] > 0) {
+                        item['index'] = index;
+                        this.LineNumberList.push(item);
+                    }
                 }
             });
 
@@ -200,24 +212,27 @@ export class DeliverPage implements OnInit {
                 // 如果同物料编码多行的情况才需要选择行号
                 this.presentService.presentAlertRadio(this.LineNumberList).then((res) => {
                     // 选择行号
-                    if (res || res == 0) {
-                        console.log(res);
+                    const index = Number(res);
+                    if (index || index == 0) {
+                        selectItem = this.LineNumberList[index];
+                        documentIndex = this.LineNumberList[index]['index'];
+                        this.addBarDetail(selectItem, documentIndex, BarcodeText, ItemCodeText, val, arr);
                     }
                 });
             } else if (this.LineNumberList.length == 1) {
                 // 只有一个物料编码的情况
                 selectItem = this.LineNumberList[0];
                 documentIndex = this.LineNumberList[0]['index'];
+                this.addBarDetail(selectItem, documentIndex, BarcodeText, ItemCodeText, val, arr);
+            } else {
+                this.presentService.presentToast('当前物料扫描完毕', 'warning');
             }
         } else {
             return false;
         }
-        // 判断是否扫描重复物料
-        const scanItem = this.publicService.arrSameId(this.scanList, 'Barcode', BarcodeText);
-        if (scanItem) {
-            this.presentService.presentToast('当前物料已存在', 'warning');
-            return false;
-        }
+    }
+
+    addBarDetail(selectItem, documentIndex, BarcodeText, ItemCodeText, val, arr) {
         //  判断是否存在物料编码
         if (selectItem['ItemName']) {
             //判断单号中该物料未清量是否大于0

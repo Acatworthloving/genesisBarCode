@@ -39,6 +39,10 @@ export class ReceivingPage implements OnInit {
             prop: 'DocNum',
         },
         {
+            name: '行号',
+            prop: 'LineNum',
+        },
+        {
             name: '物料名称',
             prop: 'ItemName',
         },
@@ -167,6 +171,8 @@ export class ReceivingPage implements OnInit {
         const ItemCodeText: any = this.publicService.getArrInfo(arr, 'ItemCode'),
             BarcodeText: any = this.publicService.getArrInfo(arr, 'Barcode');
         let selectItem = {}, documentIndex = null;
+        // 清空行号
+        this.LineNumberList = [];
 
         const scanItem = this.publicService.arrSameId(this.scanList, 'Barcode', BarcodeText);
         if (scanItem) {
@@ -178,10 +184,10 @@ export class ReceivingPage implements OnInit {
             // 查找单号中是否包含此物料编码
             this.documentList.forEach((item, index) => {
                 if (item.ItemCode === ItemCodeText) {
-                    item['index'] = index;
-                    this.LineNumberList.push(item);
-                    // selectItem = item;
-                    // documentIndex = index;
+                    if (item['QTY_NC'] > 0) {
+                        item['index'] = index;
+                        this.LineNumberList.push(item);
+                    }
                 }
             });
 
@@ -191,7 +197,6 @@ export class ReceivingPage implements OnInit {
                     // 选择行号
                     const index = Number(res);
                     if (index || index == 0) {
-                        console.log(res);
                         selectItem = this.LineNumberList[index];
                         documentIndex = this.LineNumberList[index]['index'];
                         this.addBarDetail(selectItem, documentIndex, BarcodeText, ItemCodeText, val, arr);
@@ -202,6 +207,8 @@ export class ReceivingPage implements OnInit {
                 selectItem = this.LineNumberList[0];
                 documentIndex = this.LineNumberList[0]['index'];
                 this.addBarDetail(selectItem, documentIndex, BarcodeText, ItemCodeText, val, arr);
+            } else {
+                this.presentService.presentToast('当前物料扫描完毕', 'warning');
             }
         } else {
             return false;
