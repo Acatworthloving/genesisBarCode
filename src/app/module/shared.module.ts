@@ -5,6 +5,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {IonicModule} from '@ionic/angular';
 import {TablePage} from '../pages/component/table/table.page';
 import {ScanInputPage} from '../pages/component/scan-input/scan-input.page';
+import {MaterielItemPage} from '../pages/component/materiel-item/materiel-item.page';
 
 @NgModule({
     imports: [
@@ -15,11 +16,13 @@ import {ScanInputPage} from '../pages/component/scan-input/scan-input.page';
     ],
     exports: [
         TablePage,
-        ScanInputPage
+        ScanInputPage,
+        MaterielItemPage
     ],
     declarations: [
         TablePage,
-        ScanInputPage
+        ScanInputPage,
+        MaterielItemPage
     ],
     providers: [],
     entryComponents: []

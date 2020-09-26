@@ -86,6 +86,7 @@ export class ReceivingPage implements OnInit {
         Whs: '',
     };
     LineNumberList: any = [];
+    materieObj: any = {};
 
     constructor(
         public presentService: PresentService,
@@ -116,9 +117,17 @@ export class ReceivingPage implements OnInit {
         this.infoObj.Whs = null;
         this.documentList = [];
         this.scanList = [];
+        this.materieObj = {};
     }
 
     submit() {
+        for (let item of this.documentList) {
+            if (!item['QTY_NC']) {
+                this.presentService.presentToast('未扫描完单据中所有物料', 'warning');
+                return;
+            }
+        }
+        console.log('test');
         const LstDetail = [];
         this.scanList.forEach((val) => {
             LstDetail.push({
@@ -165,6 +174,8 @@ export class ReceivingPage implements OnInit {
                     resp['Data'].forEach((val) => {
                         val['QTY_NC'] = Number(val.Quantity) - Number(val.QTY_FIN);
                     });
+                } else {
+                    this.presentService.presentToast('当前单据已扫描完毕', 'warning');
                 }
                 this.documentList = resp['Data'];
             }
@@ -176,6 +187,10 @@ export class ReceivingPage implements OnInit {
     }
 
     addBar(val, arr) {
+        if (!this.documentList.length) {
+            this.presentService.presentToast('当前单据已扫描完毕', 'warning');
+            return false;
+        }
         const ItemCodeText: any = this.publicService.getArrInfo(arr, 'ItemCode'),
             BarcodeText: any = this.publicService.getArrInfo(arr, 'Barcode');
         let selectItem = {}, documentIndex = null;
@@ -246,6 +261,8 @@ export class ReceivingPage implements OnInit {
                 OrderEntry: selectItem['OrderEntry'],
                 OrderLine: selectItem['OrderLine'],
                 NumPerMsr: selectItem['NumPerMsr'],
+                DocNum: selectItem['DocNum'],
+                DocEntry: selectItem['DocEntry'],
                 QUA_DocEntry: 0,
                 QUA_LineNum: 0,
                 // QTYNumber: this.publicService.getArrInfo(arr, 'QTY'),
@@ -261,6 +278,7 @@ export class ReceivingPage implements OnInit {
                         this.scanList.unshift(obj);
                         this.scanNum = obj.QTY;
                         this.maxNum = obj.QTY;
+                        this.materieObj = obj;
                         this.presentService.presentToast('当前物料扫描成功');
                     } else {
                         this.presentService.presentToast('当前物料扫描失败', 'warning');
@@ -271,6 +289,7 @@ export class ReceivingPage implements OnInit {
                 this.documentList[documentIndex]['QTY_CUR'] += obj.QTY;
                 this.scanNum = this.documentList[documentIndex]['QTY_CUR'];
                 this.maxNum = obj.QTY;
+                this.materieObj = obj;
                 this.scanList.unshift(obj);
                 this.presentService.presentToast('当前物料扫描成功');
             }

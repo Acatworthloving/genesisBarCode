@@ -3,11 +3,7 @@
 }
 input{
   border-radius: var(--border-radius);
-  padding-left: var(--padding-start);
-  padding-right: var(--padding-end);
-  padding-top: var(--padding-top);
-  padding-bottom: var(--padding-bottom);
-  text-align: right;
+  padding: 0;
   display: inline-block;
   border: none;
   -ms-flex: 1;

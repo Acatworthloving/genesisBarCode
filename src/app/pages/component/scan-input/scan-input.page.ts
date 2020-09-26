@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ElementRef, Renderer2, ViewChild, Output, EventEmitter} from '@angular/core';
+import {Component, Input, OnInit, ElementRef, Renderer2, ViewChild, Output, EventEmitter, AfterContentInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router, Params, NavigationExtras} from '@angular/router';
 import {forEach} from '@angular-devkit/schematics';
@@ -10,7 +10,7 @@ import {PublicService} from '../../../providers/public.service';
     templateUrl: 'scan-input.page.html',
     styleUrls: ['scan-input.page.scss'],
 })
-export class ScanInputPage implements OnInit {
+export class ScanInputPage implements OnInit, AfterContentInit {
     @Input() infoObj = {};
     @Input() scanType = [];
     @Input() hasTwoWh: boolean = false;
@@ -20,15 +20,18 @@ export class ScanInputPage implements OnInit {
     @ViewChild('inputElement', {static: true}) inputView: ElementRef;
 
 
-    constructor(private el: ElementRef,
-                public presentService: PresentService,
-                public publicService: PublicService,
-                private renderer2: Renderer2) {
+    constructor(public presentService: PresentService,
+                public publicService: PublicService) {
         // this.renderer2.setStyle(this.el.nativeElement.querySelector('.btn1'), 'background', 'green');
     }
 
     ngOnInit() {
-        this.inputView.nativeElement.focus();
+    }
+
+    ngAfterContentInit() {
+        setTimeout(() => {
+            this.inputView.nativeElement.focus();
+        }, 1000);
     }
 
     func_addBar(val, scanArr) {

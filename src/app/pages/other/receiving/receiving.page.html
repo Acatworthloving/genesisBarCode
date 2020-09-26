@@ -21,10 +21,8 @@
     <div *ngIf="pageType== 'getOrder'">
         <form class="ion-margin ion-text-start scan-from">
             <ion-list>
-
                 <app-scan-input (addBar)="scanInput($event)" [infoObj]="infoObj" (funcDocEntry)="getBillData()"
                                 [scanType]="scanTypeArr"></app-scan-input>
-
                 <ion-item>
                     <ion-label>其他入库类型</ion-label>
                     <ion-select placeholder="选择入库类型" okText="确认" cancelText="取消">
@@ -41,15 +39,10 @@
                                [disabled]="!maxNum"
                                class="ion-text-right ion-padding-start"></ion-input>
                 </ion-item>
-                <ion-item lines="full">
-                    <ion-label>
-                        已扫描数量
-                    </ion-label>
-                    <ion-label color="primary" slot="end" class="ion-text-right pr-8">{{scanNum}}</ion-label>
-                </ion-item>
+                <app-materiel-item [scanNum]="scanNum" [materieObj]="materieObj"></app-materiel-item>
             </ion-list>
         </form>
-        <ion-button expand="block" class="ion-margin" mode='ios' (click)="submit()"
+        <ion-button expand="block" class="ion-margin btn-submit" mode='ios' (click)="submit()"
                     [disabled]="!scanList.length">
             提交数据
         </ion-button>
