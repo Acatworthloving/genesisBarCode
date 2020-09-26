@@ -3,7 +3,7 @@
         <ion-buttons slot="start">
             <ion-back-button mode="md"></ion-back-button>
         </ion-buttons>
-        <ion-title>其他发货</ion-title>
+        <ion-title>{{title}}</ion-title>
     </ion-toolbar>
     <ion-segment (ionChange)="segmentChanged($event)" [value]="pageType">
         <ion-segment-button value="getOrder">
@@ -23,13 +23,6 @@
             <ion-list>
                 <app-scan-input (addBar)="scanInput($event)" [infoObj]="infoObj" (funcDocEntry)="getBillData()"
                                 [scanType]="scanTypeArr"></app-scan-input>
-                <ion-item>
-                    <ion-label>其他入库类型</ion-label>
-                    <ion-select placeholder="选择入库类型" okText="确认" cancelText="取消">
-                        <ion-select-option value="f">供应商赠品</ion-select-option>
-                        <ion-select-option value="m">客供料到货</ion-select-option>
-                    </ion-select>
-                </ion-item>
                 <ion-item lines="full">
                     <ion-label>
                         收货数
@@ -39,15 +32,10 @@
                                [disabled]="disabledQTY()"
                                class="ion-text-right ion-padding-start"></ion-input>
                 </ion-item>
-                <ion-item lines="full">
-                    <ion-label>
-                        已扫描数量
-                    </ion-label>
-                    <ion-label color="primary" slot="end" class="ion-text-right pr-8">{{scanNum}}</ion-label>
-                </ion-item>
+                <app-materiel-item [scanNum]="scanNum" [materieObj]="materieObj" [infoObj]="infoObj"></app-materiel-item>
             </ion-list>
         </form>
-        <ion-button expand="block" class="ion-margin" mode='ios' (click)="submit()"
+        <ion-button expand="block" class="ion-margin btn-submit" mode='ios' (click)="submit()"
                     [disabled]="!scanList.length">
             提交数据
         </ion-button>

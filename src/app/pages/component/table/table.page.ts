@@ -31,19 +31,24 @@ export class TablePage implements OnInit {
     }
 
     changeInput(event, oldNum, r) {
-        const value = event.target.value,
-            item = this.publicService.arrSameId(this.documentList, 'ItemCode', r.ItemCode);
-        if (item) {
-            const QTY_NC = Number(item['QTY_NC']) + Number(oldNum);
-            if (value > QTY_NC) {
-                r['QTY'] = oldNum;
-                this.presentService.presentToast('当前物料收货数超过单据明细的物料数量', 'warning');
-            } else {
-                item['QTY_NC'] = QTY_NC - Number(value);
-                item['QTY_CUR'] = Number(item.Quantity) - Number(item.QTY_FIN) - item['QTY_NC'];
-                r['QTY'] = value;
-                this.presentService.presentToast('修改物料收货数成功');
+        const value = event.target.value;
+        if (this.documentList.length) {
+            const item = this.publicService.arrSameId(this.documentList, 'ItemCode', r.ItemCode);
+            if (item) {
+                const QTY_NC = Number(item['QTY_NC']) + Number(oldNum);
+                if (value > QTY_NC) {
+                    r['QTY'] = oldNum;
+                    this.presentService.presentToast('当前物料收货数超过单据明细的物料数量', 'warning');
+                } else {
+                    item['QTY_NC'] = QTY_NC - Number(value);
+                    item['QTY_CUR'] = Number(item.Quantity) - Number(item.QTY_FIN) - item['QTY_NC'];
+                    r['QTY'] = value;
+                    this.presentService.presentToast('修改物料收货数成功');
+                }
             }
+        } else {
+            r['QTY'] = value;
+            this.presentService.presentToast('修改物料收货数成功');
         }
     }
 

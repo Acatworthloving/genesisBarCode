@@ -1,89 +1,32 @@
-import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {PresentService} from '../../../providers/present.service';
 import {PublicService} from '../../../providers/public.service';
 import {GetDataService} from '../../../providers/get-data.service';
-import {PageRouterService} from '../../../providers/page-router.service';
 import {DataService} from '../../../api/data.service';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
+import {PageRouterService} from '../../../providers/page-router.service';
 
 @Component({
     selector: 'app-receiving',
     templateUrl: './receiving.page.html'
 })
 export class ReceivingPage implements OnInit {
+    title: string = '';
     pageType: string = 'getOrder';
-    // orderForm: FormGroup;
-    documentColumns = [
-        {
-            name: '物料编码',
-            prop: 'ItemCode',
-        },
-        {
-            name: '单据数量',
-            prop: 'Quantity',
-        },
-        {
-            name: '未清量',
-            prop: 'QTY_NC',
-        },
-        {
-            name: '当前扫描量',
-            prop: 'QTY_CUR',
-        },
-        {
-            name: '单号',
-            prop: 'DocEntry',
-        },
-        {
-            name: '编号',
-            prop: 'DocNum',
-        },
-        {
-            name: '行号',
-            prop: 'LineNum',
-        },
-        {
-            name: '物料名称',
-            prop: 'ItemName',
-        },
-        {
-            name: '物料规格',
-            prop: 'GGXH',
-        },
-    ];
-    columns = [
-        {
-            name: '物料编码',
-            prop: 'ItemCode',
-        },
-        {
-            name: '收货数',
-            prop: 'QTY',
-        },
-        {
-            name: '物料名称',
-            prop: 'ItemName',
-        },
-        {
-            name: '物料规格',
-            prop: 'GGXH',
-        },
-        {
-            name: '批次号/外箱序列号/序列号',
-            prop: 'BatchNo',
-        },
-    ];
+    documentColumns = [];
+    columns = [];
     documentList: any = [];
     scanList: any = [];
     scanNum: number = 0;
     maxNum: number = 0;
     scanTypeArr = ['User', 'DocEntry', 'Whs'];
     infoObj: any = {
-        Bil_ID: '',
-        User: '',
+        Bil_ID: null,
+        User: null,
         Bils_No: null,
-        Cus_No: '',
-        Whs: '',
+        Cus_No: 'C001',
+        Whs: null,
+        CRKType: '供应商赠品'
     };
     LineNumberList: any = [];
     materieObj: any = {};
@@ -93,12 +36,20 @@ export class ReceivingPage implements OnInit {
         public publicService: PublicService,
         public dataService: DataService,
         public getDataService: GetDataService,
-        public activatedRoute: ActivatedRoute
+        public activatedRoute: ActivatedRoute,
+        public pageRouterService: PageRouterService
     ) {
+        this.pageRouterService.getPageParams().then((res) => {
+            if (res) {
+                this.title = res['name'];
+                this.infoObj.Bil_ID = res['id'];
+            }
+        });
+        this.documentColumns = this.publicService.DocumentColumns;
+        this.columns = this.publicService.TableColumns;
     }
 
     ngOnInit() {
-        this.infoObj.Bil_ID = this.activatedRoute.snapshot.params['id'];
     }
 
 
@@ -106,6 +57,7 @@ export class ReceivingPage implements OnInit {
         this.pageType = event.detail.value;
         this.scanNum = 0;
         this.maxNum = 0;
+        this.materieObj = {};
     }
 
     clearData() {
@@ -121,13 +73,10 @@ export class ReceivingPage implements OnInit {
     }
 
     submit() {
-        for (let item of this.documentList) {
-            if (!item['QTY_NC']) {
-                this.presentService.presentToast('未扫描完单据中所有物料', 'warning');
-                return;
-            }
+        const hasQTYNC = this.publicService.hasQTY_NC(this.documentList);
+        if (hasQTYNC) {
+            return false;
         }
-        console.log('test');
         const LstDetail = [];
         this.scanList.forEach((val) => {
             LstDetail.push({
@@ -154,16 +103,10 @@ export class ReceivingPage implements OnInit {
         });
         const config = this.infoObj;
         config['LstDetail'] = LstDetail;
-        const request = this.dataService.postData('WH/SubmitScanData', config);
-        request.subscribe(resp => {
-            if (resp.ErrCode == 0) {
+        this.getDataService.SubmitScanData(config).then((resp) => {
+            if (resp) {
                 this.clearData();
-                this.presentService.presentToast(resp.ErrMsg);
-            } else {
-                this.presentService.presentToast(resp.ErrMsg, 'warning');
             }
-        }, error => {
-            this.presentService.presentToast(error.message);
         });
     }
 
@@ -197,12 +140,13 @@ export class ReceivingPage implements OnInit {
         // 清空行号
         this.LineNumberList = [];
 
+        // 判断是否扫描重复物料
         const scanItem = this.publicService.arrSameId(this.scanList, 'Barcode', BarcodeText);
         if (scanItem) {
             this.presentService.presentToast('当前物料已存在', 'warning');
             return false;
         }
-
+        //  判断是否存在物料编码
         if (ItemCodeText) {
             // 查找单号中是否包含此物料编码
             this.documentList.forEach((item, index) => {

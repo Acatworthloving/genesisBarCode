@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
+import {PageRouterService} from '../../providers/page-router.service';
 
 @Component({
     selector: 'app-home',
@@ -146,16 +147,21 @@ export class HomePage implements OnInit {
         },
     ];
 
-    constructor(private router: Router) {
+    constructor(private router: Router,
+                private pageRouterService: PageRouterService) {
     }
 
     ngOnInit() {
     }
 
     goPage(item) {
-        console.log(item);
+        const data = {
+            name: item.name,
+            id: item.prop
+        };
         if (item.href) {
-            this.router.navigate([item.href, item.prop]);
+            this.pageRouterService.toPage(item.href, item.prop, data);
+            // this.router.navigate([item.href, item.prop]);
         }
     }
 }

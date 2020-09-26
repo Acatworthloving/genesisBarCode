@@ -11,8 +11,10 @@ import {PublicService} from '../../../providers/public.service';
     styleUrls: ['materiel-item.page.scss'],
 })
 export class MaterielItemPage implements OnInit {
-    @Input() scanNum: number = 0;
+    @Input() scanNum: any = 0;
+    @Input() hasScanNum: boolean = true;
     @Input() materieObj = {};
+    @Input() infoObj = {};
 
 
     constructor() {

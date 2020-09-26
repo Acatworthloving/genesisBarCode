@@ -5,6 +5,66 @@ import {PresentService} from './present.service';
     providedIn: 'root'
 })
 export class PublicService {
+    DocumentColumns: any = [
+        {
+            name: '物料编码',
+            prop: 'ItemCode',
+        },
+        {
+            name: '单据数量',
+            prop: 'Quantity',
+        },
+        {
+            name: '未清量',
+            prop: 'QTY_NC',
+        },
+        {
+            name: '当前扫描量',
+            prop: 'QTY_CUR',
+        },
+        {
+            name: '单号',
+            prop: 'DocEntry',
+        },
+        {
+            name: '编号',
+            prop: 'DocNum',
+        },
+        {
+            name: '行号',
+            prop: 'LineNum',
+        },
+        {
+            name: '物料名称',
+            prop: 'ItemName',
+        },
+        {
+            name: '物料规格',
+            prop: 'GGXH',
+        },
+    ];
+    TableColumns = [
+        {
+            name: '物料编码',
+            prop: 'ItemCode',
+        },
+        {
+            name: '收货数',
+            prop: 'QTY',
+        },
+        {
+            name: '物料名称',
+            prop: 'ItemName',
+        },
+        {
+            name: '物料规格',
+            prop: 'GGXH',
+        },
+        {
+            name: '批次号/外箱序列号/序列号',
+            prop: 'BatchNo',
+        },
+    ];
 
     constructor(public presentService: PresentService) {
     }
@@ -113,6 +173,19 @@ export class PublicService {
         let result = false;
         if (arr.indexOf(key) !== -1) {
             result = true;
+        }
+        return result;
+    }
+
+    hasQTY_NC(arr) {
+        let result = true;
+        for (let item of arr) {
+            if (item['QTY_NC']) {
+                this.presentService.presentToast('未扫描完单据中所有物料', 'warning');
+                return true;
+            } else {
+                result = false;
+            }
         }
         return result;
     }

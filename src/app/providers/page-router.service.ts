@@ -35,15 +35,6 @@ export class PageRouterService {
 
 
     getPageParams() {
-        // const tempSub = new Subject<any>();
-        // this.activatedRoute.queryParams.subscribe(params => {
-        //     if (this.router.getCurrentNavigation().extras.state) {
-        //         const state = this.router.getCurrentNavigation().extras.state;
-        //         tempSub.next(state.data);
-        //     }
-        //     tempSub.next('444');
-        // });
-        // return tempSub.asObservable();
         return new Promise((resolve, reject) => {
             this.activatedRoute.queryParams.subscribe(params => {
                 if (this.router.getCurrentNavigation().extras.state) {

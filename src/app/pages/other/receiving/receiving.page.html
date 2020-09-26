@@ -3,7 +3,7 @@
         <ion-buttons slot="start">
             <ion-back-button mode="md"></ion-back-button>
         </ion-buttons>
-        <ion-title>其他收货</ion-title>
+        <ion-title>{{title}}</ion-title>
     </ion-toolbar>
     <ion-segment (ionChange)="segmentChanged($event)" [value]="pageType">
         <ion-segment-button value="getOrder">
@@ -19,15 +19,15 @@
 </ion-header>
 <ion-content>
     <div *ngIf="pageType== 'getOrder'">
-        <form class="ion-margin ion-text-start scan-from">
+        <div class="ion-margin ion-text-start scan-from">
             <ion-list>
                 <app-scan-input (addBar)="scanInput($event)" [infoObj]="infoObj" (funcDocEntry)="getBillData()"
                                 [scanType]="scanTypeArr"></app-scan-input>
                 <ion-item>
                     <ion-label>其他入库类型</ion-label>
-                    <ion-select placeholder="选择入库类型" okText="确认" cancelText="取消">
-                        <ion-select-option value="f">供应商赠品</ion-select-option>
-                        <ion-select-option value="m">客供料到货</ion-select-option>
+                    <ion-select placeholder="选择入库类型" okText="确认" cancelText="取消" [(ngModel)]="infoObj.CRKType">
+                        <ion-select-option value="供应商赠品">供应商赠品</ion-select-option>
+                        <ion-select-option value="客供料到货">客供料到货</ion-select-option>
                     </ion-select>
                 </ion-item>
                 <ion-item lines="full">
@@ -39,9 +39,9 @@
                                [disabled]="!maxNum"
                                class="ion-text-right ion-padding-start"></ion-input>
                 </ion-item>
-                <app-materiel-item [scanNum]="scanNum" [materieObj]="materieObj"></app-materiel-item>
+                <app-materiel-item [scanNum]="scanNum" [materieObj]="materieObj" [infoObj]="infoObj"></app-materiel-item>
             </ion-list>
-        </form>
+        </div>
         <ion-button expand="block" class="ion-margin btn-submit" mode='ios' (click)="submit()"
                     [disabled]="!scanList.length">
             提交数据

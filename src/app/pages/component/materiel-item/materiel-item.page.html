@@ -1,4 +1,4 @@
-<ion-item lines="full">
+<ion-item lines="full" *ngIf="hasScanNum">
     <ion-label>
         已扫描数量
     </ion-label>
@@ -39,6 +39,20 @@
         物料名称
     </ion-label>
     <ion-label slot="end" class="ion-text-right pr-8">{{materieObj['ItemName'] || ''}}</ion-label>
+</ion-item>
+
+<ion-item lines="full" *ngIf="infoObj['Whs']">
+    <ion-label>
+        仓库
+    </ion-label>
+    <ion-label slot="end" class="ion-text-right pr-8">{{infoObj['Whs'] || ''}}</ion-label>
+</ion-item>
+
+<ion-item lines="full" *ngIf="infoObj['Wh_To']">
+    <ion-label>
+        到仓库
+    </ion-label>
+    <ion-label slot="end" class="ion-text-right pr-8">{{infoObj['Wh_To'] || ''}}</ion-label>
 </ion-item>
 <!--<ion-item lines="full">-->
 <!--    <ion-label>-->

@@ -55,4 +55,22 @@ export class GetDataService {
             });
         });
     }
+
+    SubmitScanData(Obj) {
+        return new Promise((resolve, reject) => {
+            const request = this.dataService.postData('WH/SubmitScanData', Obj);
+            request.subscribe(resp => {
+                if (resp.ErrCode == 0) {
+                    resolve(resp);
+                    this.presentService.presentToast(resp.ErrMsg);
+                } else {
+                    resolve(false);
+                    this.presentService.presentToast(resp.ErrMsg, 'warning');
+                }
+            }, error => {
+                resolve(false);
+                this.presentService.presentToast(error.message);
+            });
+        });
+    }
 }

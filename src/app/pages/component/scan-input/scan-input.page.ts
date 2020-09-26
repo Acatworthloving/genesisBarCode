@@ -117,11 +117,25 @@ export class ScanInputPage implements OnInit, AfterContentInit {
                                 this.presentService.presentToast('不需要扫描仓库标签');
                             }
                         } else {
-                            if (this.infoObj['Whs'] || !hasWhs) {
-                                this.func_addBar(value, scanArr);
+                            if (this.hasTwoWh) {
+                                if ((this.infoObj['Whs'] && this.infoObj['Wh_To']) || !hasWhs) {
+                                    this.func_addBar(value, scanArr);
+                                } else {
+                                    if (!this.infoObj['Whs']) {
+                                        this.presentService.presentToast('请先扫描从仓库标签', 'warning');
+                                        return;
+                                    } else if (!this.infoObj['Wh_To']) {
+                                        this.presentService.presentToast('请先扫描到仓库标签', 'warning');
+                                    }
+                                }
                             } else {
-                                this.presentService.presentToast('请先扫描仓库标签', 'warning');
+                                if (this.infoObj['Whs'] || !hasWhs) {
+                                    this.func_addBar(value, scanArr);
+                                } else {
+                                    this.presentService.presentToast('请先扫描仓库标签', 'warning');
+                                }
                             }
+
                         }
                     } else {
                         this.presentService.presentToast('请先扫描单号标签', 'warning');
