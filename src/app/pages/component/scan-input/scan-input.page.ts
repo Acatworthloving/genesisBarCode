@@ -97,6 +97,7 @@ export class ScanInputPage implements OnInit, AfterContentInit {
                                     ];
                                     // 需要扫描两个仓库时，需要选择仓库
                                     this.presentService.presentAlertBaseRadio(list, '选择仓库').then((res) => {
+                                        this.selected();
                                         if (res === 'Whs') {
                                             this.infoObj['Whs'] = scanArr[1];
                                             if (scanArr[2]) {
