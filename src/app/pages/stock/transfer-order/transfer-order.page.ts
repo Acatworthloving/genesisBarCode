@@ -129,34 +129,57 @@ export class TransferOrderPage implements OnInit {
 
         //  判断是否存在物料编码
         if (ItemCodeText) {
-            this.successScan(BarcodeText, ItemCodeText, val, arr);
+            const obj = {
+                Bils_No: this.infoObj.Bils_No,
+                Wh: this.infoObj.Whs,
+                Wh_To: this.infoObj.Wh_To,
+                Itm: '',
+                Barcode: BarcodeText,
+                BarcodeText: val,
+                ItemCode: ItemCodeText,
+                ItemName: '',
+                QTY: Number(this.publicService.getArrInfo(arr, 'QTY')),
+                BFlag: this.publicService.getArrInfo(arr, 'BFlag'),
+                BatchNo: this.publicService.getArrInfo(arr, 'DistNumber'),
+                LiuNo: this.publicService.getArrInfo(arr, 'LiuNo'),
+                OrderEntry: '',
+                OrderLine: '',
+                NumPerMsr: '',
+                QUA_DocEntry: 0,
+                QUA_LineNum: 0,
+                GGXH: '',
+            };
+            // 获取库存接口，判断是否超库存
+            this.getDataService.getSapStoreQty(obj).then((resp) => {
+                    if (resp['Data']) {
+                        if (obj.QTY > resp['Data']) {
+                            // 物料收容数>库存
+                            this.presentService.presentAlert('当前标签收货数大于库存，是否修改为库存量').then((kc) => {
+                                if (kc) {
+                                    // 修改为库存量
+                                    obj.QTY = resp['Data'];
+                                    this.successScan(obj);
+                                } else {
+                                    this.presentService.presentToast('当前物料扫描失败', 'warning');
+                                }
+                            });
+                        } else {
+                            // 修改为未清量
+                            this.successScan(obj);
+                        }
+                    } else {
+                        this.presentService.presentToast('当前物料库存不足', 'warning');
+                    }
+                }
+            );
+            // this.successScan(obj);
         } else {
             return false;
         }
     }
 
-    successScan(Barcod, ItemCodeText, val, arr) {
-        const obj = {
-            Bils_No: this.infoObj.Bils_No,
-            Wh: this.infoObj.Whs,
-            Wh_To: '',
-            Itm: '',
-            Barcode: Barcod,
-            BarcodeText: val,
-            ItemCode: ItemCodeText,
-            ItemName: '',
-            QTY: Number(this.publicService.getArrInfo(arr, 'QTY')),
-            BFlag: this.publicService.getArrInfo(arr, 'BFlag'),
-            BatchNo: this.publicService.getArrInfo(arr, 'DistNumber'),
-            LiuNo: this.publicService.getArrInfo(arr, 'LiuNo'),
-            OrderEntry: '',
-            OrderLine: '',
-            NumPerMsr: '',
-            QUA_DocEntry: 0,
-            QUA_LineNum: 0,
-            // QTYNumber: this.publicService.getArrInfo(arr, 'QTY'),
-            GGXH: '',
-        };
+    successScan(obj) {
+
         this.materieObj = obj;
         this.scanList.unshift(obj);
         this.presentService.presentToast('当前物料扫描成功');

@@ -61,15 +61,15 @@ export class GetDataService {
             const request = this.dataService.postData('WH/SubmitScanData', Obj);
             request.subscribe(resp => {
                 if (resp.ErrCode == 0) {
-                    resolve(resp);
                     this.presentService.presentToast(resp.ErrMsg);
+                    resolve(resp);
                 } else {
-                    resolve(false);
                     this.presentService.presentToast(resp.ErrMsg, 'warning');
+                    resolve(false);
                 }
             }, error => {
-                resolve(false);
                 this.presentService.presentToast(error.message);
+                resolve(false);
             });
         });
     }

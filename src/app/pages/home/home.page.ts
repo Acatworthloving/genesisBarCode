@@ -43,13 +43,13 @@ export class HomePage implements OnInit {
         },
         {
             name: '仓库库存转储',
-            prop: 'WHSQZC',
+            prop: 'WHZCNO',
             href: 'stock/transfer-order',
             icon: 'assets/svg/svg7.svg'
         },
         {
             name: '执行库存转储请求',
-            prop: 'WHZCNO',
+            prop: 'WHSQZC',
             href: 'stock/dump-request',
             icon: 'assets/svg/svg8.svg'
         },

@@ -135,28 +135,29 @@ export class PublicService {
         let result: any = '';
         switch (type) {
             case 'Barcode':
-                result = arr[1] + '*' + arr[4] + arr[5];
+                result = arr[1] + '*' + arr[4] + arr[5]; // 物料编码*日期(年月日)*6位流水号
                 break;
             case 'ItemCode':
-                result = arr[1];
+                result = arr[1]; // 物料编码
                 break;
             case 'QTY':
-                result = arr[2];
+                result = arr[2];  // 收容数
                 break;
             case 'DistNumber':
-                result = arr[3];
+                result = arr[3]; // 批次号/序列号
                 break;
             case 'BFlag':
-                result = arr[6];
+                result = arr[6];  // 仓库管理类型(N:非批次/序列号管理；B:批次管理；S:序列号管理)
                 break;
             case 'LiuNo':
-                result = arr[5];
+                result = arr[5]; // 6位流水号
                 break;
             default:
-                result = arr;
+                result = arr; // 物料编码*收容数*批次号/序列号*日期(年月日)*6位流水号*仓库管理类型(N:非批次/序列号管理；B:批次管理；S:序列号管理)*属性1*属性2
         }
         return result;
     }
+
 
     arrSameId(arr, id, ItemCode) {
         let obj: any = null;

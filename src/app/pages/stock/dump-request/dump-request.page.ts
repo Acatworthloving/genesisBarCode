@@ -205,7 +205,7 @@ export class DumpRequestPage implements OnInit {
             const obj = {
                 Bils_No: this.infoObj.Bils_No,
                 Wh: this.infoObj.Whs,
-                Wh_To: '',
+                Wh_To: this.infoObj.Wh_To,
                 Itm: selectItem['LineNum'],
                 Barcode: BarcodeText,
                 BarcodeText: val,
