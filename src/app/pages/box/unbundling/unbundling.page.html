@@ -1,0 +1,58 @@
+<ion-header>
+    <ion-toolbar mode="ios">
+        <ion-buttons slot="start">
+            <ion-back-button mode="md"></ion-back-button>
+        </ion-buttons>
+        <ion-title>{{title}}</ion-title>
+    </ion-toolbar>
+    <ion-segment (ionChange)="segmentChanged($event)" [value]="pageType">
+        <ion-segment-button value="getOrder">
+            <ion-label>扫描界面</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="documentDetails">
+            <ion-label>已绑定明细</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="orderDetails">
+            <ion-label>汇总界面</ion-label>
+        </ion-segment-button>
+    </ion-segment>
+</ion-header>
+<ion-content>
+    <div *ngIf="pageType== 'getOrder'">
+        <form class="ion-margin ion-text-start scan-from">
+            <ion-list>
+                <app-scan-input (addBar)="scanInput($event)" [infoObj]="infoObj" hasTwoWh="true" (getWX)="scanWX()" (getKB)="scanKB()"
+                                [scanType]="scanTypeArr"></app-scan-input>
+                <ion-item lines="full">
+                    <ion-label>
+                        产品编码
+                    </ion-label>
+                    <ion-label slot="end" class="ion-text-right pr-8">{{materieObj['ItemCode'] || ''}}</ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        产品外箱序号
+                    </ion-label>
+                    <ion-label slot="end" class="ion-text-right pr-8">{{infoObj['wxcode'] || ''}}</ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        已绑外箱数量
+                    </ion-label>
+                    <ion-label slot="end"
+                               class="ion-text-right pr-8">{{this.documentList.length + this.scanList.length}}</ion-label>
+                </ion-item>
+            </ion-list>
+        </form>
+        <ion-button expand="block" class="ion-margin" mode='ios' (click)="submit()"
+                    [disabled]="!scanList.length">
+            提交数据
+        </ion-button>
+    </div>
+    <div *ngIf="pageType==='documentDetails'">
+        <app-table [columns]="documentColumns" [tableList]="documentList" tableId="documentId"></app-table>
+    </div>
+    <div *ngIf="pageType==='orderDetails'">
+        <app-table [columns]="columns" [tableList]="scanList" tableId="scanId" hasDel="true"></app-table>
+    </div>
+</ion-content>

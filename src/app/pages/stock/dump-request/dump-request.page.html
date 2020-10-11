@@ -27,7 +27,7 @@
                     <ion-label>
                         收货数
                     </ion-label>
-                    <ion-input placeholder="收货数" (change)="changeQTY($event)" mode="ios" slot="end" type="number"
+                    <ion-input placeholder="收货数" color="primary" (change)="changeQTY($event)" mode="ios" slot="end" type="number"
                                [value]="maxNum" pattern="[0-9]*"
                                [disabled]="disabledQTY()"
                                class="ion-text-right ion-padding-start"></ion-input>

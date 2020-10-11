@@ -24,7 +24,7 @@ export class ReceivingPage implements OnInit {
         Bil_ID: null,
         User: null,
         Bils_No: null,
-        Cus_No: 'C001',
+        Cus_No: '',
         Whs: null,
         CRKType: '供应商赠品'
     };
@@ -63,9 +63,8 @@ export class ReceivingPage implements OnInit {
     clearData() {
         this.scanNum = 0;
         this.maxNum = 0;
-        this.infoObj.User = null;
         this.infoObj.Bils_No = null;
-        this.infoObj.Cus_No = 'C001';
+        this.infoObj.Cus_No = '';
         this.infoObj.Whs = null;
         this.documentList = [];
         this.scanList = [];
@@ -73,6 +72,7 @@ export class ReceivingPage implements OnInit {
     }
 
     submit() {
+        this.infoObj.Cus_No = this.documentList[0].CardCode || '';
         const hasQTYNC = this.publicService.hasQTY_NC(this.documentList);
         if (hasQTYNC) {
             return false;

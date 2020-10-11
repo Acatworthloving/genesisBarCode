@@ -31,26 +31,84 @@ export class GetDataService {
             request.subscribe(resp => {
                 resolve(resp);
             }, error => {
-                this.presentService.presentToast(error.message);
+                this.presentService.presentToast(error.message, 'warning');
                 resolve(false);
             });
         });
     }
 
-    getSapStoreQty(Obj) {
+    getCGBillData(infoObj) {
         return new Promise((resolve, reject) => {
             const config = {
-                itemcode: Obj.ItemCode,
-                wh: Obj.Wh,
-                kw: Obj.Kuwei,
-                batNo: Obj.BatchNo,
-                batId: Obj.BFlag,
+                order: infoObj.Bils_No,
+                actType: infoObj.Bil_ID,
             };
+            const request = this.dataService.getData('CG/GetBillData', config);
+            request.subscribe(resp => {
+                resolve(resp);
+            }, error => {
+                this.presentService.presentToast(error.message, 'warning');
+                resolve(false);
+            });
+        });
+    }
+
+    GetWXBillData(infoObj) {
+        return new Promise((resolve, reject) => {
+            const config = {
+                wxcode: infoObj.wxcode
+            };
+            const request = this.dataService.getData('PXKB/GetWXBillData', config);
+            request.subscribe(resp => {
+                resolve(resp);
+            }, error => {
+                this.presentService.presentToast(error.message, 'warning');
+                resolve(false);
+            });
+        });
+    }
+
+    GetKBBillData(infoObj) {
+        return new Promise((resolve, reject) => {
+            const config = {
+                wxcode: infoObj.wxcode
+            };
+            const request = this.dataService.getData('PXKB/GetWXBillData', config);
+            request.subscribe(resp => {
+                resolve(resp);
+            }, error => {
+                this.presentService.presentToast(error.message, 'warning');
+                resolve(false);
+            });
+        });
+    }
+
+    GetExistBarCode(code) {
+        return new Promise((resolve, reject) => {
+            const config = {
+                barcode: code
+            };
+            const request = this.dataService.getData('PXKB/GetExistBarCode', config);
+            request.subscribe(resp => {
+                resolve(resp);
+            }, error => {
+                this.presentService.presentToast(error.message, 'warning');
+                resolve(false);
+            });
+        });
+    }
+
+    getSapStoreQty(config) {
+        console.log('config',config);
+        const data={
+
+        }
+        return new Promise((resolve, reject) => {
             const request = this.dataService.getData('WH/GetSapStoreQty', config);
             request.subscribe(resp => {
                 resolve(resp);
             }, error => {
-                this.presentService.presentToast(error.message);
+                this.presentService.presentToast(error.message, 'warning');
                 resolve(false);
             });
         });
@@ -60,15 +118,99 @@ export class GetDataService {
         return new Promise((resolve, reject) => {
             const request = this.dataService.postData('WH/SubmitScanData', Obj);
             request.subscribe(resp => {
-                if (resp.ErrCode == 0) {
+                if (resp) {
                     this.presentService.presentToast(resp.ErrMsg);
                     resolve(resp);
-                } else {
-                    this.presentService.presentToast(resp.ErrMsg, 'warning');
-                    resolve(false);
                 }
             }, error => {
-                this.presentService.presentToast(error.message);
+                this.presentService.presentToast(error.message, 'warning');
+                resolve(false);
+            });
+        });
+    }
+
+    CGSJSubmitScanData(Obj) {
+        return new Promise((resolve, reject) => {
+            const request = this.dataService.postData('QC/CGSJSubmitScanData', Obj);
+            request.subscribe(resp => {
+                if (resp) {
+                    this.presentService.presentToast(resp.ErrMsg);
+                    resolve(resp);
+                }
+            }, error => {
+                this.presentService.presentToast(error.message, 'warning');
+                resolve(false);
+            });
+        });
+    }
+
+    CGZJSubmitScanData(Obj) {
+        return new Promise((resolve, reject) => {
+            const request = this.dataService.postData('QC/CGZJSubmitScanData', Obj);
+            request.subscribe(resp => {
+                if (resp) {
+                    this.presentService.presentToast(resp.ErrMsg);
+                    resolve(resp);
+                }
+            }, error => {
+                this.presentService.presentToast(error.message, 'warning');
+                resolve(false);
+            });
+        });
+    }
+
+    PXSubmitScanData(Obj) {
+        return new Promise((resolve, reject) => {
+            const request = this.dataService.postData('PXKB/PXSubmitScanData', Obj);
+            request.subscribe(resp => {
+                if (resp) {
+                    this.presentService.presentToast(resp.ErrMsg);
+                    resolve(resp);
+                }
+            }, error => {
+                this.presentService.presentToast(error.message, 'warning');
+                resolve(false);
+            });
+        });
+    }
+
+    CGSubmitScanData(Obj) {
+        return new Promise((resolve, reject) => {
+            const request = this.dataService.postData('CG/SubmitScanData', Obj);
+            request.subscribe(resp => {
+                if (resp) {
+                    this.presentService.presentToast(resp.ErrMsg);
+                    resolve(resp);
+                }
+            }, error => {
+                this.presentService.presentToast(error.message, 'warning');
+                resolve(false);
+            });
+        });
+    }
+
+    submitPublicData(api, Obj) {
+        return new Promise((resolve, reject) => {
+            const request = this.dataService.postData(api, Obj);
+            request.subscribe(resp => {
+                if (resp) {
+                    this.presentService.presentToast(resp.ErrMsg);
+                    resolve(resp);
+                }
+            }, error => {
+                this.presentService.presentToast(error.message, 'warning');
+                resolve(false);
+            });
+        });
+    }
+
+    getPublicData(url, config) {
+        return new Promise((resolve, reject) => {
+            const request = this.dataService.getData(url, config);
+            request.subscribe(resp => {
+                resolve(resp);
+            }, error => {
+                this.presentService.presentToast(error.message, 'warning');
                 resolve(false);
             });
         });

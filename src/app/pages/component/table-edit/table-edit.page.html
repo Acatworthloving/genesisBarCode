@@ -1,0 +1,18 @@
+<div class="table-box" [id]="tableId" (scroll)="scroll($event)">
+    <table cellspacing="0">
+        <tr class="tableheader">
+            <th *ngFor="let c of columns;let i=index" [class.frozencol]="!i">{{c.name}}</th>
+        </tr>
+        <tr *ngFor="let r of tableList;let num = index">
+            <td *ngFor="let c of columns;let i=index" [class.frozencol]="!i">
+                <span *ngIf="!c.type">
+                    {{r[c.prop]}}
+                </span>
+                <ion-input *ngIf="c.type==='input'" [type]="number" pattern="[0-9]*" [(ngModel)]="r[c.prop]"></ion-input>
+                <ion-select [placeholder]="'选择 '+c.name" *ngIf="c.type==='select'" cancelText="取消" okText="确认" [(ngModel)]="r[c.prop]">
+                    <ion-select-option *ngFor="let item of c.arr" [value]="item">{{item}}</ion-select-option>
+                </ion-select>
+            </td>
+        </tr>
+    </table>
+</div>

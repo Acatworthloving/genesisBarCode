@@ -1,0 +1,34 @@
+<ion-header>
+    <ion-toolbar mode="ios">
+        <ion-buttons slot="start">
+            <ion-back-button mode="md"></ion-back-button>
+        </ion-buttons>
+        <ion-title>{{title}}</ion-title>
+    </ion-toolbar>
+    <ion-segment (ionChange)="segmentChanged($event)" [value]="pageType">
+        <ion-segment-button value="getOrder">
+            <ion-label>扫描界面</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="orderDetails">
+            <ion-label>汇总界面</ion-label>
+        </ion-segment-button>
+    </ion-segment>
+</ion-header>
+<ion-content>
+    <div *ngIf="pageType== 'getOrder'">
+        <form class="ion-margin ion-text-start scan-from">
+            <ion-list>
+                <app-scan-input (getPL)="scanPL()" [infoObj]="infoObj"
+                                [scanType]="scanTypeArr"></app-scan-input>
+                <app-materiel-item [materieObj]="materieObj" [hasScanNum]="false" [infoObj]="infoObj"></app-materiel-item>
+            </ion-list>
+        </form>
+        <ion-button expand="block" class="ion-margin" mode='ios' (click)="submit()"
+                    [disabled]="!scanList.length">
+            提交数据
+        </ion-button>
+    </div>
+    <div *ngIf="pageType==='orderDetails'">
+        <app-table [columns]="columns" [tableList]="scanList" tableId="scanId" hasDel="true"></app-table>
+    </div>
+</ion-content>

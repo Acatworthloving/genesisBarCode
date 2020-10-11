@@ -11,34 +11,46 @@ export class HomePage implements OnInit {
     qualityList = [
         {
             name: '采购来料送检',
-            prop: '',
+            prop: 'CGSJ',
+            href: 'quality-check/incoming',
             icon: 'assets/svg/svg1.svg'
         },
         {
             name: '采购来料品质检验',
-            prop: '',
+            prop: 'CGZJ',
+            href: 'quality-check/incoming-quality',
             icon: 'assets/svg/svg2.svg'
         },
         {
             name: '生产品质检验',
-            prop: '',
+            prop: 'CGZJ',
+            href: 'quality-check/produce-quality',
             icon: 'assets/svg/svg3.svg'
         },
         {
             name: '库存品质检验',
-            prop: '',
+            prop: 'CGZJ',
+            href: 'quality-check/stock-quality',
             icon: 'assets/svg/svg4.svg'
         },
     ];
     storehouseList = [
         {
+            name: '采购自检收货',
+            prop: 'CGRHQC',
+            href: 'purchase/quality-receiving',
+            icon: 'assets/svg/svg28.svg'
+        },
+        {
             name: '采购收货',
-            prop: '',
+            prop: 'CGRH',
+            href: 'purchase/receiving',
             icon: 'assets/svg/svg5.svg'
         },
         {
             name: '采购退货',
-            prop: '',
+            prop: 'CGSQTH',
+            href: 'purchase/return-goods',
             icon: 'assets/svg/svg6.svg'
         },
         {
@@ -55,17 +67,20 @@ export class HomePage implements OnInit {
         },
         {
             name: '生产上工扫描',
-            prop: '',
+            prop: 'UP',
+            href: 'production/up',
             icon: 'assets/svg/svg9.svg'
         },
         {
             name: '生产下工扫描',
-            prop: '',
+            prop: 'DOWN',
+            href: 'production/down',
             icon: 'assets/svg/svg10.svg'
         },
         {
             name: '工序报工扫描',
-            prop: '',
+            prop: 'BG',
+            href: 'production/completion',
             icon: 'assets/svg/svg11.svg'
         },
         {
@@ -85,32 +100,38 @@ export class HomePage implements OnInit {
         },
         {
             name: '产品入箱',
-            prop: '',
+            prop: 'PXKB',
+            href: 'box/into-box',
             icon: 'assets/svg/svg14.svg'
         },
         {
             name: '产品拆箱',
-            prop: '',
+            prop: 'PXKB',
+            href: 'box/unpacking',
             icon: 'assets/svg/svg15.svg'
         },
         {
             name: '卡板绑定',
-            prop: '',
+            prop: 'PXKB',
+            href: 'box/bundling',
             icon: 'assets/svg/svg16.svg'
         },
         {
             name: '卡板解绑',
-            prop: '',
+            prop: 'PXKB',
+            href: 'box/unbundling',
             icon: 'assets/svg/svg17.svg'
         },
         {
             name: '生产线故障报警',
-            prop: '',
+            prop: 'alarm',
+            href: 'warning/alarm',
             icon: 'assets/svg/svg19.svg'
         },
         {
             name: '生产线故障解除',
-            prop: '',
+            prop: 'disarmed',
+            href: 'warning/disarmed',
             icon: 'assets/svg/svg20.svg'
         },
         {
@@ -144,6 +165,11 @@ export class HomePage implements OnInit {
             name: '库存查询',
             prop: '',
             icon: 'assets/svg/svg26.svg'
+        },
+        {
+            name: '标签重打',
+            prop: '',
+            icon: 'assets/svg/svg27.svg'
         },
     ];
 

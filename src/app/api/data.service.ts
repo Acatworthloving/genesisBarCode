@@ -22,7 +22,7 @@ export class DataService {
         }).pipe(
             map((data: any) => {
                 if (data.ErrCode == -100) {
-                    this.presentService.presentToast('e403', 'warning');
+                    this.presentService.presentToast('登录信息过期，请重新登入', 'warning');
                     return false;
                 } else if (data.ErrCode == 0) {
                     return data;
@@ -38,7 +38,7 @@ export class DataService {
         return this.http.post(api, postParams).pipe(
             map((data: any) => {
                 if (data.ErrCode == -100) {
-                    this.presentService.presentToast('e403', 'warning');
+                    this.presentService.presentToast('登录信息过期，请重新登入', 'warning');
                     return false;
                 } else if (data.ErrCode == 0) {
                     return data;
@@ -54,7 +54,7 @@ export class DataService {
         return this.http.put(api, postParams).pipe(
             map((data: any) => {
                 if (data.ErrCode == -100) {
-                    this.presentService.presentToast('e403', 'warning');
+                    this.presentService.presentToast('登录信息过期，请重新登入', 'warning');
                     return false;
                 } else if (data.ErrCode == 0) {
                     return data;
@@ -70,7 +70,7 @@ export class DataService {
         return this.http.delete(api, postParams).pipe(
             map((data: any) => {
                 if (data.ErrCode == -100) {
-                    this.presentService.presentToast('e403', 'warning');
+                    this.presentService.presentToast('登录信息过期，请重新登入', 'warning');
                     return false;
                 } else if (data.ErrCode == 0) {
                     return data;

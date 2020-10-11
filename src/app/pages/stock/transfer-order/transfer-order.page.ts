@@ -23,7 +23,7 @@ export class TransferOrderPage implements OnInit {
         Bil_ID: null,
         User: null,
         Bils_No: null,
-        Cus_No: 'C001',
+        Cus_No: '',
         Whs: null,
         Wh_To: null,
         Kuwei: null,
@@ -63,9 +63,9 @@ export class TransferOrderPage implements OnInit {
     clearData() {
         this.scanNum = 0;
         this.maxNum = 0;
-        this.infoObj.User = null;
+
         this.infoObj.Bils_No = null;
-        this.infoObj.Cus_No = 'C001';
+        this.infoObj.Cus_No = '';
         this.infoObj.Whs = null;
         this.infoObj.Wh_To = null;
         this.scanList = [];
@@ -150,7 +150,14 @@ export class TransferOrderPage implements OnInit {
                 GGXH: '',
             };
             // 获取库存接口，判断是否超库存
-            this.getDataService.getSapStoreQty(obj).then((resp) => {
+            const config = {
+                itemcode: obj.ItemCode,
+                wh: obj.Wh,
+                kw: this.infoObj.Kuwei,
+                batNo: obj.BatchNo,
+                batId: obj.BFlag,
+            };
+            this.getDataService.getSapStoreQty(config).then((resp) => {
                     if (resp['Data']) {
                         if (obj.QTY > resp['Data']) {
                             // 物料收容数>库存
@@ -179,7 +186,6 @@ export class TransferOrderPage implements OnInit {
     }
 
     successScan(obj) {
-
         this.materieObj = obj;
         this.scanList.unshift(obj);
         this.presentService.presentToast('当前物料扫描成功');

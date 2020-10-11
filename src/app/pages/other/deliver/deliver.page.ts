@@ -24,7 +24,7 @@ export class DeliverPage implements OnInit {
         Bil_ID: null,
         User: null,
         Bils_No: null,
-        Cus_No: 'C001',
+        Cus_No: '',
         Whs: null,
     };
     BFlagObj = {};
@@ -62,9 +62,8 @@ export class DeliverPage implements OnInit {
     clearData() {
         this.scanNum = 0;
         this.maxNum = 0;
-        this.infoObj.User = null;
         this.infoObj.Bils_No = null;
-        this.infoObj.Cus_No = 'C001';
+        this.infoObj.Cus_No = '';
         this.infoObj.Whs = null;
         this.documentList = [];
         this.scanList = [];
@@ -72,6 +71,7 @@ export class DeliverPage implements OnInit {
     }
 
     submit() {
+        this.infoObj.Cus_No = this.documentList[0].CardCode || '';
         const hasQTYNC = this.publicService.hasQTY_NC(this.documentList);
         if (hasQTYNC) {
             return false;
@@ -194,8 +194,7 @@ export class DeliverPage implements OnInit {
         //  判断是否存在物料编码
         if (selectItem['ItemName']) {
             //判断单号中该物料未清量是否大于0
-            const documentItem = this.documentList[documentIndex];
-            if (documentItem['QTY_NC'] == 0) {
+            if (selectItem['QTY_NC'] == 0) {
                 this.presentService.presentToast('当前物料扫描完毕', 'warning');
                 return;
             }
@@ -225,74 +224,39 @@ export class DeliverPage implements OnInit {
                 GGXH: selectItem['GGXH'],
             };
 
-            // 获取库存接口，判断是否超库存
-            this.getDataService.getSapStoreQty(obj).then((resp) => {
-                    if (resp['Data']) {
-                        if (BFlag === 'N') {
-                            //  非批次、非序号管理，根据物料编码为唯一标识，物料收容数<=库存
-                            this.successScan(documentIndex, obj, key, 0, 1);
-                        } else {
-                            // 当前标签收货数大于单据未清量
-                            if (obj.QTY > selectItem['QTY_NC']) {
-                                this.presentService.presentAlert('当前标签收货数大于单据未清量，是否修改为未清量').then((res) => {
-                                    if (res) {
-                                        if (BFlag === 'B' && (this.BFlagObj[key] > resp['Data'])) {
-                                            //  批次管理，根据批次号管理，同一批次号物料收容数>库存
-                                            this.presentService.presentAlert('当前标签收货数大于库存，是否修改为库存量').then((kc) => {
-                                                if (kc) {
-                                                    // 修改为库存量
-                                                    obj.QTY = resp['Data'] - this.BFlagObj[key];
-                                                    const NC = Number(documentItem['Quantity']) - Number(documentItem['QTY_FIN']) - Number(resp['Data']);
-                                                    const CUR = resp['Data'];
-                                                    this.successScan(documentIndex, obj, key, NC, CUR);
-                                                } else {
-                                                    this.presentService.presentToast('当前物料扫描失败', 'warning');
-                                                }
-                                            });
-                                        } else if (BFlag === 'S' && (obj.QTY > resp['Data'])) {
-                                            //  序号管理，根据物料编码为唯一标识，物料收容数>库存
-                                            this.presentService.presentAlert('当前标签收货数大于库存，是否修改为库存量').then((kc) => {
-                                                if (kc) {
-                                                    // 修改为库存量
-                                                    obj.QTY = resp['Data'] - Number(documentItem['QTY_CUR']);
-                                                    const NC = Number(documentItem['Quantity']) - Number(documentItem['QTY_FIN']) - Number(resp['Data']);
-                                                    const CUR = resp['Data'];
-                                                    this.successScan(documentIndex, obj, key, NC, CUR);
-                                                } else {
-                                                    this.presentService.presentToast('当前物料扫描失败', 'warning');
-                                                }
-                                            });
-                                        }
-                                        if (this.BFlagObj[key] > resp['Data']) {
-
-                                        } else {
-                                            // 修改为未清量
-                                            obj.QTY = documentItem['QTY_NC'];
-                                            const CUR = Number(documentItem['QTY_CUR']) + Number(obj.QTY);
-                                            this.successScan(documentIndex, obj, key, 0, CUR);
-                                        }
-                                    } else {
-                                        this.presentService.presentToast('当前物料扫描失败', 'warning');
-                                    }
-                                });
-                            } else {
-                                // 当前标签收货数小于单据未清量
-                                const NC = Number(documentItem['QTY_NC']) - Number(obj.QTY);
-                                const CUR = Number(documentItem['QTY_CUR']) + Number(obj.QTY);
-                                this.successScan(documentIndex, obj, key, NC, CUR);
-                            }
-                        }
-                    } else {
-                        this.presentService.presentToast('当前物料库存不足', 'warning');
+            if (selectItem['QTY_NC'] >= obj.QTY) {
+                // 未清量大于物料收容
+                // this.checkInventory(documentIndex, obj, BFlag, key);
+                this.publicService.checkInventory(this.BFlagObj, selectItem, documentIndex, obj, BFlag, key).then((res) => {
+                    if (res) {
+                        this.successScan(res);
                     }
-                }
-            );
+                });
+            } else {
+                // 未清量小于物料收容
+                this.presentService.presentAlert('当前标签收货数大于单据未清量，是否修改为未清量').then((res) => {
+                    if (res) {
+                        obj.QTY = this.documentList[documentIndex]['QTY_NC'];
+                        // this.checkInventory(documentIndex, obj, BFlag, key);
+                        this.publicService.checkInventory(this.BFlagObj, selectItem, documentIndex, obj, BFlag, key).then((res) => {
+                            if (res) {
+                                this.successScan(res);
+                            }
+                        });
+                    } else {
+                        this.presentService.presentToast('当前物料扫描失败', 'warning');
+                    }
+                });
+            }
         } else {
             this.presentService.presentToast('当前单号不存在或已关闭', 'warning');
         }
     }
 
-    successScan(documentIndex, obj, key, NC, CUR) {
+    //成功添加物料
+    successScan(val) {
+        const documentIndex = val.dIndex, obj = val.Obj,
+            key = val.Key, NC = val.N, CUR = val.C;
         this.documentList[documentIndex]['QTY_NC'] = NC;
         this.documentList[documentIndex]['QTY_CUR'] = CUR;
         this.scanList.unshift(obj);

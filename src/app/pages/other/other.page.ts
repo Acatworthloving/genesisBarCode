@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 @Component({
     selector: 'app-other',
     templateUrl: './other.page.html',
-    styleUrls: ['./other.page.scss'],
 })
 export class OtherPage implements OnInit {
     constructor(

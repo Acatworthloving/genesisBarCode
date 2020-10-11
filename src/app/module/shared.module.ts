@@ -4,6 +4,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import {IonicModule} from '@ionic/angular';
 import {TablePage} from '../pages/component/table/table.page';
+import {TableEditPage} from '../pages/component/table-edit/table-edit.page';
 import {ScanInputPage} from '../pages/component/scan-input/scan-input.page';
 import {MaterielItemPage} from '../pages/component/materiel-item/materiel-item.page';
 
@@ -17,12 +18,14 @@ import {MaterielItemPage} from '../pages/component/materiel-item/materiel-item.p
     exports: [
         TablePage,
         ScanInputPage,
-        MaterielItemPage
+        MaterielItemPage,
+        TableEditPage
     ],
     declarations: [
         TablePage,
         ScanInputPage,
-        MaterielItemPage
+        MaterielItemPage,
+        TableEditPage
     ],
     providers: [],
     entryComponents: []

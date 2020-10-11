@@ -1,0 +1,124 @@
+<ion-header>
+    <ion-toolbar mode="ios">
+        <ion-buttons slot="start">
+            <ion-back-button mode="md"></ion-back-button>
+        </ion-buttons>
+        <ion-title>{{title}}</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <div class="ion-margin ion-text-start scan-from">
+        <ion-list>
+            <app-scan-input [infoObj]="infoObj" (funcDocEntry)="getBillData()" [scanType]="scanTypeArr"></app-scan-input>
+        </ion-list>
+        <form [formGroup]="produceForm" novalidate class="ion-text-start">
+            <ion-list>
+                <ion-item>
+                    <ion-label>检验类型</ion-label>
+                    <ion-select placeholder="选择检验类型" formControlName="JYType">
+                        <ion-select-option value="生产过程检验">生产过程检验</ion-select-option>
+                        <ion-select-option value="生产完工检验">生产完工检验</ion-select-option>
+                    </ion-select>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        生产计划单号
+                    </ion-label>
+                    <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['PlanCode']||''}}
+                    </ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        生产订单号
+                    </ion-label>
+                    <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['DocNum']||''}}
+                    </ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        产品编码
+                    </ion-label>
+                    <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['ItemCode']||''}}
+                    </ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        产品名称
+                    </ion-label>
+                    <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['ItemName']||''}}
+                    </ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        产品规格
+                    </ion-label>
+                    <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['GGXH']||''}}
+                    </ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        工作中心
+                    </ion-label>
+                    <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['PLineName']||''}}
+                    </ion-label>
+                </ion-item>
+                <ion-item>
+                    <ion-label>质检方式</ion-label>
+                    <ion-select placeholder="选择质检方式" formControlName="ZJType">
+                        <ion-select-option value="全检">全检</ion-select-option>
+                        <ion-select-option value="抽检">抽检</ion-select-option>
+                    </ion-select>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        质检数量
+                    </ion-label>
+                    <ion-input placeholder="质检数量" mode="ios" slot="end" type="number" pattern="[0-9]*" formControlName="ZJQty"
+                               min="1" class="ion-text-right ion-padding-start"></ion-input>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        不合格数量
+                    </ion-label>
+                    <ion-input placeholder="不合格数量" mode="ios" slot="end" type="number" pattern="[0-9]*" formControlName="BHGQty"
+                               class="ion-text-right ion-padding-start"></ion-input>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        不合格原因
+                    </ion-label>
+                    <ion-textarea placeholder="不合格原因" mode="ios" slot="end" type="text" formControlName="BHGRemark"
+                               class="ion-text-right ion-padding-start"></ion-textarea>
+                </ion-item>
+                <ion-item>
+                    <ion-label>接收方式</ion-label>
+                    <ion-select placeholder="选择接收方式" formControlName="JSType">
+                        <ion-select-option value="全收">全收</ion-select-option>
+                        <ion-select-option value="让步接收">让步接收</ion-select-option>
+                        <ion-select-option value="部分接收">部分接收</ion-select-option>
+                        <ion-select-option value="返工">返工</ion-select-option>
+                    </ion-select>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        接收数量
+                    </ion-label>
+                    <ion-input placeholder="接收数量" mode="ios" slot="end" type="number" pattern="[0-9]*" formControlName="JSQty"
+                               min="1" class="ion-text-right ion-padding-start"></ion-input>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        拒收数量
+                    </ion-label>
+                    <ion-input placeholder="拒收数量" mode="ios" slot="end" type="number" pattern="[0-9]*" formControlName="RejectQty"
+                               class="ion-text-right ion-padding-start"></ion-input>
+                </ion-item>
+            </ion-list>
+        </form>
+    </div>
+</ion-content>
+<ion-footer>
+    <ion-button expand="block" class="ion-margin" mode='ios' (click)="submit()" [disabled]="produceForm.invalid">
+        提交数据
+    </ion-button>
+</ion-footer>

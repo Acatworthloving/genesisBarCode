@@ -15,6 +15,26 @@ const routes: Routes = [
         loadChildren: () => import('./pages/stock/stock.module').then(m => m.StockModule)
     },
     {
+        path: 'quality-check',
+        loadChildren: () => import('./pages/quality-check/quality-check.module').then(m => m.QualityCheckModule)
+    },
+    {
+        path: 'purchase',
+        loadChildren: () => import('./pages/purchase/purchase.module').then(m => m.PurchaseModule)
+    },
+    {
+        path: 'box',
+        loadChildren: () => import('./pages/box/box.module').then(m => m.BoxModule)
+    },
+    {
+        path: 'production',
+        loadChildren: () => import('./pages/production/production.module').then(m => m.ProductionModule)
+    },
+    {
+        path: 'warning',
+        loadChildren: () => import('./pages/warning/warning.module').then(m => m.WarningModule)
+    },
+    {
         path: 'login',
         loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule)
     },
