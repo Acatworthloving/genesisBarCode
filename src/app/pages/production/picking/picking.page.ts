@@ -268,6 +268,8 @@ export class PickingPage implements OnInit {
         this.materieObj = obj;
         if (type) {
             //修改物料收容数
+            const index = this.publicService.arrSameId(this.scanList, 'ItemCode', obj['ItemCode'], 'index');
+            this.scanList[index]['QTY'] = obj.QTY;
             this.presentService.presentToast('当前物料发料数修改成功');
         } else {
             //新增物料
@@ -302,21 +304,27 @@ export class PickingPage implements OnInit {
         console.log(row, value, oldNum, item, index);
         if (item) {
             const QTY_NC = Number(item['QTY_NC']) + Number(oldNum), key = row['BFlag'] + row['BatchNo'];
+            item['QTY_NC'] += Number(oldNum);
+            item['QTY_CUR'] -= Number(oldNum);
             if (QTY_NC >= value) {
                 // 未清量大于物料收容
-                this.publicService.checkInventory(this.BFlagObj, item, index, row, row['BFlag'], key).then((res) => {
+                const BFlagObj = this.BFlagObj;
+                BFlagObj[key] -= Number(oldNum);
+                this.publicService.checkInventory(BFlagObj, item, index, row, row['BFlag'], key).then((res) => {
                     if (res) {
-                        this.BFlagObj[key] = this.BFlagObj[key] - Number(oldNum) + Number(res['Obj']['QTY']);
+                        this.BFlagObj[key] = BFlagObj[key] + Number(res['Obj']['QTY']);
                         this.successScan(res, 'modify');
                     }
                 });
             } else {
-                // 未清量小于物料收容
+                // 未清量小于物料收容const
+                const BFlagObj = this.BFlagObj;
+                BFlagObj[key] -= Number(oldNum);
                 this.presentService.presentAlert('当前标签收货数大于单据未清量，是否继续修改').then((res) => {
                     if (res) {
-                        this.publicService.checkInventory(this.BFlagObj, item, index, row, row['BFlag'], key).then((res) => {
+                        this.publicService.checkInventory(BFlagObj, item, index, row, row['BFlag'], key).then((res) => {
                             if (res) {
-                                this.BFlagObj[key] = this.BFlagObj[key] - Number(oldNum) + Number(res['Obj']['QTY']);
+                                this.BFlagObj[key] = BFlagObj[key] + Number(res['Obj']['QTY']);
                                 this.successScan(res, 'modify');
                             }
                         });
