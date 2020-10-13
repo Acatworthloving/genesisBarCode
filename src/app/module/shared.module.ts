@@ -5,6 +5,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {IonicModule} from '@ionic/angular';
 import {TablePage} from '../pages/component/table/table.page';
 import {TableEditPage} from '../pages/component/table-edit/table-edit.page';
+import {TableKcPage} from '../pages/component/table-kc/table-kc.page';
 import {ScanInputPage} from '../pages/component/scan-input/scan-input.page';
 import {MaterielItemPage} from '../pages/component/materiel-item/materiel-item.page';
 
@@ -19,13 +20,15 @@ import {MaterielItemPage} from '../pages/component/materiel-item/materiel-item.p
         TablePage,
         ScanInputPage,
         MaterielItemPage,
-        TableEditPage
+        TableEditPage,
+        TableKcPage
     ],
     declarations: [
         TablePage,
         ScanInputPage,
         MaterielItemPage,
-        TableEditPage
+        TableEditPage,
+        TableKcPage
     ],
     providers: [],
     entryComponents: []

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { CacheService } from 'ionic-cache';
 import { Observable, Subject, BehaviorSubject} from 'rxjs';
+import {Router} from '@angular/router';
 @Injectable({
     providedIn: 'root'
 })
@@ -17,7 +18,7 @@ export class UserDataService {
     branchDistrict = new BehaviorSubject(undefined);
     constructor(
         private storage: Storage,
-        private cacheService: CacheService,
+        private router: Router,
         // public timeService: TimeService,
         // private dataService: DataService,
     ) { }
@@ -40,25 +41,8 @@ export class UserDataService {
     }
 
     logout() {
-        this.user = '';
-        return this.storage.remove(this.HAS_LOGGED_IN).then(() => {
-            localStorage.removeItem(this.HAS_LOGGED_IN);
-            this.storage.remove(this.TOKEN).then(() => {
-                localStorage.removeItem(this.TOKEN);
-                this.storage.remove(this.PROFILE).then(() => {
-                    localStorage.removeItem(this.PROFILE);
-                });
-                this.storage.remove('switchRole');
-                this.storage.remove('systemData');
-                this.storage.remove('branchDistrict');
-                const groudKey = 'loginViewData';
-                this.cacheService.clearGroup(groudKey).then(() => {
-                    this.user = '';
-                });
-            });
-        }).then(() => {
-            // this.events.publish('user:logout');
-        });
+        localStorage.clear();
+        this.router.navigateByUrl('/login');
     }
 
     getLanguage() {

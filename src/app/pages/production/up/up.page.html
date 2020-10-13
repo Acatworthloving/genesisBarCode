@@ -5,30 +5,73 @@
         </ion-buttons>
         <ion-title>{{title}}</ion-title>
     </ion-toolbar>
-    <ion-segment (ionChange)="segmentChanged($event)" [value]="pageType">
-        <ion-segment-button value="getOrder">
-            <ion-label>扫描界面</ion-label>
-        </ion-segment-button>
-        <ion-segment-button value="orderDetails">
-            <ion-label>汇总界面</ion-label>
-        </ion-segment-button>
-    </ion-segment>
 </ion-header>
 <ion-content>
-    <div *ngIf="pageType== 'getOrder'">
-        <form class="ion-margin ion-text-start scan-from">
-            <ion-list>
-                <app-scan-input (getPL)="scanPL()" [infoObj]="infoObj"
-                                [scanType]="scanTypeArr"></app-scan-input>
-                <app-materiel-item [materieObj]="materieObj" [hasScanNum]="false" [infoObj]="infoObj"></app-materiel-item>
-            </ion-list>
-        </form>
-        <ion-button expand="block" class="ion-margin" mode='ios' (click)="submit()"
-                    [disabled]="!scanList.length">
-            提交数据
-        </ion-button>
-    </div>
-    <div *ngIf="pageType==='orderDetails'">
-        <app-table [columns]="columns" [tableList]="scanList" tableId="scanId" hasDel="true"></app-table>
+    <div class="ion-margin ion-text-start scan-from">
+        <ion-list>
+            <app-scan-input (getPL)="scanPL()" [infoObj]="infoObj" [scanType]="scanTypeArr"></app-scan-input>
+        </ion-list>
+        <ion-list>
+            <ion-item lines="full">
+                <ion-label>
+                    生产计划单号
+                </ion-label>
+                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['DocEntry'] || ''}}</ion-label>
+            </ion-item>
+        </ion-list>
+        <ion-list>
+            <ion-item lines="full">
+                <ion-label>
+                    生产订单号
+                </ion-label>
+                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['Order'] || ''}}</ion-label>
+            </ion-item>
+        </ion-list>
+        <ion-list>
+            <ion-item lines="full">
+                <ion-label>
+                    产线编码
+                </ion-label>
+                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['PLineCode'] || ''}}</ion-label>
+            </ion-item>
+        </ion-list>
+        <ion-list>
+            <ion-item lines="full">
+                <ion-label>
+                    物料编码
+                </ion-label>
+                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['ItemCode'] || ''}}</ion-label>
+            </ion-item>
+        </ion-list>
+        <ion-list>
+            <ion-item lines="full">
+                <ion-label>
+                    物料名称
+                </ion-label>
+                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['ItemName'] || ''}}</ion-label>
+            </ion-item>
+        </ion-list>
+        <ion-list>
+            <ion-item lines="full">
+                <ion-label>
+                    规格型号
+                </ion-label>
+                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['GGXH'] || ''}}</ion-label>
+            </ion-item>
+        </ion-list>
+        <ion-list>
+            <ion-item lines="full">
+                <ion-label>
+                    计划数量
+                </ion-label>
+                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['PlanQty'] || ''}}</ion-label>
+            </ion-item>
+        </ion-list>
     </div>
 </ion-content>
+<ion-footer>
+    <ion-button expand="block" class="ion-margin" mode='ios' (click)="submit()"
+                [disabled]="!this.documentObj['Order']">
+        提交数据
+    </ion-button>
+</ion-footer>

@@ -1,0 +1,23 @@
+<div class="table-box" [id]="tableId" (scroll)="scroll($event)">
+    <table cellspacing="0">
+        <tr class="tableheader">
+            <th *ngFor="let c of columns;let i=index" [class.frozencol]="!i">{{c.name}}</th>
+            <th *ngIf="hasDel">操作</th>
+        </tr>
+        <tr *ngFor="let r of tableList;let num = index">
+            <td *ngFor="let c of columns;let i=index" [class.frozencol]="!i">
+                <span *ngIf="!(r.BFlag!=='s'&&c.prop==='QTY'&&hasDel)">
+                    {{r[c.prop]}}
+                </span>
+                <ion-input *ngIf="r.BFlag!=='s'&&c.prop==='QTY'&&hasDel" [value]="r[c.prop]" type="number"
+                           pattern="[0-9]*"
+                           (change)="changeInput($event,r)"></ion-input>
+            </td>
+            <td *ngIf="hasDel">
+                <ion-button expand="block" size="small" mode='ios' color="danger" (click)="delete(num,r)">
+                    删除
+                </ion-button>
+            </td>
+        </tr>
+    </table>
+</div>

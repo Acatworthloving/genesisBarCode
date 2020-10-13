@@ -9,7 +9,11 @@ import {ProductionRoutingModule} from './production-routing.module';
 import {ProductionPage} from './production.page';
 import {UpPage} from './up/up.page';
 import {DownPage} from './down/down.page';
+import {CompletionPage} from './completion/completion.page';
 import {SharedModule} from '../../module/shared.module';
+import {FinishingPage} from './finishing/finishing.page';
+import {PickingPage} from './picking/picking.page';
+import {ReturnPage} from './return/return.page';
 
 @NgModule({
     imports: [
@@ -20,7 +24,7 @@ import {SharedModule} from '../../module/shared.module';
         ReactiveFormsModule,
         SharedModule
     ],
-    declarations: [ProductionPage, UpPage, DownPage]
+    declarations: [ProductionPage, UpPage, DownPage, CompletionPage, FinishingPage, ReturnPage, PickingPage]
 })
 export class ProductionModule {
 }

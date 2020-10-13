@@ -9,9 +9,9 @@ import {PageRouterService} from '../../../providers/page-router.service';
 
 @Component({
     selector: 'app-transfer-order',
-    templateUrl: './up.page.html'
+    templateUrl: './finishing.page.html'
 })
-export class UpPage implements OnInit {
+export class FinishingPage implements OnInit {
     title: string = '';
     documentObj: any = {};
     scanTypeArr = ['User', 'PL'];

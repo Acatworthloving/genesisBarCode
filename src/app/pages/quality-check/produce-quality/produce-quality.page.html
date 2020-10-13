@@ -9,13 +9,13 @@
 <ion-content>
     <div class="ion-margin ion-text-start scan-from">
         <ion-list>
-            <app-scan-input [infoObj]="infoObj" (funcDocEntry)="getBillData()" [scanType]="scanTypeArr"></app-scan-input>
+            <app-scan-input [infoObj]="infoObj" (getPL)="scanPL()" [scanType]="scanTypeArr"></app-scan-input>
         </ion-list>
         <form [formGroup]="produceForm" novalidate class="ion-text-start">
             <ion-list>
                 <ion-item>
                     <ion-label>检验类型</ion-label>
-                    <ion-select placeholder="选择检验类型" formControlName="JYType">
+                    <ion-select placeholder="选择检验类型" formControlName="JYType"  okText="确认" cancelText="取消" >
                         <ion-select-option value="生产过程检验">生产过程检验</ion-select-option>
                         <ion-select-option value="生产完工检验">生产完工检验</ion-select-option>
                     </ion-select>
@@ -64,7 +64,7 @@
                 </ion-item>
                 <ion-item>
                     <ion-label>质检方式</ion-label>
-                    <ion-select placeholder="选择质检方式" formControlName="ZJType">
+                    <ion-select placeholder="选择质检方式" formControlName="ZJType"  okText="确认" cancelText="取消" >
                         <ion-select-option value="全检">全检</ion-select-option>
                         <ion-select-option value="抽检">抽检</ion-select-option>
                     </ion-select>
@@ -73,7 +73,7 @@
                     <ion-label>
                         质检数量
                     </ion-label>
-                    <ion-input placeholder="质检数量" mode="ios" slot="end" type="number" pattern="[0-9]*" formControlName="ZJQty"
+                    <ion-input placeholder="质检数量" mode="ios" slot="end" type="number" pattern="[1-9]*" formControlName="ZJQty"
                                min="1" class="ion-text-right ion-padding-start"></ion-input>
                 </ion-item>
                 <ion-item lines="full">
@@ -92,7 +92,7 @@
                 </ion-item>
                 <ion-item>
                     <ion-label>接收方式</ion-label>
-                    <ion-select placeholder="选择接收方式" formControlName="JSType">
+                    <ion-select placeholder="选择接收方式" formControlName="JSType"  okText="确认" cancelText="取消" >
                         <ion-select-option value="全收">全收</ion-select-option>
                         <ion-select-option value="让步接收">让步接收</ion-select-option>
                         <ion-select-option value="部分接收">部分接收</ion-select-option>
@@ -103,7 +103,7 @@
                     <ion-label>
                         接收数量
                     </ion-label>
-                    <ion-input placeholder="接收数量" mode="ios" slot="end" type="number" pattern="[0-9]*" formControlName="JSQty"
+                    <ion-input placeholder="接收数量" mode="ios" slot="end" type="number" pattern="[1-9]*" formControlName="JSQty"
                                min="1" class="ion-text-right ion-padding-start"></ion-input>
                 </ion-item>
                 <ion-item lines="full">

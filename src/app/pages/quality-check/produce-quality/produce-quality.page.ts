@@ -14,21 +14,22 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 export class ProduceQualityPage implements OnInit {
     title: string = '';
     documentList: any = [];
-    scanTypeArr = ['User', 'DocEntry'];
+    scanTypeArr = ['User', 'PL'];
     documentColumns = [];
     infoObj: any = {
         Bils_No: null,
         Bil_ID: null,
         User: null,
+        plcode: null
     };
     produceForm: FormGroup = new FormGroup({
         JYType: new FormControl('', [Validators.required]),
         ZJType: new FormControl('', [Validators.required]),
-        ZJQty: new FormControl('', [Validators.required]),
-        BHGQty: new FormControl(0),
+        ZJQty: new FormControl(null, [Validators.required]),
+        BHGQty: new FormControl(null),
         BHGRemark: new FormControl(''),
         JSType: new FormControl('', [Validators.required]),
-        JSQty: new FormControl(0, [Validators.required]),
+        JSQty: new FormControl(null, [Validators.required]),
         RejectQty: new FormControl(0),
     });
     documentObj = {};
@@ -51,30 +52,50 @@ export class ProduceQualityPage implements OnInit {
     }
 
     clearData() {
-        this.produceForm.clearValidators();
+        this.produceForm.reset();
+        this.documentObj = {};
     }
 
-    getBillData() {
+    scanPL() {
         const config = {
-            order: this.infoObj.Bils_No
+            order: this.infoObj.plcode
         };
         const request = this.dataService.getData('QC/GetSCZJBillData', config);
         request.subscribe(resp => {
-            this.documentObj = resp.Data[0];
+            this.documentObj = resp.Data[0] || {};
         }, error => {
             this.presentService.presentToast(error.message);
         });
     }
 
     submit() {
-        const LstDetail = [];
-        const config = this.infoObj;
-        config['LstDetail'] = this.documentObj;
-        this.clearData();
-        // this.getDataService.CGZJSubmitScanData(config).then((resp) => {
-        //     if (resp) {
-        //         this.clearData();
-        // }
-        // });
+        const config = {
+            User: this.infoObj.User,
+            LstDetail: [
+                {
+                    PlanCode: this.infoObj.plcode,
+                    DocNum: this.documentObj['DocNum'],
+                    PLineCode: this.documentObj['PLineCode'],
+                    PLineName: this.documentObj['PLineName'],
+                    ItemCode: this.documentObj['ItemCode'],
+                    ItemName: this.documentObj['ItemName'],
+                    GGXH: this.documentObj['GGXH'],
+                    PlanQty: this.documentObj['PlanQty'],
+                    JYType: this.produceForm.get('JYType').value,
+                    ZJType: this.produceForm.get('ZJType').value,
+                    ZJQty: this.produceForm.get('ZJQty').value,
+                    BHGQty: this.produceForm.get('BHGQty').value,
+                    BHGRemark: this.produceForm.get('BHGRemark').value,
+                    JSType: this.produceForm.get('JSType').value,
+                    JSQty: this.produceForm.get('JSQty').value,
+                    RejectQty: this.produceForm.get('RejectQty').value
+                }
+            ]
+        };
+        this.getDataService.submitPublicData('QC/SCZJSubmitScanData', config).then((resp) => {
+            if (resp) {
+                this.clearData();
+            }
+        });
     }
 }

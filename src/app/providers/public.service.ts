@@ -298,6 +298,60 @@ export class PublicService {
             prop: 'ItemCode',
         }
     ];
+    Columns8 = [
+        {
+            name: '生产订单号',
+            prop: 'Order',
+        },
+        {
+            name: '产线编码',
+            prop: 'PLineCode',
+        },
+        {
+            name: '物料编码',
+            prop: 'ItemCode',
+        },
+        {
+            name: '物料名称',
+            prop: 'ItemName',
+        },
+        {
+            name: '规格型号',
+            prop: 'GGXH',
+        },
+        {
+            name: '计划数量',
+            prop: 'PlanQty',
+        }
+    ];
+    Columns9 = [
+        {
+            name: '产线编码',
+            prop: 'PLineCode',
+        },
+        {
+            name: '故障类型',
+            prop: 'FaultType',
+            arr: ['品质异常', '设备异常'],
+            type: 'select',
+        },
+        {
+            name: '故障问题',
+            prop: 'FaultProblem',
+        },
+        {
+            name: '故障原因',
+            prop: 'FaultReason',
+            type: 'input',
+            inputtype: 'text',
+        },
+        {
+            name: '是否解除',
+            prop: 'State',
+            arr: ['是', '否'],
+            type: 'select',
+        },
+    ];
 
 
     constructor(public presentService: PresentService,
@@ -398,12 +452,13 @@ export class PublicService {
     }
 
 
-    arrSameId(arr, id, ItemCode) {
-        let obj: any = null;
+    arrSameId(arr, id, ItemCode, type?) {
+        let obj: any = null, x = 0;
+
         for (const item of arr) {
-            console.log(item[id], ItemCode);
             if (item[id] === ItemCode) {
-                obj = item;
+                x++;
+                obj = type ? x : item;
                 break;
             }
         }

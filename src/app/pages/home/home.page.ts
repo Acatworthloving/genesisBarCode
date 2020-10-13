@@ -67,13 +67,13 @@ export class HomePage implements OnInit {
         },
         {
             name: '生产上工扫描',
-            prop: 'UP',
+            prop: 'SX',
             href: 'production/up',
             icon: 'assets/svg/svg9.svg'
         },
         {
             name: '生产下工扫描',
-            prop: 'DOWN',
+            prop: 'SX',
             href: 'production/down',
             icon: 'assets/svg/svg10.svg'
         },
@@ -85,17 +85,20 @@ export class HomePage implements OnInit {
         },
         {
             name: '生产完工入库',
-            prop: '',
+            prop: 'SCSL',
+            href: 'production/finishing',
             icon: 'assets/svg/svg18.svg'
         },
         {
             name: '生产领料',
-            prop: '',
+            prop: 'SCFL',
+            href: 'production/picking',
             icon: 'assets/svg/svg12.svg'
         },
         {
             name: '生产退料',
-            prop: '',
+            prop: 'SCTL',
+            href: 'production/return',
             icon: 'assets/svg/svg13.svg'
         },
         {

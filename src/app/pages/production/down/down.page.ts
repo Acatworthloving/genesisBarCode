@@ -13,24 +13,14 @@ import {PageRouterService} from '../../../providers/page-router.service';
 })
 export class DownPage implements OnInit {
     title: string = '';
-    pageType: string = 'getOrder';
-    columns = [];
-    scanList: any = [];
-    scanNum: number = 0;
-    maxNum: number = 0;
-    scanTypeArr = ['User', 'Whs'];
+    documentObj: any = {};
+    scanTypeArr = ['User', 'PL'];
     infoObj: any = {
         Bil_ID: null,
         User: null,
-        Bils_No: null,
-        Cus_No: '',
-        Whs: null,
-        Wh_To: null,
-        Kuwei: null,
-        ToKuwei: null
+        plcode: null
     };
-    BFlagObj = {};
-    materieObj: any = {};
+    documentColumns = [];
 
     constructor(
         public presentService: PresentService,
@@ -46,147 +36,40 @@ export class DownPage implements OnInit {
                 this.infoObj.Bil_ID = res['id'];
             }
         });
-        this.columns = this.publicService.TableColumns;
+        this.documentColumns = this.publicService.Columns8;
     }
 
     ngOnInit() {
     }
 
-
-    segmentChanged(event) {
-        this.pageType = event.detail.value;
-        this.scanNum = 0;
-        this.maxNum = 0;
-        this.materieObj = {};
-    }
-
-    clearData() {
-        this.scanNum = 0;
-        this.maxNum = 0;
-        this.infoObj.Bils_No = null;
-        this.infoObj.Cus_No = '';
-        this.infoObj.Whs = null;
-        this.infoObj.Wh_To = null;
-        this.scanList = [];
-        this.materieObj = {};
-    }
-
-    submit() {
-        const LstDetail = [];
-        this.scanList.forEach((val) => {
-            LstDetail.push({
-                Bils_No: val.Bils_No,
-                Wh: val.Wh,
-                Wh_To: val.Wh_To,
-                Itm: '',
-                Barcode: val.Barcode,
-                BarcodeText: val.BarcodeText,
-                ItemCode: val.ItemCode,
-                ItemName: val.ItemName,
-                QTY: val.QTY,
-                Kuwei: val.Kuwei,
-                ToKuwei: val.ToKuwei,
-                BFlag: val.BFlag,
-                BatchNo: val.BatchNo,
-                LiuNo: val.LiuNo,
-                OrderEntry: val.OrderEntry,
-                OrderLine: val.OrderLine,
-                NumPerMsr: val.NumPerMsr,
-            });
-        });
-        const config = this.infoObj;
-        config['LstDetail'] = LstDetail;
-        this.getDataService.SubmitScanData(config).then((resp) => {
+    scanPL() {
+        const config = {
+            order: this.infoObj.plcode,
+            actType: this.infoObj.Bil_ID
+        };
+        this.getDataService.getPublicData('SCSCAN/GetSCPlanData', config).then((resp) => {
             if (resp) {
-                this.clearData();
+                this.documentObj = resp['Data'];
             }
         });
     }
 
-    scanInput(event) {
-        this.addBar(event.value, event.arr);
+
+    clearData() {
+        this.documentObj = {};
     }
 
-    addBar(val, arr) {
-        const ItemCodeText: any = this.publicService.getArrInfo(arr, 'ItemCode'),
-            BarcodeText: any = this.publicService.getArrInfo(arr, 'Barcode'),
-            BFlag = this.publicService.getArrInfo(arr, 'BFlag'),
-            DistNumber = this.publicService.getArrInfo(arr, 'DistNumber'),
-            key = BFlag + DistNumber;
-        let selectItem = {}, documentIndex = null;
-
-        // 序列号管理，只能存在一条数据
-        if (BFlag === 'S' && this.BFlagObj[key]) {
-            this.presentService.presentToast('当前物料已存在', 'warning');
-        }
-        // 判断是否扫描重复物料
-        const scanItem = this.publicService.arrSameId(this.scanList, 'Barcode', BarcodeText);
-        if (scanItem) {
-            this.presentService.presentToast('当前物料已存在', 'warning');
-            return false;
-        }
-
-        //  判断是否存在物料编码
-        if (ItemCodeText) {
-            const obj = {
-                Bils_No: this.infoObj.Bils_No,
-                Wh: this.infoObj.Whs,
-                Wh_To: this.infoObj.Wh_To,
-                Itm: '',
-                Barcode: BarcodeText,
-                BarcodeText: val,
-                ItemCode: ItemCodeText,
-                ItemName: '',
-                QTY: Number(this.publicService.getArrInfo(arr, 'QTY')),
-                BFlag: this.publicService.getArrInfo(arr, 'BFlag'),
-                BatchNo: this.publicService.getArrInfo(arr, 'DistNumber'),
-                LiuNo: this.publicService.getArrInfo(arr, 'LiuNo'),
-                OrderEntry: '',
-                OrderLine: '',
-                NumPerMsr: '',
-                QUA_DocEntry: 0,
-                QUA_LineNum: 0,
-                GGXH: '',
-            };
-            // 获取库存接口，判断是否超库存
-            const config = {
-                itemcode: obj.ItemCode,
-                wh: obj.Wh,
-                kw: this.infoObj.Kuwei,
-                batNo: obj.BatchNo,
-                batId: obj.BFlag,
-            };
-            this.getDataService.getSapStoreQty(config).then((resp) => {
-                    if (resp['Data']) {
-                        if (obj.QTY > resp['Data']) {
-                            // 物料收容数>库存
-                            this.presentService.presentAlert('当前标签收货数大于库存，是否修改为库存量').then((kc) => {
-                                if (kc) {
-                                    // 修改为库存量
-                                    obj.QTY = resp['Data'];
-                                    this.successScan(obj);
-                                } else {
-                                    this.presentService.presentToast('当前物料扫描失败', 'warning');
-                                }
-                            });
-                        } else {
-                            // 修改为未清量
-                            this.successScan(obj);
-                        }
-                    } else {
-                        this.presentService.presentToast('当前物料库存不足', 'warning');
-                    }
-                }
-            );
-            // this.successScan(obj);
-        } else {
-            return false;
-        }
-    }
-
-    successScan(obj) {
-        this.materieObj = obj;
-        this.scanList.unshift(obj);
-        this.presentService.presentToast('当前物料扫描成功');
+    submit() {
+        const config = {
+            PlanCode: this.infoObj.plcode,
+            PLineCode: this.documentObj.PLineCode,
+            User: this.infoObj.User,
+            ScanType: 'DOWN',
+        };
+        this.getDataService.submitPublicData('SCSCAN/ScanSubmitScanData', config).then((resp) => {
+            if (resp) {
+                this.clearData();
+            }
+        });
     }
 }
