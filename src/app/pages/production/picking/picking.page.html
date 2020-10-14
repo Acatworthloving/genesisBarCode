@@ -31,7 +31,7 @@
                                slot="end"
                                type="number"
                                [value]="maxNum" pattern="[0-9]*"
-                               [disabled]="!maxNum"
+                               [disabled]="!maxNum || materieObj['BFlag']==='S'"
                                class="ion-text-right ion-padding-start"></ion-input>
                 </ion-item>
                 <app-materiel-item [scanNum]="scanNum" [materieObj]="materieObj"

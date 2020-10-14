@@ -76,7 +76,7 @@ export class PickingPage implements OnInit {
         const LstDetail = [];
         this.scanList.forEach((val) => {
             LstDetail.push({
-                Bils_No: val.Bils_No,
+                Bils_No: val.DocEntry,
                 Wh: val.Wh,
                 Wh_To: val.Wh_To,
                 Itm: val.Itm,
@@ -98,12 +98,10 @@ export class PickingPage implements OnInit {
         const config = {
             Bil_ID: this.infoObj.Bil_ID,
             User: this.infoObj.User,
-            Bils_No: this.infoObj.plcode,
+            Bils_No: this.documentList[0].DocNum,
             Cus_No: this.documentList[0].CardCode || '',
         };
         config['LstDetail'] = LstDetail;
-        console.log(LstDetail);
-        return;
         this.getDataService.submitPublicData('SC/SubmitScanData', config).then((resp) => {
             if (resp) {
                 this.clearData();
@@ -199,11 +197,6 @@ export class PickingPage implements OnInit {
         const BFlag = this.publicService.getArrInfo(arr, 'BFlag');
         //  判断是否存在物料编码
         if (selectItem['ItemName']) {
-            //判断单号中该物料未清量是否大于0
-            if (selectItem['QTY_NC'] == 0) {
-                this.presentService.presentToast('当前物料扫描完毕', 'warning');
-                return;
-            }
             const obj = {
                 Bils_No: this.infoObj.Bils_No,
                 Wh: this.infoObj.Whs,
@@ -261,7 +254,7 @@ export class PickingPage implements OnInit {
     successScan(val, type?) {
         const documentIndex = val.dIndex, obj = val.Obj,
             key = val.Key, NC = val.N, CUR = val.C;
-        this.documentList[documentIndex]['QTY_NC'] = NC;
+        this.documentList[documentIndex]['QTY_NC'] = NC < 0 ? 0 : NC;
         this.documentList[documentIndex]['QTY_CUR'] = CUR;
         this.scanNum = this.documentList[documentIndex]['QTY_CUR'];
         this.maxNum = obj.QTY;
@@ -297,11 +290,11 @@ export class PickingPage implements OnInit {
             // 修改表格数据
             row = event.row;
             value = event.event.target.value;
-            oldNum = row['QTY'];
+            oldNum = event.row['QTY'];
             item = this.publicService.arrSameId(this.documentList, 'ItemCode', row['ItemCode']);
             index = this.publicService.arrSameId(this.documentList, 'ItemCode', row['ItemCode'], 'index');
         }
-        console.log(row, value, oldNum, item, index);
+        row['QTY'] = value;
         if (item) {
             const QTY_NC = Number(item['QTY_NC']) + Number(oldNum), key = row['BFlag'] + row['BatchNo'];
             item['QTY_NC'] += Number(oldNum);
@@ -334,13 +327,5 @@ export class PickingPage implements OnInit {
                 });
             }
         }
-    }
-
-    disabledQTY() {
-        let disable = false;
-        if (!this.scanList[0] || !this.scanList[0]['QTY'] || this.scanList[0]['BFlag'] === 'S') {
-            disable = true;
-        }
-        return disable;
     }
 }

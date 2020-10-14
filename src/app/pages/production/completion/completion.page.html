@@ -5,91 +5,50 @@
         </ion-buttons>
         <ion-title>{{title}}</ion-title>
     </ion-toolbar>
+    <ion-segment (ionChange)="segmentChanged($event)" [value]="pageType">
+        <ion-segment-button value="getOrder">
+            <ion-label>扫描界面</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="documentDetails">
+            <ion-label>单据明细</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="orderDetails">
+            <ion-label>汇总界面</ion-label>
+        </ion-segment-button>
+    </ion-segment>
 </ion-header>
 <ion-content>
-    <div class="ion-margin ion-text-start scan-from">
-        <ion-list>
-            <app-scan-input (getPL)="scanPL()" [infoObj]="infoObj" [scanType]="scanTypeArr"></app-scan-input>
-        </ion-list>
-        <ion-list>
-            <ion-item lines="full">
-                <ion-label>
-                    生产计划单号
-                </ion-label>
-                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['DocEntry'] || ''}}</ion-label>
-            </ion-item>
-        </ion-list>
-        <ion-list>
-            <ion-item lines="full">
-                <ion-label>
-                    生产订单号
-                </ion-label>
-                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['Order'] || ''}}</ion-label>
-            </ion-item>
-        </ion-list>
-        <ion-list>
-            <ion-item lines="full">
-                <ion-label>
-                    产线编码
-                </ion-label>
-                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['PLineCode'] || ''}}</ion-label>
-            </ion-item>
-        </ion-list>
-        <ion-list>
-            <ion-item lines="full">
-                <ion-label>
-                    物料编码
-                </ion-label>
-                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['ItemCode'] || ''}}</ion-label>
-            </ion-item>
-        </ion-list>
-        <ion-list>
-            <ion-item lines="full">
-                <ion-label>
-                    物料名称
-                </ion-label>
-                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['ItemName'] || ''}}</ion-label>
-            </ion-item>
-        </ion-list>
-        <ion-list>
-            <ion-item lines="full">
-                <ion-label>
-                    规格型号
-                </ion-label>
-                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['GGXH'] || ''}}</ion-label>
-            </ion-item>
-        </ion-list>
-        <ion-list>
-            <ion-item lines="full">
-                <ion-label>
-                    计划数量
-                </ion-label>
-                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['PlanQty'] || 0}}</ion-label>
-            </ion-item>
-        </ion-list>
-        <ion-list>
-            <ion-item lines="full">
-                <ion-label>
-                    已报工数量
-                </ion-label>
-                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['YWGQty'] || 0}}</ion-label>
-            </ion-item>
-        </ion-list>
-        <ion-list>
-            <ion-item lines="full">
-                <ion-label>
-                    报工数量
-                </ion-label>
-                <ion-input placeholder="收货数" color="primary" mode="ios" slot="end" type="number"
-                           pattern="[0-9]*" [(ngModel)]="infoObj['BGQty']"
-                           [disabled]="!this.documentObj['Order']"
-                           class="ion-text-right ion-padding-start"></ion-input>
-            </ion-item>
-        </ion-list>
+    <div *ngIf="pageType== 'getOrder'">
+        <div class="ion-margin ion-text-start scan-from">
+            <ion-list>
+                <app-scan-input (addBar)="scanInput($event)" [infoObj]="infoObj" (getPL)="scanPL()"
+                                [scanType]="scanTypeArr" (getWX)="scanWX()" [isSCSL]="true"></app-scan-input>
+                <ion-item lines="full">
+                    <ion-label>
+                        收货数量
+                    </ion-label>
+                    <ion-input placeholder="收货数量" color="primary" (change)="changeQTY($event,'row')" mode="ios"
+                               slot="end"
+                               type="number"
+                               [value]="maxNum" pattern="[0-9]*"
+                               [disabled]="!maxNum || materieObj['BFlag']==='S'"
+                               class="ion-text-right ion-padding-start"></ion-input>
+                </ion-item>
+                <app-materiel-item [scanNum]="scanNum" [materieObj]="materieObj"
+                                   [infoObj]="infoObj"></app-materiel-item>
+            </ion-list>
+        </div>
+        <ion-button expand="block" class="ion-margin btn-submit" mode='ios' (click)="submit()"
+                    [disabled]="!scanList.length">
+            提交数据
+        </ion-button>
+    </div>
+    <div *ngIf="pageType==='documentDetails'">
+        <app-table [columns]="documentColumns" [tableList]="documentList" tableId="documentId"></app-table>
+    </div>
+    <div *ngIf="pageType==='orderDetails'">
+        <app-table-kc [columns]="columns" [tableList]="scanList" (changeQTY)="changeQTY($event)" tableId="returnId"
+                      hasDel="true"
+                      [documentList]="documentList"></app-table-kc>
     </div>
 </ion-content>
-<ion-footer>
-    <ion-button expand="block" class="ion-margin" mode='ios' (click)="submit()" [disabled]="!infoObj['BGQty']">
-        提交数据
-    </ion-button>
-</ion-footer>

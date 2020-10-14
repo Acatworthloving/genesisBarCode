@@ -457,10 +457,10 @@ export class PublicService {
 
         for (const item of arr) {
             if (item[id] === ItemCode) {
-                x++;
                 obj = type ? x : item;
                 break;
             }
+            x++;
         }
         return obj;
     }

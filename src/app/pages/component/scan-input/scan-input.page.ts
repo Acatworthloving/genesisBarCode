@@ -14,6 +14,7 @@ export class ScanInputPage implements OnInit, AfterContentInit {
     @Input() infoObj = {};
     @Input() scanType = [];
     @Input() hasTwoWh: boolean = false;
+    @Input() isSCSL: boolean = false;
     @Output() addBar = new EventEmitter();
     @Output() funcDocEntry = new EventEmitter();
     @Output() getWX = new EventEmitter();
@@ -67,6 +68,14 @@ export class ScanInputPage implements OnInit, AfterContentInit {
     }
 
     scan(event) {
+        if (this.isSCSL) {
+            this.scanSCSL(event);
+        } else {
+            this.func_scan(event);
+        }
+    }
+
+    func_scan(event) {
         this.selected();
         const value = event.target.value,
             scanArr = this.publicService.splitStr(value),
@@ -212,4 +221,53 @@ export class ScanInputPage implements OnInit, AfterContentInit {
         }
     }
 
+    scanSCSL(event) {
+        this.selected();
+        const value = event.target.value,
+            scanArr = this.publicService.splitStr(value);
+        if (!scanArr) {
+            return false;
+        }
+        const type = this.publicService.splitStr(value, 'type');
+        if (type === 'User') {
+            this.infoObj['User'] = scanArr[1];
+            this.presentService.presentToast('员工标签扫描成功');
+        } else {
+            if (this.infoObj['User']) {
+                if (type === 'PL') {
+                    this.infoObj['plcode'] = scanArr[1];
+                    this.presentService.presentToast('生产线标签扫描成功');
+                    this.selected();
+                    this.func_PL();
+                } else {
+                    if (this.infoObj['plcode']) {
+                        if (type === 'Whs') {
+                            this.infoObj['Whs'] = scanArr[1];
+                            this.presentService.presentToast('仓库标签扫描成功');
+                        } else {
+                            if (this.infoObj['Whs']) {
+                                if (type === 'WX') {
+                                    this.infoObj['wxcode'] = scanArr[1];
+                                    this.infoObj['ItemCode'] = scanArr[2];
+                                    this.presentService.presentToast('外箱标签扫描成功');
+                                    this.selected();
+                                    this.func_WX();
+                                } else if (type === 'Bar') {
+                                    this.func_addBar(value, scanArr);
+                                } else {
+                                    this.presentService.presentToast('无效扫描', 'danger');
+                                }
+                            } else {
+                                this.presentService.presentToast('请先扫描仓库标签', 'warning');
+                            }
+                        }
+                    } else {
+                        this.presentService.presentToast('请先扫描生产线标签', 'warning');
+                    }
+                }
+            } else {
+                this.presentService.presentToast('请先扫描员工标签', 'warning');
+            }
+        }
+    }
 }

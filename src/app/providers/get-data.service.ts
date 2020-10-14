@@ -99,7 +99,6 @@ export class GetDataService {
     }
 
     getSapStoreQty(config) {
-        console.log('config',config);
         const data={
 
         }

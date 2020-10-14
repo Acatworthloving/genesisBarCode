@@ -109,7 +109,6 @@ export class UnpackingPage implements OnInit {
                 this.presentService.presentToast('当前物料已扫描', 'warning');
                 return false;
             }
-            console.log(BarcodeText, this.documentList);
             const docuItem = this.publicService.arrSameId(this.documentList, 'BarCode', BarcodeText);
             if (!docuItem) {
                 this.presentService.presentToast('当前物料不存在外箱已绑定明细中', 'warning');

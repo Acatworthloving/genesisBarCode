@@ -35,7 +35,6 @@ export class TableKcPage implements OnInit {
             event: $event,
             row: r
         };
-        console.log(value);
         this.changeQTY.emit(value);
     }
 

@@ -82,7 +82,6 @@ export class UnbundlingPage implements OnInit {
             this.presentService.presentToast('当前外箱已存在', 'warning');
             return false;
         }
-        console.log(this.documentList, this.infoObj.wxcode);
         const docuItem = this.publicService.arrSameId(this.documentList, 'BarCode', this.infoObj.wxcode);
         if (!docuItem) {
             this.presentService.presentToast('当前外箱不存在卡板已绑定明细中', 'warning');

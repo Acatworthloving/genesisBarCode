@@ -219,7 +219,6 @@ export class QualityReceivingPage implements OnInit {
                 // QTYNumber: this.publicService.getArrInfo(arr, 'QTY'),
                 GGXH: selectItem['GGXH'],
             };
-            console.log('QTY_NC', selectItem['QTY_NC'], obj.QTY);
             if (selectItem['QTY_NC'] >= obj.QTY) {
                 // 未清量大于物料收容
                 const returnObj = {
