@@ -27,7 +27,7 @@ export class CompletionPage implements OnInit {
         wxcode: null,
         ItemCode: null,
         User: '8',
-        plcode: null,
+        Bils_No: null,
         Cus_No: '',
         Whs: 'W01',
     };
@@ -67,7 +67,7 @@ export class CompletionPage implements OnInit {
     clearData() {
         this.scanNum = 0;
         this.maxNum = 0;
-        this.infoObj.plcode = null;
+        this.infoObj.Bils_No = null;
         this.infoObj.wxcode = null;
         this.infoObj.ItemCode = null;
         this.infoObj.Cus_No = '';
@@ -85,20 +85,20 @@ export class CompletionPage implements OnInit {
                 Bils_No: val.DocEntry,
                 Wh: this.infoObj.Whs,
                 Wh_To: val['Wh_To'],
-                Itm: val['Itm'],
+                Itm: val['Itm'] || val['LineNum'],
                 Barcode: val['Barcode'] || val['BarCode'],
                 BarcodeText: val['BarcodeText'],
                 ItemCode: val.ItemCode,
                 ItemName: val.ItemName,
                 QTY: val.QTY,
-                Kuwei: val.Kuwei,
-                ToKuwei: val.ToKuwei,
+                Kuwei: val['Kuwei'],
+                ToKuwei: val['ToKuwei'],
                 BFlag: val.BFlag,
-                BatchNo: val.BatchNo,
-                LiuNo: val.LiuNo,
-                OrderEntry: val.OrderEntry,
-                OrderLine: val.OrderLine,
-                NumPerMsr: val.NumPerMsr
+                BatchNo: val['BatchNo'],
+                LiuNo: val['LiuNo'],
+                OrderEntry: val['OrderEntry'],
+                OrderLine: val['OrderLine'],
+                NumPerMsr: val['NumPerMsr']
             });
         });
         const config = {
@@ -119,22 +119,43 @@ export class CompletionPage implements OnInit {
         const hascode = this.wxList.indexOf(this.infoObj.wxcode);
         if (hascode < 0) {
             const item = this.publicService.arrSameId(this.documentList, 'ItemCode', this.infoObj.ItemCode);
-            if (item['ItemCode']) {
+            if (item && item['ItemCode']) {
                 this.wxList.push(this.infoObj.wxcode);
                 const config = {
                     wxcode: this.infoObj.wxcode,
                 };
                 this.getDataService.getPublicData('PXKB/GetWXItemCodeNum', config).then((resp) => {
                     if (resp) {
-                        if (Number(resp['Data']) > Number(item['QTY_NC'])) {
+                        if (Number(resp['Data']) == 0) {
+                            this.presentService.presentToast('外箱拼箱数量为0', 'warning');
+                        } else if (Number(resp['Data']) > Number(item['QTY_NC'])) {
                             //外箱数量大于未清量
                             this.presentService.presentToast('外箱拼箱数量大于未清量', 'warning');
                         } else {
                             //外箱数量小于未清量
                             this.getDataService.getPublicData('PXKB/GetWXBillData', config).then((res) => {
-                                if (resp['Data'] && resp['Data'].length) {
-                                    resp['Data'].forEach((val) => {
-                                        this.scanList.push(val);
+                                if (res['Data'] && res['Data'].length) {
+                                    res['Data'].forEach((val) => {
+                                        // 判断是否扫描重复物料
+                                        const scanItem = this.publicService.arrSameId(this.scanList, 'Barcode', val.BarCode);
+                                        const index = this.publicService.arrSameId(this.documentList, 'ItemCode', val.ItemCode, 'index');
+                                        const documentItem = this.publicService.arrSameId(this.documentList, 'ItemCode', val.ItemCode);
+                                        if (scanItem) {
+                                            const name = '【' + val.ItemCode + '】物料已存在';
+                                            this.presentService.presentToast(name, 'warning', 4000);
+                                        } else {
+                                            if (documentItem) {
+                                                if (this.documentList[index]['QTY_NC'] - Number(val.Qty) >= 0) {
+                                                    this.documentList[index]['QTY_NC'] -= val.Qty;
+                                                    this.documentList[index]['QTY_CUR'] += val.Qty;
+                                                    const result = Object.assign(val, documentItem);
+                                                    this.scanList.push(result);
+                                                } else {
+                                                    const name = '【' + val.ItemCode + '】物料数量超过未清量';
+                                                    this.presentService.presentToast(name, 'warning', 4000);
+                                                }
+                                            }
+                                        }
                                     });
                                 }
                             });
@@ -149,9 +170,9 @@ export class CompletionPage implements OnInit {
         }
     }
 
-    scanPL() {
+    getBillData() {
         const config = {
-            order: this.infoObj.plcode,
+            order: this.infoObj.Bils_No,
             actType: this.infoObj.Bil_ID,
         };
         this.getDataService.getPublicData('SC/GetBillData', config).then((resp) => {
@@ -275,8 +296,9 @@ export class CompletionPage implements OnInit {
                 this.successScan(returnObj);
             } else {
                 // 未清量小于物料收容
-                this.presentService.presentAlert('当前标签收货数大于单据未清量，是否继续添加').then((res) => {
-                    if (res) {
+                this.presentService.presentAlert('当前标签收货数大于单据未清量，是否修改为未清量').then((wql) => {
+                    if (wql) {
+                        obj['QTY'] = selectItem['QTY_NC'];
                         const returnObj = {
                             dIndex: documentIndex,
                             Obj: obj,
@@ -358,14 +380,17 @@ export class CompletionPage implements OnInit {
                 // 未清量小于物料收容const
                 const BFlagObj = this.BFlagObj;
                 BFlagObj[key] -= Number(oldNum);
-                this.presentService.presentAlert('当前标签收货数大于单据未清量，是否继续修改').then((res) => {
-                    if (res) {
-                        this.publicService.checkInventory(BFlagObj, item, index, row, row['BFlag'], key).then((res) => {
-                            if (res) {
-                                this.BFlagObj[key] = BFlagObj[key] + Number(res['Obj']['QTY']);
-                                this.successScan(res, 'modify');
-                            }
-                        });
+                this.presentService.presentAlert('当前标签收货数大于单据未清量，是否修改为未清量').then((wql) => {
+                    if (wql) {
+                        row['QTY'] = item['QTY_NC'];
+                        const returnObj = {
+                            dIndex: index,
+                            Obj: item,
+                            Key: key,
+                            N: 0,
+                            C: Number(item['QTY_CUR']) + Number(row['QTY'])
+                        };
+                        this.successScan(returnObj, 'modify');
                     } else {
                         this.presentService.presentToast('当前物料发料数修改失败', 'warning');
                     }

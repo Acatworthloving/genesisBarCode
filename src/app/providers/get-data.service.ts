@@ -99,9 +99,7 @@ export class GetDataService {
     }
 
     getSapStoreQty(config) {
-        const data={
-
-        }
+        const data = {};
         return new Promise((resolve, reject) => {
             const request = this.dataService.getData('WH/GetSapStoreQty', config);
             request.subscribe(resp => {
@@ -194,6 +192,34 @@ export class GetDataService {
             request.subscribe(resp => {
                 if (resp) {
                     this.presentService.presentToast(resp.ErrMsg);
+                    resolve(resp);
+                }
+            }, error => {
+                this.presentService.presentToast(error.message, 'warning');
+                resolve(false);
+            });
+        });
+    }
+
+    SubmitAddPD(Obj) {
+        return new Promise((resolve, reject) => {
+            const request = this.dataService.postData('PD/SubmitScanData', Obj);
+            request.subscribe(resp => {
+                if (resp) {
+                    resolve(resp);
+                }
+            }, error => {
+                this.presentService.presentToast(error.message, 'warning');
+                resolve(false);
+            });
+        });
+    }
+
+    SubmitModifyPD(Obj) {
+        return new Promise((resolve, reject) => {
+            const request = this.dataService.postData('PD/ModifyScanData', Obj);
+            request.subscribe(resp => {
+                if (resp) {
                     resolve(resp);
                 }
             }, error => {

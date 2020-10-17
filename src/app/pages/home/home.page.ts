@@ -80,13 +80,13 @@ export class HomePage implements OnInit {
         {
             name: '工序报工扫描',
             prop: 'BG',
-            href: 'production/completion',
+            href: 'production/finishing',
             icon: 'assets/svg/svg11.svg'
         },
         {
             name: '生产完工入库',
             prop: 'SCSL',
-            href: 'production/finishing',
+            href: 'production/completion',
             icon: 'assets/svg/svg18.svg'
         },
         {
@@ -151,27 +151,32 @@ export class HomePage implements OnInit {
         },
         {
             name: '销售出库',
-            prop: '',
+            prop: 'XSCH',
+            href: 'sale/out',
             icon: 'assets/svg/svg23.svg'
         },
         {
             name: '销售退货',
-            prop: '',
+            prop: 'XSSQTH',
+            href: 'sale/return',
             icon: 'assets/svg/svg24.svg'
         },
         {
             name: '库存盘点',
-            prop: '',
+            prop: 'Inventory',
+            href: 'stock/Inventory',
             icon: 'assets/svg/svg25.svg'
         },
         {
             name: '库存查询',
-            prop: '',
+            prop: 'query',
+            href: 'stock/query',
             icon: 'assets/svg/svg26.svg'
         },
         {
             name: '标签重打',
-            prop: '',
+            prop: 'retype',
+            href: 'other/retype',
             icon: 'assets/svg/svg27.svg'
         },
     ];

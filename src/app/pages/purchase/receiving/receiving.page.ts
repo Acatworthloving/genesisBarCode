@@ -236,8 +236,8 @@ export class ReceivingPage implements OnInit {
                 // });
             } else {
                 // 未清量小于物料收容
-                this.presentService.presentAlert('当前标签收货数大于单据未清量，是否修改为未清量').then((res) => {
-                    if (res) {
+                this.presentService.presentAlert('当前标签收货数大于单据未清量，是否修改为未清量').then((wql) => {
+                    if (wql) {
                         obj.QTY = this.documentList[documentIndex]['QTY_NC'];
                         const returnObj = {
                             dIndex: documentIndex,

@@ -3,6 +3,7 @@ import {Storage} from '@ionic/storage';
 import {HttpClient, HttpRequest, HttpParams} from '@angular/common/http';
 import {map} from 'rxjs/operators';
 import {PresentService} from '../providers/present.service';
+import {UserDataService} from '../providers/user-data.service';
 
 @Injectable({
     providedIn: 'root'
@@ -13,6 +14,7 @@ export class DataService {
         private storage: Storage,
         public http: HttpClient,
         public presentService: PresentService,
+        public userDataService: UserDataService,
     ) {
     }
 
@@ -23,6 +25,7 @@ export class DataService {
             map((data: any) => {
                 if (data.ErrCode == -100) {
                     this.presentService.presentToast('登录信息过期，请重新登入', 'warning');
+                    this.userDataService.logout();
                     return false;
                 } else if (data.ErrCode == 0) {
                     return data;
@@ -39,6 +42,7 @@ export class DataService {
             map((data: any) => {
                 if (data.ErrCode == -100) {
                     this.presentService.presentToast('登录信息过期，请重新登入', 'warning');
+                    this.userDataService.logout();
                     return false;
                 } else if (data.ErrCode == 0) {
                     return data;
@@ -55,6 +59,7 @@ export class DataService {
             map((data: any) => {
                 if (data.ErrCode == -100) {
                     this.presentService.presentToast('登录信息过期，请重新登入', 'warning');
+                    this.userDataService.logout();
                     return false;
                 } else if (data.ErrCode == 0) {
                     return data;
@@ -71,6 +76,7 @@ export class DataService {
             map((data: any) => {
                 if (data.ErrCode == -100) {
                     this.presentService.presentToast('登录信息过期，请重新登入', 'warning');
+                    this.userDataService.logout();
                     return false;
                 } else if (data.ErrCode == 0) {
                     return data;

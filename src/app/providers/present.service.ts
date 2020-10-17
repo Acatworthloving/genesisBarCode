@@ -47,6 +47,12 @@ export class PresentService {
         });
     }
 
+    presentAlertBaseInput() {
+        return new Promise((resolve, reject) => {
+            this.AlertBaseInput(resolve);
+        });
+    }
+
     async Alert(message: string, resolve) {
         const alert = await this.alertController.create({
             header: '提示',
@@ -104,6 +110,34 @@ export class PresentService {
         await alert.present();
     }
 
+    async AlertBaseInput(resolve) {
+        const alert = await this.alertController.create({
+            cssClass: 'my-custom-class',
+            header: '输入打印次数',
+            inputs: [{
+                name: 'NUM',
+                type: 'number',
+                placeholder: '打印次数'
+            }],
+            buttons: [
+                {
+                    text: '取消',
+                    role: 'cancel',
+                    cssClass: 'secondary',
+                    handler: () => {
+                        resolve(false);
+                    }
+                }, {
+                    text: '确定',
+                    handler: (resp) => {
+                        resolve(resp);
+                    }
+                }
+            ]
+        });
+        await alert.present();
+    }
+
     async AlertBaseRadio(list, title, resolve) {
         const inputList = [];
         list.forEach((val, index) => {
@@ -137,7 +171,7 @@ export class PresentService {
         await alert.present();
     }
 
-    async presentToast(msg: string, color?: any, position?: any, duration?: number) {
+    async presentToast(msg: string, color?: any, duration?: number, position?: any) {
         const toast = await this.toastController.create({
             message: msg,
             color: color || 'success', //primary,success,warning,danger,light

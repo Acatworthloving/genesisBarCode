@@ -53,7 +53,6 @@ export class IntoBoxPage implements OnInit {
     }
 
     clearData() {
-
         this.infoObj.wxcode = null;
         this.scanList = [];
         this.documentList = [];

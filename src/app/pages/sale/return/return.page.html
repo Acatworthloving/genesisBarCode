@@ -19,22 +19,25 @@
 </ion-header>
 <ion-content>
     <div *ngIf="pageType== 'getOrder'">
-        <form class="ion-margin ion-text-start scan-from">
+        <div class="ion-margin ion-text-start scan-from">
             <ion-list>
                 <app-scan-input (addBar)="scanInput($event)" [infoObj]="infoObj" (funcDocEntry)="getBillData()"
-                                [scanType]="scanTypeArr"></app-scan-input>
+                                [scanType]="scanTypeArr" (getWX)="scanWX()" (getKB)="scanKB()" [isXSSQTH]="true"></app-scan-input>
                 <ion-item lines="full">
                     <ion-label>
-                        收货数
+                        收容数量
                     </ion-label>
-                    <ion-input placeholder="收货数" color="primary"  (change)="changeQTY($event,'row')" mode="ios" slot="end" type="number"
+                    <ion-input placeholder="收容数量" color="primary" (change)="changeQTY($event,'row')" mode="ios"
+                               slot="end"
+                               type="number"
                                [value]="maxNum" pattern="[0-9]*"
                                [disabled]="!maxNum || materieObj['BFlag']==='S'"
                                class="ion-text-right ion-padding-start"></ion-input>
                 </ion-item>
-                <app-materiel-item [scanNum]="scanNum" [materieObj]="materieObj" [infoObj]="infoObj"></app-materiel-item>
+                <app-materiel-item [scanNum]="scanNum" [materieObj]="materieObj"
+                                   [infoObj]="infoObj"></app-materiel-item>
             </ion-list>
-        </form>
+        </div>
         <ion-button expand="block" class="ion-margin btn-submit" mode='ios' (click)="submit()"
                     [disabled]="!scanList.length">
             提交数据
@@ -44,7 +47,7 @@
         <app-table [columns]="documentColumns" [tableList]="documentList" tableId="documentId"></app-table>
     </div>
     <div *ngIf="pageType==='orderDetails'">
-        <app-table-kc [columns]="columns" [tableList]="scanList" (changeQTY)="changeQTY($event)" tableId="deliverId"
+        <app-table-kc [columns]="columns" [tableList]="scanList" (changeQTY)="changeQTY($event)" tableId="returnId"
                       hasDel="true"
                       [documentList]="documentList"></app-table-kc>
     </div>

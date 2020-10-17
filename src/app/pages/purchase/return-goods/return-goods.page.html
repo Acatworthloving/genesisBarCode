@@ -27,12 +27,14 @@
                     <ion-label>
                         收货数
                     </ion-label>
-                    <ion-input placeholder="收货数" color="primary"  (change)="changeQTY($event)" mode="ios" slot="end" type="number"
+                    <ion-input placeholder="收货数" color="primary" (change)="changeQTY($event,'row')" mode="ios"
+                               slot="end" type="number"
                                [value]="maxNum" pattern="[0-9]*"
-                               [disabled]="disabledQTY()"
+                               [disabled]="!maxNum || materieObj['BFlag']==='S'"
                                class="ion-text-right ion-padding-start"></ion-input>
                 </ion-item>
-                <app-materiel-item [scanNum]="scanNum" [materieObj]="materieObj" [infoObj]="infoObj"></app-materiel-item>
+                <app-materiel-item [scanNum]="scanNum" [materieObj]="materieObj"
+                                   [infoObj]="infoObj"></app-materiel-item>
             </ion-list>
         </form>
         <ion-button expand="block" class="ion-margin btn-submit" mode='ios' (click)="submit()"
@@ -44,7 +46,8 @@
         <app-table [columns]="documentColumns" [tableList]="documentList" tableId="documentId"></app-table>
     </div>
     <div *ngIf="pageType==='orderDetails'">
-        <app-table [columns]="columns" [tableList]="scanList" tableId="scanId" hasDel="true"
-                   [documentList]="documentList"></app-table>
+        <app-table-kc [columns]="columns" [tableList]="scanList" (changeQTY)="changeQTY($event)" tableId="returnGoodsId"
+                      hasDel="true"
+                      [documentList]="documentList"></app-table-kc>
     </div>
 </ion-content>

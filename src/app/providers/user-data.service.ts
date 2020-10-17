@@ -3,6 +3,7 @@ import { Storage } from '@ionic/storage';
 import { CacheService } from 'ionic-cache';
 import { Observable, Subject, BehaviorSubject} from 'rxjs';
 import {Router} from '@angular/router';
+import {NavController} from '@ionic/angular';
 @Injectable({
     providedIn: 'root'
 })
@@ -19,6 +20,7 @@ export class UserDataService {
     constructor(
         private storage: Storage,
         private router: Router,
+        private navCtrl: NavController,
         // public timeService: TimeService,
         // private dataService: DataService,
     ) { }
@@ -42,7 +44,8 @@ export class UserDataService {
 
     logout() {
         localStorage.clear();
-        this.router.navigateByUrl('/login');
+        // this.router.navigateByUrl('/login');
+        this.navCtrl.navigateRoot('/login');
     }
 
     getLanguage() {

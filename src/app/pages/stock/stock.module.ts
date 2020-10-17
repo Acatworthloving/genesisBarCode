@@ -10,6 +10,8 @@ import {StockPage} from './stock.page';
 import {DumpRequestPage} from './dump-request/dump-request.page';
 import {TransferOrderPage} from './transfer-order/transfer-order.page';
 import {SharedModule} from '../../module/shared.module';
+import {QueryPage} from './query/query.page';
+import {InventoryPage} from './Inventory/Inventory.page';
 
 @NgModule({
     imports: [
@@ -20,7 +22,7 @@ import {SharedModule} from '../../module/shared.module';
         ReactiveFormsModule,
         SharedModule
     ],
-    declarations: [StockPage, DumpRequestPage, TransferOrderPage]
+    declarations: [StockPage, DumpRequestPage, TransferOrderPage, QueryPage, InventoryPage]
 })
 export class StockModule {
 }

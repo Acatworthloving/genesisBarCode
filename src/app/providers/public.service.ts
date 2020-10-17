@@ -352,6 +352,60 @@ export class PublicService {
             type: 'select',
         },
     ];
+    Columns10 = [
+        {
+            name: '物料编码',
+            prop: 'ItemCode',
+        },
+        {
+            name: '收货数',
+            prop: 'QTY',
+        },
+        {
+            name: '仓库管理类型',
+            prop: 'BFlag',
+        },
+        {
+            name: '批次号/外箱序列号/序列号',
+            prop: 'BatNo',
+        },
+        {
+            name: '物料名称',
+            prop: 'ItemName',
+        },
+        {
+            name: '物料规格',
+            prop: 'GGXH',
+        },
+    ];
+    Columns11 = [
+        {
+            name: '物料编码',
+            prop: 'ItemCode',
+        },
+        {
+            name: '物料标签标识',
+            prop: 'Barcode',
+        },
+        {
+            name: '扫描量',
+            prop: 'QTY',
+            type: 'input',
+            inputtype: 'number',
+        },
+        {
+            name: '打印次数',
+            prop: 'NUM',
+            type: 'input',
+            inputtype: 'number',
+        },
+        {
+            name: '打印机',
+            prop: 'PRINTER',
+            arr: ['#1打印机', '#2打印机', '#3打印机'],
+            type: 'select',
+        },
+    ];
 
 
     constructor(public presentService: PresentService,

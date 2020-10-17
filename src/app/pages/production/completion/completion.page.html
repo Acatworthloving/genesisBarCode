@@ -21,7 +21,7 @@
     <div *ngIf="pageType== 'getOrder'">
         <div class="ion-margin ion-text-start scan-from">
             <ion-list>
-                <app-scan-input (addBar)="scanInput($event)" [infoObj]="infoObj" (getPL)="scanPL()"
+                <app-scan-input (addBar)="scanInput($event)" [infoObj]="infoObj" (funcDocEntry)="getBillData()"
                                 [scanType]="scanTypeArr" (getWX)="scanWX()" [isSCSL]="true"></app-scan-input>
                 <ion-item lines="full">
                     <ion-label>
@@ -47,7 +47,7 @@
         <app-table [columns]="documentColumns" [tableList]="documentList" tableId="documentId"></app-table>
     </div>
     <div *ngIf="pageType==='orderDetails'">
-        <app-table-kc [columns]="columns" [tableList]="scanList" (changeQTY)="changeQTY($event)" tableId="returnId"
+        <app-table-kc [columns]="columns" [tableList]="scanList" (changeQTY)="changeQTY($event)" tableId="completionId"
                       hasDel="true"
                       [documentList]="documentList"></app-table-kc>
     </div>

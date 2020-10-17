@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router, Params, NavigationExtras} from '@angular/router';
+import { Events, NavController } from '@ionic/angular';
 import {DataService} from '../../api/data.service';
 import {PresentService} from '../../providers/present.service';
 import {UserDataService} from '../../providers/user-data.service';
@@ -16,6 +17,7 @@ export class LoginPage {
     constructor(public router: Router,
                 public dataService: DataService,
                 public presentService: PresentService,
+                private navCtrl: NavController,
                 public userData: UserDataService) {
         const EMAILPATTERN = '^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$';
         this.loginForm = new FormGroup({
@@ -35,7 +37,8 @@ export class LoginPage {
         this.dataService.postData('Home/GetAccessToken', config).subscribe(resp => {
             if (resp) {
                 this.userData.setToken(resp.Token);
-                this.router.navigate(['/home']);
+                this.navCtrl.navigateRoot('home');
+                // this.router.navigate(['/home']);
             }
         }, error => {
             this.presentService.dismissLoading();

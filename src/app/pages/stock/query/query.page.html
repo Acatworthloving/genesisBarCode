@@ -1,0 +1,48 @@
+<ion-header>
+    <ion-toolbar mode="ios">
+        <ion-buttons slot="start">
+            <ion-back-button mode="md"></ion-back-button>
+        </ion-buttons>
+        <ion-title>{{title}}</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <div>
+        <form class="ion-margin ion-text-start scan-from">
+            <ion-list>
+                <app-scan-input (addBar)="scanInput($event)" [infoObj]="infoObj" (getWX)="scanWX()" [isStock]="true"
+                                [scanType]="scanTypeArr"></app-scan-input>
+                <ion-item lines="full">
+                    <ion-label>
+                        仓库
+                    </ion-label>
+                    <ion-label slot="end" class="ion-text-right pr-8">{{infoObj['Whs']}}</ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        物料编码
+                    </ion-label>
+                    <ion-label slot="end" class="ion-text-right pr-8">{{infoObj['ItemCode']}}</ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        标签批次/序列号
+                    </ion-label>
+                    <ion-label slot="end" class="ion-text-right pr-8">{{infoObj['batNo']}}</ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        批次库存
+                    </ion-label>
+                    <ion-label slot="end" class="ion-text-right pr-8">{{infoObj['XLPCQty']}}</ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        物料库存
+                    </ion-label>
+                    <ion-label slot="end" class="ion-text-right pr-8">{{infoObj['SapQty']}}</ion-label>
+                </ion-item>
+            </ion-list>
+        </form>
+    </div>
+</ion-content>

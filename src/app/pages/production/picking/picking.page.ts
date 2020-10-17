@@ -232,8 +232,8 @@ export class PickingPage implements OnInit {
                 });
             } else {
                 // 未清量小于物料收容
-                this.presentService.presentAlert('当前标签收货数大于单据未清量，是否继续添加').then((res) => {
-                    if (res) {
+                this.presentService.presentAlert('当前标签收货数大于单据未清量，是否继续添加').then((wql) => {
+                    if (wql) {
                         // obj.QTY = this.documentList[documentIndex]['QTY_NC'];
                         this.publicService.checkInventory(this.BFlagObj, selectItem, documentIndex, obj, BFlag, key).then((res) => {
                             if (res) {
@@ -313,8 +313,8 @@ export class PickingPage implements OnInit {
                 // 未清量小于物料收容const
                 const BFlagObj = this.BFlagObj;
                 BFlagObj[key] -= Number(oldNum);
-                this.presentService.presentAlert('当前标签收货数大于单据未清量，是否继续修改').then((res) => {
-                    if (res) {
+                this.presentService.presentAlert('当前标签收货数大于单据未清量，是否继续修改').then((wql) => {
+                    if (wql) {
                         this.publicService.checkInventory(BFlagObj, item, index, row, row['BFlag'], key).then((res) => {
                             if (res) {
                                 this.BFlagObj[key] = BFlagObj[key] + Number(res['Obj']['QTY']);

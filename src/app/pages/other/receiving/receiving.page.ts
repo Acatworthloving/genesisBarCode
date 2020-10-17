@@ -214,8 +214,8 @@ export class ReceivingPage implements OnInit {
             };
 
             if (obj.QTY > selectItem['QTY_NC']) {
-                this.presentService.presentAlert('当前标签收货数大于单据未清量，是否修改为未清量').then((res) => {
-                    if (res) {
+                this.presentService.presentAlert('当前标签收货数大于单据未清量，是否修改为未清量').then((wql) => {
+                    if (wql) {
                         obj.QTY = this.documentList[documentIndex]['QTY_NC'];
                         this.documentList[documentIndex]['QTY_NC'] = 0;
                         this.documentList[documentIndex]['QTY_CUR'] += obj.QTY;

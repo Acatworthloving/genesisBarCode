@@ -15,6 +15,8 @@ export class ScanInputPage implements OnInit, AfterContentInit {
     @Input() scanType = [];
     @Input() hasTwoWh: boolean = false;
     @Input() isSCSL: boolean = false;
+    @Input() isXSSQTH: boolean = false;
+    @Input() isStock: boolean = false;
     @Output() addBar = new EventEmitter();
     @Output() funcDocEntry = new EventEmitter();
     @Output() getWX = new EventEmitter();
@@ -70,6 +72,10 @@ export class ScanInputPage implements OnInit, AfterContentInit {
     scan(event) {
         if (this.isSCSL) {
             this.scanSCSL(event);
+        } else if (this.isXSSQTH) {
+            this.scanXSSQTH(event);
+        } else if (this.isStock) {
+            this.scanStock(event);
         } else {
             this.func_scan(event);
         }
@@ -234,15 +240,18 @@ export class ScanInputPage implements OnInit, AfterContentInit {
             this.presentService.presentToast('员工标签扫描成功');
         } else {
             if (this.infoObj['User']) {
-                if (type === 'PL') {
-                    this.infoObj['plcode'] = scanArr[1];
-                    this.presentService.presentToast('生产线标签扫描成功');
+                if (type === 'DocEntry') {
+                    this.infoObj['Bils_No'] = scanArr[1];
+                    this.presentService.presentToast('清单标签扫描成功');
                     this.selected();
-                    this.func_PL();
+                    this.func_DocEntry();
                 } else {
-                    if (this.infoObj['plcode']) {
+                    if (this.infoObj['Bils_No']) {
                         if (type === 'Whs') {
                             this.infoObj['Whs'] = scanArr[1];
+                            if (scanArr[2]) {
+                                this.infoObj['Kuwei'] = scanArr[2];
+                            }
                             this.presentService.presentToast('仓库标签扫描成功');
                         } else {
                             if (this.infoObj['Whs']) {
@@ -262,7 +271,113 @@ export class ScanInputPage implements OnInit, AfterContentInit {
                             }
                         }
                     } else {
-                        this.presentService.presentToast('请先扫描生产线标签', 'warning');
+                        this.presentService.presentToast('请先扫描清单标签', 'warning');
+                    }
+                }
+            } else {
+                this.presentService.presentToast('请先扫描员工标签', 'warning');
+            }
+        }
+    }
+
+    scanXSSQTH(event) {
+        this.selected();
+        const value = event.target.value,
+            scanArr = this.publicService.splitStr(value);
+        if (!scanArr) {
+            return false;
+        }
+        const type = this.publicService.splitStr(value, 'type');
+        if (type === 'User') {
+            this.infoObj['User'] = scanArr[1];
+            this.presentService.presentToast('员工标签扫描成功');
+        } else {
+            if (this.infoObj['User']) {
+                if (type === 'DocEntry') {
+                    this.infoObj['Bils_No'] = scanArr[1];
+                    this.presentService.presentToast('拣配清单标签扫描成功');
+                    this.selected();
+                    this.func_DocEntry();
+                } else {
+                    if (this.infoObj['Bils_No']) {
+                        if (type === 'Whs') {
+                            this.infoObj['Whs'] = scanArr[1];
+                            if (scanArr[2]) {
+                                this.infoObj['Kuwei'] = scanArr[2];
+                            }
+                            this.presentService.presentToast('仓库标签扫描成功');
+                        } else {
+                            if (this.infoObj['Whs']) {
+                                if (type === 'WX') {
+                                    this.infoObj['wxcode'] = scanArr[1];
+                                    this.infoObj['ItemCode'] = scanArr[2];
+                                    this.presentService.presentToast('外箱标签扫描成功');
+                                    this.selected();
+                                    this.func_WX();
+                                } else if (type === 'KB') {
+                                    this.infoObj['kbcode'] = scanArr[1];
+                                    this.presentService.presentToast('卡板标签扫描成功');
+                                    this.selected();
+                                    this.func_KB();
+                                } else if (type === 'Bar') {
+                                    this.func_addBar(value, scanArr);
+                                } else {
+                                    this.presentService.presentToast('无效扫描', 'danger');
+                                }
+                            } else {
+                                this.presentService.presentToast('请先扫描仓库标签', 'warning');
+                            }
+                        }
+                    } else {
+                        this.presentService.presentToast('请先扫描拣配清单标签', 'warning');
+                    }
+                }
+            } else {
+                this.presentService.presentToast('请先扫描员工标签', 'warning');
+            }
+        }
+    }
+
+    scanStock(event) {
+        this.selected();
+        const value = event.target.value,
+            scanArr = this.publicService.splitStr(value),
+            hasUser = this.publicService.hasKey(this.scanType, 'User'),
+            hasWhs = this.publicService.hasKey(this.scanType, 'Whs');
+        if (!scanArr) {
+            return false;
+        }
+        const type = this.publicService.splitStr(value, 'type');
+        if (type === 'User') {
+            if (hasUser) {
+                this.infoObj['User'] = scanArr[1];
+                this.presentService.presentToast('员工标签扫描成功');
+            } else {
+                this.presentService.presentToast('无效扫描', 'danger');
+            }
+        } else {
+            if (this.infoObj['User'] || !hasUser) {
+                if (type === 'Whs') {
+                    this.infoObj['Whs'] = scanArr[1];
+                    if (scanArr[2]) {
+                        this.infoObj['Kuwei'] = scanArr[2];
+                    }
+                    this.presentService.presentToast('仓库标签扫描成功');
+                } else {
+                    if (this.infoObj['Whs'] || !hasWhs) {
+                        if (type === 'WX') {
+                            this.infoObj['wxcode'] = scanArr[1];
+                            this.infoObj['ItemCode'] = scanArr[2];
+                            this.presentService.presentToast('外箱标签扫描成功');
+                            this.selected();
+                            this.func_WX();
+                        } else if (type === 'Bar') {
+                            this.func_addBar(value, scanArr);
+                        } else {
+                            this.presentService.presentToast('无效扫描', 'danger');
+                        }
+                    } else {
+                        this.presentService.presentToast('请先扫描仓库标签', 'warning');
                     }
                 }
             } else {

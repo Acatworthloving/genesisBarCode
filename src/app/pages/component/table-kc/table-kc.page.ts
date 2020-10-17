@@ -30,10 +30,11 @@ export class TableKcPage implements OnInit {
     ngOnInit() {
     }
 
-    changeInput($event, r) {
+    changeInput($event, r, i) {
         const value = {
             event: $event,
-            row: r
+            row: r,
+            index: i
         };
         this.changeQTY.emit(value);
     }

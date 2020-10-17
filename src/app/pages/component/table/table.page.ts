@@ -15,6 +15,7 @@ export class TablePage implements OnInit {
     @Input() tableList = [];
     @Input() tableId = '';
     @Input() hasDel = false;
+    @Input() hasPD = false;
     @Input() documentList = [];
     // @Output() documentList = new EventEmitter();
 
@@ -32,6 +33,7 @@ export class TablePage implements OnInit {
 
     changeInput(event, oldNum, r) {
         const value = event.target.value;
+        r['change'] = true;
         if (this.documentList.length) {
             const item = this.publicService.arrSameId(this.documentList, 'ItemCode', r.ItemCode);
             if (item) {
@@ -48,7 +50,9 @@ export class TablePage implements OnInit {
             }
         } else {
             r['QTY'] = value;
-            this.presentService.presentToast('修改物料收货数成功');
+            if (!this.hasPD) {
+                this.presentService.presentToast('修改物料收货数成功');
+            }
         }
     }
 

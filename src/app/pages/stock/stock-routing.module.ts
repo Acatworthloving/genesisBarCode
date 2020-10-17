@@ -4,6 +4,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { StockPage } from './stock.page';
 import { DumpRequestPage } from './dump-request/dump-request.page';
 import { TransferOrderPage } from './transfer-order/transfer-order.page';
+import { QueryPage } from './query/query.page';
+import { InventoryPage } from './Inventory/Inventory.page';
 
 const routes: Routes = [
   {
@@ -17,6 +19,14 @@ const routes: Routes = [
   {
     path: 'transfer-order/:id',
     component: TransferOrderPage
+  },
+  {
+    path: 'query/:id',
+    component: QueryPage
+  },
+  {
+    path: 'Inventory/:id',
+    component: InventoryPage
   }
 ];
 

@@ -1,0 +1,48 @@
+<ion-header>
+    <ion-toolbar mode="ios">
+        <ion-buttons slot="start">
+            <ion-back-button mode="md"></ion-back-button>
+        </ion-buttons>
+        <ion-title>{{title}}</ion-title>
+    </ion-toolbar>
+    <ion-segment (ionChange)="segmentChanged($event)" [value]="pageType">
+        <ion-segment-button value="getOrder">
+            <ion-label>扫描界面</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="documentDetails">
+            <ion-label>历史盘点清单</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="orderDetails">
+            <ion-label>盘点清单</ion-label>
+        </ion-segment-button>
+    </ion-segment>
+</ion-header>
+<ion-content>
+    <div *ngIf="pageType== 'getOrder'">
+        <div class="ion-margin ion-text-start scan-from">
+            <ion-list>
+                <app-scan-input (addBar)="scanInput($event)" [infoObj]="infoObj" (getWX)="scanWX()" [isStock]="true"
+                                [scanType]="scanTypeArr"></app-scan-input>
+                <ion-item>
+                    <ion-label>盘点类型</ion-label>
+                    <ion-select placeholder="选择盘点类型" okText="确认" cancelText="取消" [(ngModel)]="infoObj.PDType">
+                        <ion-select-option value="非批次盘点">非批次盘点</ion-select-option>
+                        <ion-select-option value="批次盘点">批次盘点</ion-select-option>
+                        <ion-select-option value="序列号盘点">序列号盘点</ion-select-option>
+                    </ion-select>
+                </ion-item>
+            </ion-list>
+        </div>
+        <ion-button expand="block" class="ion-margin" mode='ios' (click)="submit()"
+                    [disabled]="!this.infoObj.PDType">
+            提交数据
+        </ion-button>
+    </div>
+    <div *ngIf="pageType==='documentDetails'">
+        <app-table [columns]="columns" [tableList]="documentList" [hasPD]="true"  tableId="documentId" [hasDel]="true"></app-table>
+    </div>
+    <div *ngIf="pageType==='orderDetails'">
+        <app-table-kc [columns]="columns" [tableList]="scanList" (changeQTY)="changeQTY($event)" tableId="inventoryId"
+                      hasDel="true"></app-table-kc>
+    </div>
+</ion-content>

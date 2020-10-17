@@ -4,24 +4,23 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import {IonicModule} from '@ionic/angular';
 
-import {OtherRoutingModule} from './other-routing.module';
+import {SaleRoutingModule} from './sale-routing.module';
 
-import {OtherPage} from './other.page';
-import {ReceivingPage} from './receiving/receiving.page';
-import {DeliverPage} from './deliver/deliver.page';
+import {SalePage} from './sale.page';
+import { OutPage } from './out/out.page';
+import { ReturnPage } from './return/return.page';
 import {SharedModule} from '../../module/shared.module';
-import {RetypePage} from './retype/retype.page';
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         IonicModule,
-        OtherRoutingModule,
+        SaleRoutingModule,
         ReactiveFormsModule,
         SharedModule
     ],
-    declarations: [OtherPage, ReceivingPage, DeliverPage, RetypePage]
+    declarations: [SalePage, OutPage, ReturnPage]
 })
-export class OtherModule {
+export class SaleModule {
 }

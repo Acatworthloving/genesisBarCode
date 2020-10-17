@@ -238,10 +238,9 @@ export class DumpRequestPage implements OnInit {
                 });
             } else {
                 // 未清量小于物料收容
-                this.presentService.presentAlert('当前标签收货数大于单据未清量，是否修改为未清量').then((res) => {
-                    if (res) {
+                this.presentService.presentAlert('当前标签收货数大于单据未清量，是否修改为未清量').then((wql) => {
+                    if (wql) {
                         obj.QTY = this.documentList[documentIndex]['QTY_NC'];
-                        // this.checkInventory(documentIndex, obj, BFlag, key);
                         this.publicService.checkInventory(this.BFlagObj, selectItem, documentIndex, obj, BFlag, key).then((res) => {
                             if (res) {
                                 this.successScan(res);
@@ -257,47 +256,82 @@ export class DumpRequestPage implements OnInit {
         }
     }
 
-    successScan(val) {
+    successScan(val, type?) {
         const documentIndex = val.dIndex, obj = val.Obj,
             key = val.Key, NC = val.N, CUR = val.C;
-        this.documentList[documentIndex]['QTY_NC'] = NC;
+        this.documentList[documentIndex]['QTY_NC'] = NC < 0 ? 0 : NC;
         this.documentList[documentIndex]['QTY_CUR'] = CUR;
-        this.scanList.unshift(obj);
         this.scanNum = this.documentList[documentIndex]['QTY_CUR'];
         this.maxNum = obj.QTY;
         this.materieObj = obj;
-        if (this.BFlagObj[key]) {
-            this.BFlagObj[key] += Number(obj.QTY);
+        if (type) {
+            //修改物料收容数
+            const index = this.publicService.arrSameId(this.scanList, 'ItemCode', obj['ItemCode'], 'index');
+            this.scanList[index]['QTY'] = obj.QTY;
+            this.presentService.presentToast('当前物料发料数修改成功');
         } else {
-            this.BFlagObj[key] = Number(obj.QTY);
+            //新增物料
+            if (this.BFlagObj[key]) {
+                this.BFlagObj[key] += Number(obj.QTY);
+            } else {
+                this.BFlagObj[key] = Number(obj.QTY);
+            }
+            this.scanList.unshift(obj);
+            this.presentService.presentToast('当前物料扫描成功');
         }
-        this.presentService.presentToast('当前物料扫描成功');
     }
 
-    changeQTY(event) {
-        const row = this.scanList[0], value = event.target.value, oldNum = this.maxNum;
-        const item = this.publicService.arrSameId(this.documentList, 'ItemCode', row.ItemCode);
-
+    changeQTY(event, type?) {
+        let row = {}, value: any = '', oldNum = 0;
+        let item: any = {}, index: any = 0;
+        if (type === 'row') {
+            // 修改扫描页面row发料数量数据
+            row = this.scanList[0];
+            value = event.target.value;
+            oldNum = this.maxNum;
+            item = this.publicService.arrSameId(this.documentList, 'ItemCode', row['ItemCode']);
+            index = this.publicService.arrSameId(this.documentList, 'ItemCode', row['ItemCode'], 'index');
+        } else {
+            // 修改表格数据
+            row = event.row;
+            value = event.event.target.value;
+            oldNum = event.row['QTY'];
+            item = this.publicService.arrSameId(this.documentList, 'ItemCode', row['ItemCode']);
+            index = this.publicService.arrSameId(this.documentList, 'ItemCode', row['ItemCode'], 'index');
+        }
+        row['QTY'] = value;
         if (item) {
-            const QTY_NC = Number(item['QTY_NC']) + Number(oldNum);
-            if (value > QTY_NC) {
-                row['QTY'] = oldNum;
-                this.presentService.presentToast('当前物料收货数超过单据明细的物料数量', 'warning');
+            const QTY_NC = Number(item['QTY_NC']) + Number(oldNum), key = row['BFlag'] + row['BatchNo'];
+            item['QTY_NC'] += Number(oldNum);
+            item['QTY_CUR'] -= Number(oldNum);
+            if (QTY_NC >= value) {
+                // 未清量大于物料收容
+                const BFlagObj = this.BFlagObj;
+                BFlagObj[key] -= Number(oldNum);
+                this.publicService.checkInventory(BFlagObj, item, index, row, row['BFlag'], key).then((res) => {
+                    if (res) {
+                        this.BFlagObj[key] = BFlagObj[key] + Number(res['Obj']['QTY']);
+                        this.successScan(res, 'modify');
+                    }
+                });
             } else {
-                item['QTY_NC'] = QTY_NC - Number(value);
-                item['QTY_CUR'] = Number(item.Quantity) - Number(item.QTY_FIN) - item['QTY_NC'];
-                row['QTY'] = value;
-                this.scanNum = item['QTY_CUR'];
-                this.presentService.presentToast('修改物料收货数成功');
+                // 未清量小于物料收容const
+                const BFlagObj = this.BFlagObj;
+                BFlagObj[key] -= Number(oldNum);
+                this.presentService.presentAlert('当前标签收货数大于单据未清量，是否修改为未清量').then((wql) => {
+                    if (wql) {
+                        row['QTY'] = item['QTY_NC'];
+                        this.publicService.checkInventory(BFlagObj, item, index, row, row['BFlag'], key).then((res) => {
+                            if (res) {
+                                this.BFlagObj[key] = BFlagObj[key] + Number(res['Obj']['QTY']);
+                                this.successScan(res, 'modify');
+                            }
+                        });
+                    } else {
+                        this.presentService.presentToast('当前物料数量修改失败', 'warning');
+                    }
+                });
             }
         }
-    }
-
-    disabledQTY() {
-        let disable = false;
-        if (!this.scanList[0] || !this.scanList[0]['QTY'] || this.scanList[0]['BFlag'] === 'S') {
-            disable = true;
-        }
-        return disable;
     }
 }
