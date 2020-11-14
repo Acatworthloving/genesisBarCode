@@ -112,7 +112,7 @@ export class ReceivingPage implements OnInit {
                         val['QTY_NC'] = Number(val.Quantity) - Number(val.QTY_FIN);
                     });
                 } else {
-                    this.presentService.presentToast('当前单据已扫描完毕', 'warning');
+                    this.presentService.presentToast('e02', 'warning');
                 }
                 this.documentList = resp['Data'];
             }
@@ -125,7 +125,7 @@ export class ReceivingPage implements OnInit {
 
     addBar(val, arr) {
         if (!this.documentList.length) {
-            this.presentService.presentToast('当前单据已扫描完毕', 'warning');
+            this.presentService.presentToast('e02', 'warning');
             return false;
         }
         const ItemCodeText: any = this.publicService.getArrInfo(arr, 'ItemCode'),
@@ -139,12 +139,12 @@ export class ReceivingPage implements OnInit {
 
         // 序列号管理，只能存在一条数据
         if (BFlag === 'S' && this.BFlagObj[key]) {
-            this.presentService.presentToast('当前物料已存在', 'warning');
+            this.presentService.presentToast('e04', 'warning');
         }
         // 判断是否扫描重复物料
         const scanItem = this.publicService.arrSameId(this.scanList, 'Barcode', BarcodeText);
         if (scanItem) {
-            this.presentService.presentToast('当前物料已存在', 'warning');
+            this.presentService.presentToast('e04', 'warning');
             return false;
         }
 
@@ -208,8 +208,8 @@ export class ReceivingPage implements OnInit {
                 BFlag: this.publicService.getArrInfo(arr, 'BFlag'),
                 BatchNo: this.publicService.getArrInfo(arr, 'DistNumber'),
                 LiuNo: this.publicService.getArrInfo(arr, 'LiuNo'),
-                OrderEntry: selectItem['OrderEntry'],
-                OrderLine: selectItem['OrderLine'],
+                OrderEntry: selectItem['OrderEntry']|| '',
+                OrderLine: selectItem['OrderLine']|| '',
                 NumPerMsr: selectItem['NumPerMsr'],
                 DocNum: selectItem['DocNum'],
                 DocEntry: selectItem['DocEntry'],
@@ -248,12 +248,12 @@ export class ReceivingPage implements OnInit {
                         };
                         this.successScan(returnObj);
                     } else {
-                        this.presentService.presentToast('当前物料扫描失败', 'warning');
+                        this.presentService.presentToast('e14', 'warning');
                     }
                 });
             }
         } else {
-            this.presentService.presentToast('当前单号不存在或已关闭', 'warning');
+            this.presentService.presentToast('e10', 'warning');
         }
     }
 
@@ -272,7 +272,7 @@ export class ReceivingPage implements OnInit {
         } else {
             this.BFlagObj[key] = Number(obj.QTY);
         }
-        this.presentService.presentToast('当前物料扫描成功');
+        this.presentService.presentToast('e15');
     }
 
     changeQTY(event) {
@@ -283,13 +283,13 @@ export class ReceivingPage implements OnInit {
             const QTY_NC = Number(item['QTY_NC']) + Number(oldNum);
             if (value > QTY_NC) {
                 row['QTY'] = oldNum;
-                this.presentService.presentToast('当前物料收货数超过单据明细的物料数量', 'warning');
+                this.presentService.presentToast('e11', 'warning');
             } else {
                 item['QTY_NC'] = QTY_NC - Number(value);
                 item['QTY_CUR'] = Number(item.Quantity) - Number(item.QTY_FIN) - item['QTY_NC'];
                 row['QTY'] = value;
                 this.scanNum = item['QTY_CUR'];
-                this.presentService.presentToast('修改物料收货数成功');
+                this.presentService.presentToast('e12');
             }
         }
     }

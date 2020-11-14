@@ -33,10 +33,6 @@
                 </ion-item>
             </ion-list>
         </div>
-        <ion-button expand="block" class="ion-margin" mode='ios' (click)="submit()"
-                    [disabled]="!this.infoObj.PDType">
-            提交数据
-        </ion-button>
     </div>
     <div *ngIf="pageType==='documentDetails'">
         <app-table [columns]="columns" [tableList]="documentList" [hasPD]="true"  tableId="documentId" [hasDel]="true"></app-table>
@@ -46,3 +42,9 @@
                       hasDel="true"></app-table-kc>
     </div>
 </ion-content>
+<ion-footer>
+    <ion-button expand="block" mode='ios' (click)="submit()"
+                [disabled]="!this.infoObj.PDType">
+        提交数据
+    </ion-button>
+</ion-footer>

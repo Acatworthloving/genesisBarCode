@@ -14,11 +14,11 @@ import {PageRouterService} from '../../../providers/page-router.service';
 export class UpPage implements OnInit {
     title: string = '';
     documentObj: any = {};
-    scanTypeArr = ['User', 'PL'];
+    scanTypeArr = ['User', 'DocEntry'];
     infoObj: any = {
         Bil_ID: null,
         User: null,
-        plcode: null
+        Bils_No: null
     };
     documentColumns = [];
 
@@ -44,7 +44,7 @@ export class UpPage implements OnInit {
 
     scanPL() {
         const config = {
-            order: this.infoObj.plcode,
+            order: this.infoObj.Bils_No,
             actType: this.infoObj.Bil_ID
         };
         this.getDataService.getPublicData('SCSCAN/GetSCPlanData', config).then((resp) => {
@@ -61,7 +61,7 @@ export class UpPage implements OnInit {
 
     submit() {
         const config = {
-            PlanCode: this.infoObj.plcode,
+            PlanCode: this.infoObj.Bils_No,
             PLineCode: this.documentObj.PLineCode,
             User: this.infoObj.User,
             ScanType: 'UP',

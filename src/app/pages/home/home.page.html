@@ -1,32 +1,63 @@
 <ion-content fullscreen="true">
-  <h6>
-    <ion-text>
-      质检功能
-    </ion-text>
-  </h6>
-  <ion-grid>
-    <ion-row>
-      <ion-col size="3" *ngFor='let item of qualityList' class="icon-box" (click)="goPage(item)">
-        <div (click)="goPage(item)">
-          <img [src]="item.icon" class="icon">
-          <ion-text class="title">{{item.name}}</ion-text>
-        </div>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-  <h6>
-    <ion-text>
-      仓库管理功能
-    </ion-text>
-  </h6>
-  <ion-grid>
-    <ion-row>
-      <ion-col size="3" *ngFor='let item of storehouseList' class="icon-box">
-        <div (click)="goPage(item)">
-          <img [src]="item.icon" class="icon">
-          <ion-text class="title">{{item.name}}</ion-text>
-        </div>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+    <h6>
+        <ion-text>
+            库存管理
+        </ion-text>
+    </h6>
+    <ion-grid>
+        <ion-row>
+            <ion-col size="4" *ngFor='let item of qualityList' class="icon-box" (click)="goPage(item)">
+                <div (click)="goPage(item)">
+                    <img [src]="item.icon" class="icon">
+                    <ion-text class="title">{{item.name}}</ion-text>
+                </div>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+    <h6>
+        <ion-text>
+            生产管理
+        </ion-text>
+    </h6>
+    <ion-grid>
+        <ion-row>
+            <ion-col size="4" *ngFor='let item of storehouseList' class="icon-box">
+                <div (click)="goPage(item)">
+                    <img [src]="item.icon" class="icon">
+                    <ion-text class="title">{{item.name}}</ion-text>
+                </div>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+    <h6>
+        <ion-text>
+            品质管理
+        </ion-text>
+    </h6>
+    <ion-grid>
+        <ion-row>
+            <ion-col size="4" *ngFor='let item of PZList' class="icon-box">
+                <div (click)="goPage(item)">
+                    <img [src]="item.icon" class="icon">
+                    <ion-text class="title">{{item.name}}</ion-text>
+                </div>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+
+    <h6>
+        <ion-text>
+            系统功能
+        </ion-text>
+    </h6>
+    <ion-grid>
+        <ion-row>
+            <ion-col size="4" *ngFor='let item of XTList' class="icon-box">
+                <div (click)="goPage(item)">
+                    <img [src]="item.icon" class="icon">
+                    <ion-text class="title">{{item.name}}</ion-text>
+                </div>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
 </ion-content>

@@ -10,7 +10,7 @@
                     {{r[c.prop]}}
                 </span>
                 <ion-input *ngIf="r.BFlag!=='S'&&c.prop==='QTY'&&hasDel" [value]="r[c.prop]" type="number"
-                           pattern="[0-9]*"
+
                            (change)="changeInput($event,r,num)"></ion-input>
             </td>
             <td *ngIf="hasDel">
@@ -19,5 +19,7 @@
                 </ion-button>
             </td>
         </tr>
+
+        <caption align="bottom" class="no-data" *ngIf="!tableList.length">无数据</caption>
     </table>
 </div>

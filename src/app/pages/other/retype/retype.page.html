@@ -10,12 +10,18 @@
     <div class="ion-margin ion-text-start scan-from">
         <ion-list>
             <app-scan-input #scanInputView (addBar)="scanInput($event)" [infoObj]="infoObj" [scanType]="scanTypeArr"></app-scan-input>
+            <ion-item>
+                <ion-label>选择打印机</ion-label>
+                <ion-select placeholder="选择打印机" okText="确认" cancelText="取消" [(ngModel)]="selectPRINTER" (ngModelChange)="changPrinter($event)">
+                    <ion-select-option *ngFor="let item of PRINTERLIST" [value]="item">{{item}}</ion-select-option>
+                </ion-select>
+            </ion-item>
         </ion-list>
     </div>
     <app-table-edit [columns]="columns" [tableList]="scanList" tableId="retypeId" hasDel="true"></app-table-edit>
 </ion-content>
 <ion-footer>
-    <ion-button expand="block" class="ion-margin" mode='ios' (click)="submit()"
+    <ion-button expand="block" mode='ios' (click)="submit()"
                 [disabled]="!scanList.length">
         提交数据
     </ion-button>

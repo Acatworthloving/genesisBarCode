@@ -63,7 +63,7 @@ export class TableKcPage implements OnInit {
                     }
                 }
                 this.tableList.splice(num, 1);
-                this.presentService.presentToast('删除成功');
+                this.presentService.presentToast('e08');
             }
         });
     }

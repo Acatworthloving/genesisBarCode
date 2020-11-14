@@ -38,10 +38,7 @@ export class HttpsInterceptor implements HttpInterceptor {
         }
         if (token) {
             request = request.clone({
-                // setHeaders: {
-                //     Authorization: token
-                // }
-                headers: request.headers.append('token', token)
+                headers: request.headers.append('token', token),
             });
         }
         /**
@@ -55,6 +52,8 @@ export class HttpsInterceptor implements HttpInterceptor {
         if (!request.headers.has('Content-Type')) {
             request = request.clone({
                 setHeaders: {
+                    // 'Access-Control-Allow-Origin': '*',
+                    // 'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
                     'Content-Type': 'application/json'
                     // 'Content-Type': 'application/x-www-form-urlencoded'
                 }
@@ -64,9 +63,8 @@ export class HttpsInterceptor implements HttpInterceptor {
             headers: request.headers.set('Accept', 'application/json')
         });
 
-        // const offset: any = (-Number(new Date().getTimezoneOffset()) * 60).toString();
         // request = request.clone({
-        //     headers: request.headers.append('timezone_offset', offset)
+        //     headers: request.headers.append('appId', '188C59E62A9E4F15BDDD042F4D0AAACE')
         // });
         return next.handle(request).pipe(
             map((event: HttpEvent<any>) => {

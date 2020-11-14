@@ -1,8 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ToastController, LoadingController, AlertController} from '@ionic/angular';
-// import { TranslateService } from '@ngx-translate/core';
 import {Router} from '@angular/router';
-import {forEach} from '@angular-devkit/schematics';
 
 // import {UserDataService} from './user-data.service';
 
@@ -11,6 +9,7 @@ import {forEach} from '@angular-devkit/schematics';
 })
 export class PresentService {
     loading: any = false;
+    toast: any = false;
 
     constructor(
         public toastController: ToastController,
@@ -20,6 +19,60 @@ export class PresentService {
         // public userData: UserDataService,
     ) {
     }
+
+    Tips = {
+        e01: '请按照单据全部扫描',
+        e02: '请检查单据状态',
+        e03: '此标签没有绑定产品',
+        e04: '请勿重复扫描标签',
+        e05: '不允许超订单收货',
+        e06: '标签数量超过未清数量',
+        e07: '不是这个生产订单产品',
+        e08: '删除成功',
+        e09: '账户已在其他条码枪登录',
+        e10: '请检查单据状态',
+        e11: '不允许超订单收货',
+        e12: '已更新收货数量',
+        e13: '数量修改失败',
+        e14: '扫描失败',
+        e15: '物料扫描成功',
+        e16: '员工扫描成功',
+        e17: '不需要扫描员工',
+        e18: '生产线扫描成功',
+        e19: '不需要扫描生产线',
+        e20: '卡板扫描成功',
+        e21: '不需要扫描卡板',
+        e22: '外箱扫描成功',
+        e23: '不需要扫描外箱',
+        e24: '单据扫描成功',
+        e25: '不需要扫描单据',
+        e26: '仓库扫描成功',
+        e27: '不需要扫描仓库',
+        e28: '请先扫描发出仓库',
+        e29: '账户已在其他条码枪登录',
+        e30: '当前物料库存不足',
+        e31: '请检查单据状态',
+        e32: '无效扫描',
+        e33: '拣配清单扫描成功',
+        e34: '请先补充下工记录',
+        e35: '请先补充上工记录',
+        e36: '请先解除上一警报',
+        e37: '清单扫描成功',
+        e38: '请先扫描生产线',
+        e39: '请先扫描仓库',
+        e40: '请勿重复扫描外箱标签',
+        e41: '请勿重复扫描卡板标签',
+        e42: '当前物料扫描完毕',
+        e43: '请先扫描单号',
+        e44: '请先扫描外箱',
+        e45: '请先扫描卡板',
+        e46: '请扫描正确的单据',
+        e47: '请扫描正确的产品',
+        e48: '当前物料不存在外箱已绑定明细中',
+        e49: '当前外箱已被绑定',
+        e50: '请勿重复扫描外箱',
+        e51: '当前单据明细的物料非序列号管理',
+    };
 
     // async presentAlert(message: string) {
     //     const alert = await this.alertController.create({
@@ -172,11 +225,17 @@ export class PresentService {
     }
 
     async presentToast(msg: string, color?: any, duration?: number, position?: any) {
-        const toast = await this.toastController.create({
+        this.dismissToast();
+        if (this.Tips[msg]) {
+            msg = this.Tips[msg];
+        }
+        this.toast = await this.toastController.create({
             message: msg,
-            color: color || 'success', //primary,success,warning,danger,light
+            color: color || 'success', // primary,success,warning,danger,light
             position: position || 'top',
-            duration: duration || 2000
+            duration: duration || 1000000000,
+            showCloseButton: true,
+            closeButtonText: '关闭'
         });
         if (msg === 'e403') {
             setTimeout(() => {
@@ -186,10 +245,17 @@ export class PresentService {
         }
         if (this.loading) {
             setTimeout(() => {
-                toast.present();
+                this.toast.present();
             }, 500);
         } else {
-            toast.present();
+            this.toast.present();
+        }
+    }
+
+    dismissToast() {
+        if (this.toast) {
+            console.log('dismissToast', this.toast);
+            this.toast.dismiss();
         }
     }
 

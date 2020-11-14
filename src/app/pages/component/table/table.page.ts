@@ -40,18 +40,18 @@ export class TablePage implements OnInit {
                 const QTY_NC = Number(item['QTY_NC']) + Number(oldNum);
                 if (value > QTY_NC) {
                     r['QTY'] = oldNum;
-                    this.presentService.presentToast('当前物料收货数超过单据明细的物料数量', 'warning');
+                    this.presentService.presentToast('e11', 'warning');
                 } else {
                     item['QTY_NC'] = QTY_NC - Number(value);
                     item['QTY_CUR'] = Number(item.Quantity) - Number(item.QTY_FIN) - item['QTY_NC'];
                     r['QTY'] = value;
-                    this.presentService.presentToast('修改物料收货数成功');
+                    this.presentService.presentToast('e12');
                 }
             }
         } else {
             r['QTY'] = value;
             if (!this.hasPD) {
-                this.presentService.presentToast('修改物料收货数成功');
+                this.presentService.presentToast('e12');
             }
         }
     }
@@ -80,7 +80,7 @@ export class TablePage implements OnInit {
                     }
                 }
                 this.tableList.splice(num, 1);
-                this.presentService.presentToast('删除成功');
+                this.presentService.presentToast('e08');
             }
         });
     }

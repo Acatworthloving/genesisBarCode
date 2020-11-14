@@ -9,13 +9,13 @@
 <ion-content>
     <div class="ion-margin ion-text-start scan-from">
         <ion-list>
-            <app-scan-input (funcDocEntry)="getBillData()" [infoObj]="infoObj" [scanType]="scanTypeArr"></app-scan-input>
+            <app-scan-input [docNum]="publicService.DocNum.CGSJ" (funcDocEntry)="getBillData()" [infoObj]="infoObj" [scanType]="scanTypeArr"></app-scan-input>
         </ion-list>
     </div>
     <app-table-edit [columns]="documentColumns" [tableList]="documentList" tableId="SJTableId"></app-table-edit>
 </ion-content>
 <ion-footer>
-    <ion-button expand="block" class="ion-margin" mode='ios' (click)="submit()" [disabled]="!documentList.length">
+    <ion-button expand="block"  mode='ios' (click)="submit()" [disabled]="!documentList.length">
         提交数据
     </ion-button>
 </ion-footer>

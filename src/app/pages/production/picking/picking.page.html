@@ -21,7 +21,7 @@
     <div *ngIf="pageType== 'getOrder'">
         <div class="ion-margin ion-text-start scan-from">
             <ion-list>
-                <app-scan-input (addBar)="scanInput($event)" [infoObj]="infoObj" (getPL)="scanPL()"
+                <app-scan-input [docNum]="publicService.DocNum.SC" (addBar)="scanInput($event)" [infoObj]="infoObj" (funcDocEntry)="scanPL()"
                                 [scanType]="scanTypeArr"></app-scan-input>
                 <ion-item lines="full">
                     <ion-label>
@@ -30,7 +30,7 @@
                     <ion-input placeholder="发料数量" color="primary" (change)="changeQTY($event,'row')" mode="ios"
                                slot="end"
                                type="number"
-                               [value]="maxNum" pattern="[0-9]*"
+                               [value]="maxNum"
                                [disabled]="!maxNum || materieObj['BFlag']==='S'"
                                class="ion-text-right ion-padding-start"></ion-input>
                 </ion-item>
@@ -38,10 +38,6 @@
                                    [infoObj]="infoObj"></app-materiel-item>
             </ion-list>
         </div>
-        <ion-button expand="block" class="ion-margin btn-submit" mode='ios' (click)="submit()"
-                    [disabled]="!scanList.length">
-            提交数据
-        </ion-button>
     </div>
     <div *ngIf="pageType==='documentDetails'">
         <app-table [columns]="documentColumns" [tableList]="documentList" tableId="documentId"></app-table>
@@ -52,3 +48,9 @@
                       [documentList]="documentList"></app-table-kc>
     </div>
 </ion-content>
+<ion-footer>
+    <ion-button expand="block" mode='ios' (click)="submit()"
+                [disabled]="!scanList.length">
+        提交数据
+    </ion-button>
+</ion-footer>

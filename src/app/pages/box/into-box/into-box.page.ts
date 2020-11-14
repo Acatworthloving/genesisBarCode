@@ -68,6 +68,10 @@ export class IntoBoxPage implements OnInit {
     }
 
     submit() {
+        if (!this.infoObj.wxcode) {
+            this.presentService.presentToast('e44', 'warning');
+            return false;
+        }
         const LstDetail = [];
         this.scanList.forEach((val) => {
             LstDetail.push({
@@ -90,71 +94,23 @@ export class IntoBoxPage implements OnInit {
     }
 
     scanInput(event) {
-        this.addBar(event.value, event.arr);
-    }
-
-    addBar(val, arr) {
-        const ItemCodeText: any = this.publicService.getArrInfo(arr, 'ItemCode'),
-            BarcodeText: any = this.publicService.getArrInfo(arr, 'Barcode'),
-            BFlag = this.publicService.getArrInfo(arr, 'BFlag'),
-            DistNumber = this.publicService.getArrInfo(arr, 'DistNumber');
-
-        if (BFlag === 'S') {
-            // this.presentService.presentToast('当前物料已存在', 'warning');
-            // 判断是否扫描重复物料
-            const scanItem = this.publicService.arrSameId(this.scanList, 'Barcode', BarcodeText);
-            if (scanItem) {
-                this.presentService.presentToast('当前物料已存在', 'warning');
-                return false;
-            }
-            const docuItem = this.publicService.arrSameId(this.documentList, 'Barcode', BarcodeText);
-            if (docuItem) {
-                this.presentService.presentToast('当前物料已存在', 'warning');
-                return false;
-            }
-            if (this.scanList.length) {
-                if (this.scanList[0]['ItemCode'] !== ItemCodeText) {
-                    this.presentService.presentToast('只允许扫描同一种物料编码', 'warning');
-                    return false;
-                }
-            } else {
-                if (this.documentList.length) {
-                    if (this.documentList[0]['ItemCode'] !== ItemCodeText) {
-                        this.presentService.presentToast('只允许扫描同一种物料编码', 'warning');
-                        return false;
-                    }
-                }
-            }
-
-            this.getDataService.GetExistBarCode(BarcodeText).then((resp) => {
-                if (resp) {
-                    if (resp['Data']) {
-                        this.presentService.presentToast('当前序列号标签已绑定', 'warning');
-                    } else {
-                        if (ItemCodeText) {
-                            const obj = {
-                                ItemCode: ItemCodeText,
-                                ItemName: '',
-                                Barcode: BarcodeText,
-                                BatNo: DistNumber,
-                                BFlag: 's',
-                                LiuNo: this.infoObj.ItemCode,
-                                Qty: 1
-                            };
-                            this.successScan(obj);
-                        }
-                    }
-                }
-            });
-
-        } else {
-            this.presentService.presentToast('只能扫描序列号标签物料', 'warning');
+        // 判断是否扫描重复物料
+        const scanItem = this.publicService.arrSameId(this.scanList, 'Barcode', event.value);
+        if (scanItem) {
+            this.presentService.presentToast('e04', 'warning');
+            return false;
         }
-    }
-
-    successScan(obj) {
+        const obj = {
+            ItemCode: this.infoObj.ItemCode,
+            ItemName: '',
+            Barcode: event.value,
+            BatNo: event.value,
+            BFlag: 'S',
+            LiuNo: event.value,
+            Qty: 1
+        };
         this.materieObj = obj;
         this.scanList.unshift(obj);
-        this.presentService.presentToast('当前物料扫描成功');
+        this.presentService.presentToast('e15');
     }
 }

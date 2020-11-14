@@ -48,7 +48,8 @@ export class IncomingQualityPage implements OnInit {
     submit() {
         const LstDetail = [];
         this.documentList.forEach((val) => {
-            if (val.JSQty && val.ZJQty) {
+            const ZJQty = Number(val.ZJQty), JSQty = Number(val.JSQty), SJQty = Number(val.SJQty), BHGQty = Number(val.BHGQty);
+            if (JSQty > 0 && ZJQty > 0 && SJQty >= ZJQty && ZJQty >= BHGQty) {
                 LstDetail.push(val);
             }
         });

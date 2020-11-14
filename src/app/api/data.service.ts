@@ -19,12 +19,14 @@ export class DataService {
     }
 
     getData(api: string, postParams?: any) {
+        this.presentService.presentLoading();
         return this.http.get(api, {
             params: postParams
         }).pipe(
             map((data: any) => {
+                this.presentService.dismissLoading();
                 if (data.ErrCode == -100) {
-                    this.presentService.presentToast('登录信息过期，请重新登入', 'warning');
+                    this.presentService.presentToast('e09', 'warning');
                     this.userDataService.logout();
                     return false;
                 } else if (data.ErrCode == 0) {
@@ -38,14 +40,16 @@ export class DataService {
     }
 
     postData(api: string, postParams?: any) {
+        this.presentService.presentLoading();
         return this.http.post(api, postParams).pipe(
             map((data: any) => {
+                this.presentService.dismissLoading();
                 if (data.ErrCode == -100) {
-                    this.presentService.presentToast('登录信息过期，请重新登入', 'warning');
+                    this.presentService.presentToast('e09', 'warning');
                     this.userDataService.logout();
                     return false;
                 } else if (data.ErrCode == 0) {
-                    return data;
+                    return data || true;
                 } else {
                     this.presentService.presentToast(data.ErrMsg, 'warning');
                     return false;
@@ -58,7 +62,7 @@ export class DataService {
         return this.http.put(api, postParams).pipe(
             map((data: any) => {
                 if (data.ErrCode == -100) {
-                    this.presentService.presentToast('登录信息过期，请重新登入', 'warning');
+                    this.presentService.presentToast('e09', 'warning');
                     this.userDataService.logout();
                     return false;
                 } else if (data.ErrCode == 0) {
@@ -75,7 +79,7 @@ export class DataService {
         return this.http.delete(api, postParams).pipe(
             map((data: any) => {
                 if (data.ErrCode == -100) {
-                    this.presentService.presentToast('登录信息过期，请重新登入', 'warning');
+                    this.presentService.presentToast('e09', 'warning');
                     this.userDataService.logout();
                     return false;
                 } else if (data.ErrCode == 0) {

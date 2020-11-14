@@ -18,17 +18,20 @@
     <div *ngIf="pageType== 'getOrder'">
         <form class="ion-margin ion-text-start scan-from">
             <ion-list>
-                <app-scan-input (addBar)="scanInput($event)" [infoObj]="infoObj" hasTwoWh="true"
+                <app-scan-input [docNum]="publicService.DocNum.KCZC" (addBar)="scanInput($event)" [infoObj]="infoObj" hasTwoWh="true"
                                 [scanType]="scanTypeArr"></app-scan-input>
                 <app-materiel-item [materieObj]="materieObj" [hasScanNum]="false" [infoObj]="infoObj"></app-materiel-item>
             </ion-list>
         </form>
-        <ion-button expand="block" class="ion-margin" mode='ios' (click)="submit()"
-                    [disabled]="!scanList.length">
-            提交数据
-        </ion-button>
     </div>
     <div *ngIf="pageType==='orderDetails'">
         <app-table [columns]="columns" [tableList]="scanList" tableId="scanId" hasDel="true"></app-table>
     </div>
 </ion-content>
+<ion-footer>
+    <ion-button expand="block" mode='ios' (click)="submit()"
+                [disabled]="!scanList.length">
+        库存转储
+    </ion-button>
+</ion-footer>
+

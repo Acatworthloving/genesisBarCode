@@ -17,7 +17,7 @@ export class UnbundlingPage implements OnInit {
     columns = [];
     documentList: any = [];
     scanList: any = [];
-    scanTypeArr = ['User', 'WX', 'KB'];
+    scanTypeArr = ['User', 'WL', 'WX', 'KB'];
     infoObj: any = {
         wxcode: null,
         kbcode: null,
@@ -53,11 +53,11 @@ export class UnbundlingPage implements OnInit {
     }
 
     clearData() {
-
         this.infoObj.wxcode = null;
         this.infoObj.ItemCode = null;
         this.infoObj.kbcode = null;
         this.scanList = [];
+        this.documentList = [];
         this.materieObj = {};
     }
 
@@ -69,7 +69,7 @@ export class UnbundlingPage implements OnInit {
             if (resp) {
                 this.documentList = resp['Data'];
                 if (!resp['Data'].length) {
-                    this.presentService.presentToast('当前卡板标签未绑定', 'warning');
+                    this.presentService.presentToast('当前卡板未绑定', 'warning');
                     this.infoObj.kbcode = null;
                 }
             }
@@ -119,7 +119,34 @@ export class UnbundlingPage implements OnInit {
     }
 
     scanInput(event) {
-        this.presentService.presentToast('不需要扫描物料标签');
+        const arr = event.arr;
+        const ItemCodeText: any = this.publicService.getArrInfo(arr, 'ItemCode'),
+            BarcodeText: any = this.publicService.getArrInfo(arr, 'Barcode'),
+            BFlagText = this.publicService.getArrInfo(arr, 'BFlag'),
+            DistNumber = this.publicService.getArrInfo(arr, 'DistNumber'),
+            QTYNUM = this.publicService.getArrInfo(arr, 'QTY');
+        const scanItem = this.publicService.arrSameId(this.scanList, 'BarCode', BarcodeText);
+        if (scanItem) {
+            this.presentService.presentToast('e40', 'warning');
+            return false;
+        }
+        const docuItem = this.publicService.arrSameId(this.documentList, 'BarCode', BarcodeText);
+        if (!docuItem) {
+            this.presentService.presentToast('e48', 'warning');
+        } else {
+            this.infoObj['wxcode'] = DistNumber;
+            const obj = {
+                codetype: 10,
+                KBNum: this.infoObj.kbcode,
+                ItemCode: ItemCodeText,
+                ItemName: '',
+                BarCode: BarcodeText,
+                BFlag: BFlagText,
+                exitQty: true,
+                QTY: QTYNUM
+            };
+            this.successScan(obj);
+        }
     }
 
     successScan(obj) {

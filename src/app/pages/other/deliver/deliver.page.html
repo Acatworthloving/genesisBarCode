@@ -21,24 +21,20 @@
     <div *ngIf="pageType== 'getOrder'">
         <form class="ion-margin ion-text-start scan-from">
             <ion-list>
-                <app-scan-input (addBar)="scanInput($event)" [infoObj]="infoObj" (funcDocEntry)="getBillData()"
+                <app-scan-input [docNum]="publicService.DocNum.KCFH" (addBar)="scanInput($event)" [infoObj]="infoObj" (funcDocEntry)="getBillData()"
                                 [scanType]="scanTypeArr"></app-scan-input>
                 <ion-item lines="full">
                     <ion-label>
                         收货数
                     </ion-label>
                     <ion-input placeholder="收货数" color="primary"  (change)="changeQTY($event,'row')" mode="ios" slot="end" type="number"
-                               [value]="maxNum" pattern="[0-9]*"
+                               [value]="maxNum"
                                [disabled]="!maxNum || materieObj['BFlag']==='S'"
                                class="ion-text-right ion-padding-start"></ion-input>
                 </ion-item>
                 <app-materiel-item [scanNum]="scanNum" [materieObj]="materieObj" [infoObj]="infoObj"></app-materiel-item>
             </ion-list>
         </form>
-        <ion-button expand="block" class="ion-margin btn-submit" mode='ios' (click)="submit()"
-                    [disabled]="!scanList.length">
-            提交数据
-        </ion-button>
     </div>
     <div *ngIf="pageType==='documentDetails'">
         <app-table [columns]="documentColumns" [tableList]="documentList" tableId="documentId"></app-table>
@@ -49,3 +45,9 @@
                       [documentList]="documentList"></app-table-kc>
     </div>
 </ion-content>
+<ion-footer>
+    <ion-button expand="block" mode='ios' (click)="submit()"
+                [disabled]="!scanList.length">
+        库存转储
+    </ion-button>
+</ion-footer>

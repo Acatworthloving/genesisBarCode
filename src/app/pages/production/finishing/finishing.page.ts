@@ -14,11 +14,12 @@ import {PageRouterService} from '../../../providers/page-router.service';
 export class FinishingPage implements OnInit {
     title: string = '';
     documentObj: any = {};
-    scanTypeArr = ['User', 'PL'];
+    scanTypeArr = ['User', 'DocEntry'];
     infoObj: any = {
         Bil_ID: null,
         User: null,
-        plcode: null
+        Bils_No: null,
+        BGQty: 0,
     };
     documentColumns = [];
 
@@ -44,7 +45,7 @@ export class FinishingPage implements OnInit {
 
     scanPL() {
         const config = {
-            order: this.infoObj.plcode,
+            order: this.infoObj.Bils_No,
             actType: this.infoObj.Bil_ID
         };
         this.getDataService.getPublicData('SCSCAN/GetSCPlanData', config).then((resp) => {
@@ -61,12 +62,12 @@ export class FinishingPage implements OnInit {
 
     submit() {
         const config = {
-            PlanCode: this.infoObj.plcode,
-            PLineCode: this.documentObj.PLineCode,
+            PlanCode: this.infoObj.Bils_No,
+            PLineCode: this.documentObj.PLineCode || '',
             User: this.infoObj.User,
-            ScanType: 'UP',
+            BGQty: this.infoObj.BGQty,
         };
-        this.getDataService.submitPublicData('SCSCAN/ScanSubmitScanData', config).then((resp) => {
+        this.getDataService.submitPublicData('SCSCAN/BGSubmitScanData', config).then((resp) => {
             if (resp) {
                 this.clearData();
             }

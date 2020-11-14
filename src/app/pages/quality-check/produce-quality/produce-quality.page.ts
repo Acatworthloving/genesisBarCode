@@ -14,7 +14,7 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 export class ProduceQualityPage implements OnInit {
     title: string = '';
     documentList: any = [];
-    scanTypeArr = ['User', 'PL'];
+    scanTypeArr = ['User', 'DocEntry'];
     documentColumns = [];
     infoObj: any = {
         Bils_No: null,
@@ -37,6 +37,7 @@ export class ProduceQualityPage implements OnInit {
     constructor(
         public presentService: PresentService,
         public dataService: DataService,
+        public publicService: PublicService,
         public getDataService: GetDataService,
         public pageRouterService: PageRouterService
     ) {
@@ -58,22 +59,52 @@ export class ProduceQualityPage implements OnInit {
 
     scanPL() {
         const config = {
-            order: this.infoObj.plcode
+            order: this.infoObj.Bils_No
         };
         const request = this.dataService.getData('QC/GetSCZJBillData', config);
         request.subscribe(resp => {
-            this.documentObj = resp.Data[0] || {};
+            if (resp.Data.length) {
+                this.documentObj = resp.Data[0];
+            } else {
+                this.documentObj = {};
+                this.presentService.presentToast('生产计划单无数据', 'warning');
+            }
         }, error => {
             this.presentService.presentToast(error.message);
         });
     }
 
     submit() {
+        const form = this.produceForm;
+        const ZJQty = Number(form.get('ZJQty').value), RejectQty = Number(form.get('RejectQty').value),
+            JSQty = Number(form.get('JSQty').value), BHGQty = Number(form.get('BHGQty').value);
+        if (form.get('ZJType').value === '全检') {
+            if (ZJQty != RejectQty + JSQty) {
+                this.presentService.presentToast('全检时,质检数量必须等于接收数量加拒收数量', 'warning');
+                return;
+            }
+        }
+        if (BHGQty > ZJQty) {
+            this.presentService.presentToast('不合格数量不能大于质检数量', 'warning');
+            return;
+        }
+        if (form.get('JSType').value === '全收') {
+            if (RejectQty || JSQty < ZJQty) {
+                this.presentService.presentToast('全收时,不能有拒收数量,接收数量不能小于质检数量', 'warning');
+                return;
+            }
+        }
+        if (form.get('JSType').value === '返工') {
+            if (JSQty) {
+                this.presentService.presentToast('返工时,不能有接收数量', 'warning');
+                return;
+            }
+        }
         const config = {
             User: this.infoObj.User,
             LstDetail: [
                 {
-                    PlanCode: this.infoObj.plcode,
+                    PlanCode: this.infoObj.Bils_No,
                     DocNum: this.documentObj['DocNum'],
                     PLineCode: this.documentObj['PLineCode'],
                     PLineName: this.documentObj['PLineName'],
@@ -81,14 +112,14 @@ export class ProduceQualityPage implements OnInit {
                     ItemName: this.documentObj['ItemName'],
                     GGXH: this.documentObj['GGXH'],
                     PlanQty: this.documentObj['PlanQty'],
-                    JYType: this.produceForm.get('JYType').value,
-                    ZJType: this.produceForm.get('ZJType').value,
-                    ZJQty: this.produceForm.get('ZJQty').value,
-                    BHGQty: this.produceForm.get('BHGQty').value,
-                    BHGRemark: this.produceForm.get('BHGRemark').value,
-                    JSType: this.produceForm.get('JSType').value,
-                    JSQty: this.produceForm.get('JSQty').value,
-                    RejectQty: this.produceForm.get('RejectQty').value
+                    JYType: form.get('JYType').value,
+                    ZJType: form.get('ZJType').value,
+                    ZJQty: form.get('ZJQty').value,
+                    BHGQty: form.get('BHGQty').value,
+                    BHGRemark: form.get('BHGRemark').value,
+                    JSType: form.get('JSType').value,
+                    JSQty: form.get('JSQty').value,
+                    RejectQty: form.get('RejectQty').value
                 }
             ]
         };

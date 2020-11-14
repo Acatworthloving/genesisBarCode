@@ -67,7 +67,7 @@
 
 .table-box {
   overflow-x: auto;
-  margin: 26px 16px;
+  margin: 8px 16px 12px;
   border-right: 1px solid #ddd;
 
   table {
@@ -85,12 +85,51 @@
     white-space: nowrap;
   }
 }
-.pr-8{
+
+.pr-8 {
   padding-right: 8px;
 }
-.btn-submit{
+
+.btn-submit {
   margin-bottom: 60px;
 }
-ion-header{
+
+ion-header {
   background: #fff;
+  ion-segment{
+    height: 32px;
+    ion-segment-button{
+      height: 32px;
+      min-height: initial;
+      --margin-bottom: 0;
+      --margin-top: 0;
+    }
+    ion-label{
+      margin: 0;
+    }
+  }
+}
+
+.no-data {
+  font-size: 14px;
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #ddd;
+  border-top: none;
+}
+
+ion-footer {
+  ion-button {
+    margin: 0;
+    --border-radius: 0;
+    --padding-bottom: 6px;
+    --padding-top: 6px;
+    height: 34px;
+  }
+}
+
+.scan-from{
+  --margin-top: 4px;
+  margin-top: 4px;
+  margin-bottom: 0;
 }

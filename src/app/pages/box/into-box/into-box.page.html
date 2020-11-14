@@ -21,7 +21,7 @@
     <div *ngIf="pageType== 'getOrder'">
         <form class="ion-margin ion-text-start scan-from">
             <ion-list>
-                <app-scan-input (addBar)="scanInput($event)" [infoObj]="infoObj" hasTwoWh="true" (getWX)="scanWX()"
+                <app-scan-input  (addBar)="scanInput($event)" [infoObj]="infoObj" isOnlyNum="true" (getWX)="scanWX()"
                                 [scanType]="scanTypeArr"></app-scan-input>
                 <ion-item lines="full">
                     <ion-label>
@@ -50,10 +50,6 @@
                 </ion-item>
             </ion-list>
         </form>
-        <ion-button expand="block" class="ion-margin" mode='ios' (click)="submit()"
-                    [disabled]="!scanList.length">
-            提交数据
-        </ion-button>
     </div>
     <div *ngIf="pageType==='documentDetails'">
         <app-table [columns]="documentColumns" [tableList]="documentList" tableId="documentId"></app-table>
@@ -62,3 +58,10 @@
         <app-table [columns]="columns" [tableList]="scanList" tableId="scanId" hasDel="true"></app-table>
     </div>
 </ion-content>
+
+<ion-footer>
+    <ion-button expand="block" mode='ios' (click)="submit()"
+                [disabled]="!scanList.length">
+        {{title}}
+    </ion-button>
+</ion-footer>

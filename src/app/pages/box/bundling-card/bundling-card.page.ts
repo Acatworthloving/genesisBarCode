@@ -18,7 +18,7 @@ export class BundlingCardPage implements OnInit {
     columns = [];
     documentList: any = [];
     scanList: any = [];
-    scanTypeArr = ['User', 'WX', 'KB'];
+    scanTypeArr = ['User', 'WX', 'WL', 'KB'];
     infoObj: any = {
         wxcode: null,
         kbcode: null,
@@ -64,30 +64,31 @@ export class BundlingCardPage implements OnInit {
     }
 
     scanWX() {
+        if (!this.infoObj.kbcode) {
+            this.presentService.presentToast('e45', 'warning');
+        }
         const scanItem = this.publicService.arrSameId(this.scanList, 'BarCode', this.infoObj.wxcode);
         if (scanItem) {
-            this.presentService.presentToast('当前外箱已存在', 'warning');
-            return false;
-        }
-        const docuItem = this.publicService.arrSameId(this.documentList, 'BarCode', this.infoObj.wxcode);
-        if (docuItem) {
-            this.presentService.presentToast('当前外箱已存在', 'warning');
+            this.presentService.presentToast('e50', 'warning');
             return false;
         }
         const config = {
-            barcode: this.infoObj.wxcode
+            barcode: this.infoObj.wxcode,
+            codetype: 24
         };
         this.getDataService.getPublicData('PXKB/GetExistWXCode', config).then((resp) => {
             if (resp) {
                 if (resp['Data']) {
-                    this.presentService.presentToast('当前序列号标签已绑定', 'warning');
+                    this.presentService.presentToast('e49', 'warning');
                 } else {
                     const obj = {
+                        codetype: 24,
                         KBNum: this.infoObj.kbcode,
                         ItemCode: this.infoObj.ItemCode,
                         ItemName: '',
                         BarCode: this.infoObj.wxcode,
-                        Qty: 0
+                        QTY: 1,
+                        BFlag: 'S'
                     };
                     this.successScan(obj);
                 }
@@ -96,6 +97,9 @@ export class BundlingCardPage implements OnInit {
     }
 
     scanKB() {
+        if (!this.infoObj.kbcode) {
+            this.presentService.presentToast('e45', 'warning');
+        }
         const config = {
             kbcode: this.infoObj.kbcode
         };
@@ -117,7 +121,8 @@ export class BundlingCardPage implements OnInit {
                 User: this.infoObj.User,
                 BarCode: val.BarCode,
                 BatNo: val.BatNo,
-                Qty: val.Qty,
+                CodeType: val.codetype,
+                QTY: val.codetype == 24 ? 0 : val.QTY,
             });
         });
         this.getDataService.submitPublicData('PXKB/KBSubmitScanData', LstDetail).then((resp) => {
@@ -128,7 +133,41 @@ export class BundlingCardPage implements OnInit {
     }
 
     scanInput(event) {
-        this.presentService.presentToast('不需要扫描物料标签');
+        const arr = event.arr;
+        const ItemCodeText: any = this.publicService.getArrInfo(arr, 'ItemCode'),
+            BarcodeText: any = this.publicService.getArrInfo(arr, 'Barcode'),
+            BFlagText = this.publicService.getArrInfo(arr, 'BFlag'),
+            DistNumber = this.publicService.getArrInfo(arr, 'DistNumber'),
+            QTYNUM = this.publicService.getArrInfo(arr, 'QTY');
+        const scanItem = this.publicService.arrSameId(this.scanList, 'BarCode', BarcodeText);
+        if (scanItem) {
+            this.presentService.presentToast('e50', 'warning');
+            return false;
+        }
+        const config = {
+            barcode: BarcodeText,
+            codetype: 10
+        };
+        this.getDataService.getPublicData('PXKB/GetExistWXCode', config).then((resp) => {
+            if (resp) {
+                if (resp['Data']) {
+                    this.presentService.presentToast('当前序列号标签已绑定', 'warning');
+                } else {
+                    this.infoObj['wxcode'] = DistNumber;
+                    const obj = {
+                        codetype: 10,
+                        KBNum: this.infoObj.kbcode,
+                        ItemCode: ItemCodeText,
+                        ItemName: '',
+                        BarCode: BarcodeText,
+                        BFlag: BFlagText,
+                        exitQty: true,
+                        QTY: QTYNUM
+                    };
+                    this.successScan(obj);
+                }
+            }
+        });
     }
 
     successScan(obj) {

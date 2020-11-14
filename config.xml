@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.dreamoverstudio.t101" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Tectura101</name>
+    <name>创世讯联</name>
     <description>An awesome Ionic/Cordova app.</description>
     <content src="index.html" />
     <access origin="*" />

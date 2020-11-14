@@ -8,7 +8,7 @@
                 <span *ngIf="!c.type">
                     {{r[c.prop]}}
                 </span>
-                <ion-input *ngIf="c.type==='input'&&c['inputtype']==='number'" type="number" pattern="[0-9]*"
+                <ion-input *ngIf="c.type==='input'&&c['inputtype']==='number'" type="number"
                            [(ngModel)]="r[c.prop]"></ion-input>
                 <ion-input *ngIf="c.type==='input'&&c['inputtype']!=='number'" type="text"
                               [(ngModel)]="r[c.prop]"></ion-input>
@@ -18,5 +18,7 @@
                 </ion-select>
             </td>
         </tr>
+
+        <caption align="bottom" class="no-data" *ngIf="!tableList.length">无数据</caption>
     </table>
 </div>

@@ -21,13 +21,13 @@ export class ReturnPage implements OnInit {
     scanNum: number = 0;
     maxNum: number = 0;
     scanBFlagS: boolean = false;
-    scanTypeArr = ['User', 'PL', 'Whs'];
+    scanTypeArr = ['User', 'DocEntry', 'Whs'];
     infoObj: any = {
         Bil_ID: null,
-        User: '8',
-        plcode: null,
+        User: null,
+        Bils_No: null,
         Cus_No: '',
-        Whs: 'W01',
+        Whs: null,
     };
     BFlagObj = {};
     LineNumberList = [];
@@ -64,7 +64,7 @@ export class ReturnPage implements OnInit {
     clearData() {
         this.scanNum = 0;
         this.maxNum = 0;
-        this.infoObj.plcode = null;
+        this.infoObj.Bils_No = null;
         this.infoObj.Cus_No = '';
         this.infoObj.Whs = null;
         this.documentList = [];
@@ -111,17 +111,18 @@ export class ReturnPage implements OnInit {
 
     scanPL() {
         const config = {
-            order: this.infoObj.plcode,
+            order: this.infoObj.Bils_No,
             actType: this.infoObj.Bil_ID,
         };
         this.getDataService.getPublicData('SC/GetBillData', config).then((resp) => {
             if (resp) {
                 if (resp['Data'].length) {
                     resp['Data'].forEach((val) => {
-                        val['QTY_NC'] = Number(val.Quantity) - Number(val.QTY_FIN);
+                        const num = Number(val.Quantity) - Number(val.QTY_FIN);
+                        val['QTY_NC'] = num < 0 ? 0 : num;
                     });
                 } else {
-                    this.presentService.presentToast('当前单据已扫描完毕', 'warning');
+                    this.presentService.presentToast('e02', 'warning');
                 }
                 this.documentList = resp['Data'];
             }
@@ -134,7 +135,7 @@ export class ReturnPage implements OnInit {
 
     addBar(val, arr) {
         if (!this.documentList.length) {
-            this.presentService.presentToast('当前单据已扫描完毕', 'warning');
+            this.presentService.presentToast('e02', 'warning');
             return false;
         }
         const ItemCodeText: any = this.publicService.getArrInfo(arr, 'ItemCode'),
@@ -148,12 +149,12 @@ export class ReturnPage implements OnInit {
 
         // 序列号管理，只能存在一条数据
         if (BFlag === 'S' && this.BFlagObj[key]) {
-            this.presentService.presentToast('当前物料已存在', 'warning');
+            this.presentService.presentToast('e04', 'warning');
         }
         // 判断是否扫描重复物料
         const scanItem = this.publicService.arrSameId(this.scanList, 'Barcode', BarcodeText);
         if (scanItem) {
-            this.presentService.presentToast('当前物料已存在', 'warning');
+            this.presentService.presentToast('e04', 'warning');
             return false;
         }
 
@@ -212,8 +213,8 @@ export class ReturnPage implements OnInit {
                 BFlag: this.publicService.getArrInfo(arr, 'BFlag'),
                 BatchNo: this.publicService.getArrInfo(arr, 'DistNumber'),
                 LiuNo: this.publicService.getArrInfo(arr, 'LiuNo'),
-                OrderEntry: selectItem['OrderEntry'],
-                OrderLine: selectItem['OrderLine'],
+                OrderEntry: selectItem['OrderEntry']|| '',
+                OrderLine: selectItem['OrderLine']|| '',
                 NumPerMsr: selectItem['NumPerMsr'],
                 DocNum: selectItem['DocNum'],
                 DocEntry: selectItem['DocEntry'],
@@ -246,12 +247,12 @@ export class ReturnPage implements OnInit {
                         };
                         this.successScan(returnObj);
                     } else {
-                        this.presentService.presentToast('当前物料扫描失败', 'warning');
+                        this.presentService.presentToast('e14', 'warning');
                     }
                 });
             }
         } else {
-            this.presentService.presentToast('当前单号不存在或已关闭', 'warning');
+            this.presentService.presentToast('e10', 'warning');
         }
     }
 
@@ -277,7 +278,7 @@ export class ReturnPage implements OnInit {
                 this.BFlagObj[key] = Number(obj.QTY);
             }
             this.scanList.unshift(obj);
-            this.presentService.presentToast('当前物料扫描成功');
+            this.presentService.presentToast('e15');
         }
     }
 
@@ -308,24 +309,28 @@ export class ReturnPage implements OnInit {
                 // 未清量大于物料收容
                 const BFlagObj = this.BFlagObj;
                 BFlagObj[key] -= Number(oldNum);
-                this.publicService.checkInventory(BFlagObj, item, index, row, row['BFlag'], key).then((res) => {
-                    if (res) {
-                        this.BFlagObj[key] = BFlagObj[key] + Number(res['Obj']['QTY']);
-                        this.successScan(res, 'modify');
-                    }
-                });
+                const returnObj = {
+                    dIndex: index,
+                    Obj: row,
+                    Key: key,
+                    N: Number(item['QTY_NC']) - Number(row['QTY']),
+                    C: Number(item['QTY_CUR']) + Number(row['QTY'])
+                };
+                this.successScan(returnObj, 'modify');
             } else {
                 // 未清量小于物料收容const
                 const BFlagObj = this.BFlagObj;
                 BFlagObj[key] -= Number(oldNum);
                 this.presentService.presentAlert('当前标签收货数大于单据未清量，是否继续修改').then((wql) => {
                     if (wql) {
-                        this.publicService.checkInventory(BFlagObj, item, index, row, row['BFlag'], key).then((res) => {
-                            if (res) {
-                                this.BFlagObj[key] = BFlagObj[key] + Number(res['Obj']['QTY']);
-                                this.successScan(res, 'modify');
-                            }
-                        });
+                        const returnObj = {
+                            dIndex: index,
+                            Obj: row,
+                            Key: key,
+                            N: 0,
+                            C: Number(item['QTY_CUR']) + Number(row['QTY'])
+                        };
+                        this.successScan(returnObj, 'modify');
                     } else {
                         this.presentService.presentToast('当前物料发料数修改失败', 'warning');
                     }

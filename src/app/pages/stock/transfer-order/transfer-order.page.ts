@@ -46,7 +46,7 @@ export class TransferOrderPage implements OnInit {
                 this.infoObj.Bil_ID = res['id'];
             }
         });
-        this.columns = this.publicService.TableColumns;
+        this.columns = this.publicService.TableColumns2;
     }
 
     ngOnInit() {
@@ -118,12 +118,12 @@ export class TransferOrderPage implements OnInit {
 
         // 序列号管理，只能存在一条数据
         if (BFlag === 'S' && this.BFlagObj[key]) {
-            this.presentService.presentToast('当前物料已存在', 'warning');
+            this.presentService.presentToast('e04', 'warning');
         }
         // 判断是否扫描重复物料
         const scanItem = this.publicService.arrSameId(this.scanList, 'Barcode', BarcodeText);
         if (scanItem) {
-            this.presentService.presentToast('当前物料已存在', 'warning');
+            this.presentService.presentToast('e04', 'warning');
             return false;
         }
 
@@ -153,7 +153,7 @@ export class TransferOrderPage implements OnInit {
             const config = {
                 itemcode: obj.ItemCode,
                 wh: obj.Wh,
-                kw: this.infoObj.Kuwei,
+                kw: this.infoObj.Kuwei || '',
                 batNo: obj.BatchNo,
                 batId: obj.BFlag,
             };
@@ -167,7 +167,7 @@ export class TransferOrderPage implements OnInit {
                                     obj.QTY = resp['Data'];
                                     this.successScan(obj);
                                 } else {
-                                    this.presentService.presentToast('当前物料扫描失败', 'warning');
+                                    this.presentService.presentToast('e14', 'warning');
                                 }
                             });
                         } else {
@@ -175,7 +175,7 @@ export class TransferOrderPage implements OnInit {
                             this.successScan(obj);
                         }
                     } else {
-                        this.presentService.presentToast('当前物料库存不足', 'warning');
+                        this.presentService.presentToast('e30', 'warning');
                     }
                 }
             );
@@ -188,6 +188,6 @@ export class TransferOrderPage implements OnInit {
     successScan(obj) {
         this.materieObj = obj;
         this.scanList.unshift(obj);
-        this.presentService.presentToast('当前物料扫描成功');
+        this.presentService.presentToast('e15');
     }
 }

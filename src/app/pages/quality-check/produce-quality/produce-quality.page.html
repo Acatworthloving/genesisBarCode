@@ -9,7 +9,7 @@
 <ion-content>
     <div class="ion-margin ion-text-start scan-from">
         <ion-list>
-            <app-scan-input [infoObj]="infoObj" (getPL)="scanPL()" [scanType]="scanTypeArr"></app-scan-input>
+            <app-scan-input [docNum]="publicService.DocNum.SC" [infoObj]="infoObj" (funcDocEntry)="scanPL()" [scanType]="scanTypeArr"></app-scan-input>
         </ion-list>
         <form [formGroup]="produceForm" novalidate class="ion-text-start">
             <ion-list>
@@ -73,14 +73,14 @@
                     <ion-label>
                         质检数量
                     </ion-label>
-                    <ion-input placeholder="质检数量" mode="ios" slot="end" type="number" pattern="[1-9]*" formControlName="ZJQty"
+                    <ion-input placeholder="质检数量" mode="ios" slot="end" type="number" formControlName="ZJQty"
                                min="1" class="ion-text-right ion-padding-start"></ion-input>
                 </ion-item>
                 <ion-item lines="full">
                     <ion-label>
                         不合格数量
                     </ion-label>
-                    <ion-input placeholder="不合格数量" mode="ios" slot="end" type="number" pattern="[0-9]*" formControlName="BHGQty"
+                    <ion-input placeholder="不合格数量" mode="ios" slot="end" type="number"  formControlName="BHGQty"
                                class="ion-text-right ion-padding-start"></ion-input>
                 </ion-item>
                 <ion-item lines="full">
@@ -103,14 +103,14 @@
                     <ion-label>
                         接收数量
                     </ion-label>
-                    <ion-input placeholder="接收数量" mode="ios" slot="end" type="number" pattern="[1-9]*" formControlName="JSQty"
+                    <ion-input placeholder="接收数量" mode="ios" slot="end" type="number" formControlName="JSQty"
                                min="1" class="ion-text-right ion-padding-start"></ion-input>
                 </ion-item>
                 <ion-item lines="full">
                     <ion-label>
                         拒收数量
                     </ion-label>
-                    <ion-input placeholder="拒收数量" mode="ios" slot="end" type="number" pattern="[0-9]*" formControlName="RejectQty"
+                    <ion-input placeholder="拒收数量" mode="ios" slot="end" type="number"  formControlName="RejectQty"
                                class="ion-text-right ion-padding-start"></ion-input>
                 </ion-item>
             </ion-list>
@@ -118,7 +118,7 @@
     </div>
 </ion-content>
 <ion-footer>
-    <ion-button expand="block" class="ion-margin" mode='ios' (click)="submit()" [disabled]="produceForm.invalid">
+    <ion-button expand="block" mode='ios' (click)="submit()" [disabled]="produceForm.invalid">
         提交数据
     </ion-button>
 </ion-footer>

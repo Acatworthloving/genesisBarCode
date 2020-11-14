@@ -50,18 +50,13 @@ export class QueryPage implements OnInit {
         const config = {
             itemcode: this.infoObj.ItemCode,
             wh: this.infoObj.Whs,
-            kw: this.infoObj.Kuwei,
+            kw: '',
             batNo: '',
-            batId: '',
+            batId: 'N',
         };
         this.infoObj.batNo = '';
         this.infoObj.batId = '';
-        this.getDataService.getPublicData('WH/GetItemCodeQty', config).then((res) => {
-            if (res && res['Data']) {
-                this.infoObj.SapQty = res['Data']['SapQty'];
-                this.infoObj.XLPCQty = res['Data']['XLPCQty'];
-            }
-        });
+        this.getItemCodeQty(config);
     }
 
     scanInput(event) {
@@ -75,7 +70,7 @@ export class QueryPage implements OnInit {
         const config = {
             itemcode: ItemCodeText,
             wh: this.infoObj.Whs,
-            kw: this.infoObj.Kuwei,
+            kw: '',
             batNo: DistNumber,
             batId: BFlag,
         };
@@ -83,6 +78,10 @@ export class QueryPage implements OnInit {
         this.infoObj.ItemCode = ItemCodeText;
         this.infoObj.batNo = DistNumber;
         this.infoObj.batId = BFlag;
+        this.getItemCodeQty(config);
+    }
+
+    getItemCodeQty(config) {
         this.getDataService.getPublicData('WH/GetItemCodeQty', config).then((res) => {
             if (res && res['Data']) {
                 this.infoObj.SapQty = res['Data']['SapQty'];

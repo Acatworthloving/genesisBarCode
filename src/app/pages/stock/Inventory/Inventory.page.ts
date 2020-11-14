@@ -23,10 +23,10 @@ export class InventoryPage implements OnInit {
     scanTypeArr = ['User', 'Whs'];
     infoObj: any = {
         Bil_ID: null,
-        User: '8',
+        User: null,
         Bils_No: null,
         Cus_No: '',
-        Whs: 'W01',
+        Whs: null,
         wxcode: null,
         ItemCode: null,
         PDType: '非批次盘点'
@@ -99,7 +99,7 @@ export class InventoryPage implements OnInit {
                     ItemCode: val.ItemCode,
                     ItemName: val.ItemName,
                     QTY: val.QTY,
-                    WH: this.infoObj.Whs,
+                    WH: val.WH,
                     BatNo: val.BatNo,
                     BFlag: val.BFlag
                 });
@@ -203,7 +203,8 @@ export class InventoryPage implements OnInit {
                 ItemName: '',
                 QTY: QtyText,
                 BatNo: DistNumber,
-                BFlag: BFlagText
+                BFlag: BFlagText,
+                WH: this.infoObj.Whs,
             };
             this.successScan(obj);
         } else {
@@ -214,7 +215,7 @@ export class InventoryPage implements OnInit {
     successScan(obj) {
         this.materieObj = obj;
         this.scanList.unshift(obj);
-        this.presentService.presentToast('当前物料扫描成功');
+        this.presentService.presentToast('e15');
     }
 
     changeQTY(event, type?) {

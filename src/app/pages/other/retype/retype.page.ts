@@ -12,14 +12,14 @@ import {ScanInputPage} from '../../component/scan-input/scan-input.page';
     templateUrl: './retype.page.html'
 })
 export class RetypePage implements OnInit {
-    title: string = '';
-    pageType: string = 'getOrder';
+    title = '';
+    pageType = 'getOrder';
     documentColumns = [];
     columns = [];
     documentList: any = [];
     scanList: any = [];
-    scanNum: number = 0;
-    maxNum: number = 0;
+    scanNum = 0;
+    maxNum = 0;
     scanTypeArr = ['User'];
     infoObj: any = {
         Bil_ID: null,
@@ -30,6 +30,8 @@ export class RetypePage implements OnInit {
         CRKType: '供应商赠品'
     };
     LineNumberList: any = [];
+    PRINTERLIST: any = ['#1打印机', '#2打印机', '#3打印机'];
+    selectPRINTER: string = '';
     materieObj: any = {};
     @ViewChild('scanInputView', {static: false}) InputView: ScanInputPage;
 
@@ -51,8 +53,14 @@ export class RetypePage implements OnInit {
     }
 
     ngOnInit() {
+        this.getPrinterData();
     }
 
+    changPrinter(event) {
+        this.scanList.forEach((val) => {
+            val.PRINTER = this.selectPRINTER;
+        });
+    }
 
     clearData() {
         this.scanList = [];
@@ -67,17 +75,31 @@ export class RetypePage implements OnInit {
                     QTY: val.QTY,
                     NUM: val.NUM,
                     User: this.infoObj.User,
-                    PRINTER: val.PRINTER
+                    PRINTER: this.selectPRINTER
+                    // PRINTER: val.PRINTER
                 });
             }
         });
         if (LstDetail.length) {
-            this.getDataService.submitPublicData('Print/AddRePrintData', LstDetail).then((resp) => {
+            this.getDataService.submitAddRePrintData('Print/AddRePrintData', LstDetail).then((resp) => {
                 if (resp) {
                     this.clearData();
                 }
             });
         }
+    }
+
+    getPrinterData() {
+        this.getDataService.getPublicData('Print/GetPrinterData').then((resp) => {
+            if (resp) {
+                const arr = [];
+                for (const item of resp['Data']) {
+                    arr.push(item.Value);
+                }
+                this.PRINTERLIST = arr;
+                this.columns[4]['arr'] = arr;
+            }
+        });
     }
 
     scanInput(event) {
@@ -91,7 +113,7 @@ export class RetypePage implements OnInit {
         // 判断是否扫描重复物料
         const scanItem = this.publicService.arrSameId(this.scanList, 'Barcode', BarcodeText);
         if (scanItem) {
-            this.presentService.presentToast('当前物料已存在', 'warning');
+            this.presentService.presentToast('e04', 'warning');
             return false;
         }
         //  判断是否存在物料编码
@@ -100,7 +122,6 @@ export class RetypePage implements OnInit {
                 this.InputView.selected();
                 let num = 0;
                 if (res) {
-                    console.log(res, res['NUM']);
                     num = res['NUM'];
                 }
                 this.scanList.push({
@@ -108,7 +129,7 @@ export class RetypePage implements OnInit {
                     Barcode: BarcodeText,
                     QTY: QTYText,
                     NUM: num,
-                    PRINTER: null
+                    PRINTER: this.selectPRINTER
                 });
             });
 

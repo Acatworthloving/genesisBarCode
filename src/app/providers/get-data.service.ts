@@ -201,6 +201,21 @@ export class GetDataService {
         });
     }
 
+    submitAddRePrintData(api, Obj) {
+        return new Promise((resolve, reject) => {
+            const request = this.dataService.postData(api, Obj);
+            request.subscribe(resp => {
+                if (resp) {
+                    this.presentService.presentToast('标签重打请求成功');
+                    resolve(true);
+                }
+            }, error => {
+                this.presentService.presentToast(error.message, 'warning');
+                resolve(false);
+            });
+        });
+    }
+
     SubmitAddPD(Obj) {
         return new Promise((resolve, reject) => {
             const request = this.dataService.postData('PD/SubmitScanData', Obj);
@@ -229,7 +244,7 @@ export class GetDataService {
         });
     }
 
-    getPublicData(url, config) {
+    getPublicData(url, config?) {
         return new Promise((resolve, reject) => {
             const request = this.dataService.getData(url, config);
             request.subscribe(resp => {

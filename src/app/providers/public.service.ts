@@ -65,6 +65,40 @@ export class PublicService {
             name: '批次号/外箱序列号/序列号',
             prop: 'BatchNo',
         },
+        {
+            name: '仓库',
+            prop: 'Wh',
+        },
+    ];
+    TableColumns2 = [
+        {
+            name: '物料编码',
+            prop: 'ItemCode',
+        },
+        {
+            name: '收货数',
+            prop: 'QTY',
+        },
+        {
+            name: '物料名称',
+            prop: 'ItemName',
+        },
+        {
+            name: '物料规格',
+            prop: 'GGXH',
+        },
+        {
+            name: '批次号/外箱序列号/序列号',
+            prop: 'BatchNo',
+        },
+        {
+            name: '从仓库',
+            prop: 'Wh',
+        },
+        {
+            name: '到仓库',
+            prop: 'Wh_To',
+        },
     ];
     Columns2: any = [
         {
@@ -296,6 +330,10 @@ export class PublicService {
         {
             name: '产品编码',
             prop: 'ItemCode',
+        },
+        {
+            name: '产品数量',
+            prop: 'QTY',
         }
     ];
     Columns8 = [
@@ -406,13 +444,24 @@ export class PublicService {
             type: 'select',
         },
     ];
-
+    DocNum = {
+        CG: 40,
+        CGTH: 42,
+        KCJP: 73,
+        XSTH: 52,
+        SC: 63,
+        KCSH: 70,
+        KCFH: 71,
+        KCZC: 72,
+        CGSJ: 80,
+        CGZJ: 81,
+    };
 
     constructor(public presentService: PresentService,
-                public getDataService: GetDataService,) {
+                public getDataService: GetDataService) {
     }
 
-    splitStr(str, type?, sp?) {
+    splitStr(str, type?, sp?, canEnter?) {
         let result: any = '', typeText: any = '';
         const arr = str.split(sp || '*');
         switch (arr[0]) {
@@ -458,8 +507,16 @@ export class PublicService {
             case '72':
                 typeText = 'DocEntry'; // 库存转储请求单号
                 break;
+            case '80':
+                typeText = 'DocEntry'; // 采购送检单
+                break;
+            case '81':
+                typeText = 'DocEntry'; // 采购质检单
+                break;
             default:
-                this.presentService.presentToast('无效扫描', 'danger');
+                if (!canEnter) {
+                    this.presentService.presentToast('e32', 'danger');
+                }
                 return false;
                 break;
         }
@@ -531,7 +588,7 @@ export class PublicService {
         let result = true;
         for (let item of arr) {
             if (item['QTY_NC']) {
-                this.presentService.presentToast('未扫描完单据中所有物料', 'warning');
+                this.presentService.presentToast('e01', 'warning');
                 return true;
             } else {
                 result = false;
@@ -549,9 +606,9 @@ export class PublicService {
             const config = {
                 itemcode: obj.ItemCode,
                 wh: obj.Wh,
-                kw: obj.Kuwei,
+                kw: obj.Kuwei || '',
                 batNo: obj.BatchNo,
-                batId: obj.BFlag,
+                batId: BFlag,
             };
             this.getDataService.getSapStoreQty(config).then((resp) => {
                 if (resp['Data']) {
@@ -576,7 +633,7 @@ export class PublicService {
                                     resolve(returnObj);
                                 } else {
                                     resolve(false);
-                                    this.presentService.presentToast('当前物料扫描失败', 'warning');
+                                    this.presentService.presentToast('e14', 'warning');
                                 }
                             });
                         } else {
@@ -611,7 +668,7 @@ export class PublicService {
                                     };
                                     resolve(returnObj);
                                 } else {
-                                    this.presentService.presentToast('当前物料扫描失败', 'warning');
+                                    this.presentService.presentToast('e14', 'warning');
                                     resolve(false);
                                 }
                             });
@@ -640,7 +697,7 @@ export class PublicService {
                         resolve(returnObj);
                     }
                 } else {
-                    this.presentService.presentToast('当前物料库存不足', 'warning');
+                    this.presentService.presentToast('e30', 'warning');
                     resolve(false);
                 }
             });
