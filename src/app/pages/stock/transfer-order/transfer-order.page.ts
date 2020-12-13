@@ -119,7 +119,7 @@ export class TransferOrderPage implements OnInit {
             BarcodeText: any = this.publicService.getArrInfo(arr, 'Barcode'),
             BFlag = this.publicService.getArrInfo(arr, 'BFlag'),
             DistNumber = this.publicService.getArrInfo(arr, 'DistNumber'),
-            key = BFlag + DistNumber;
+            key = ItemCodeText + DistNumber;
         let selectItem = {}, documentIndex = null;
 
         // 序列号管理，只能存在一条数据

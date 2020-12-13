@@ -182,7 +182,7 @@ export class ReceivingPage implements OnInit {
                 documentIndex = this.LineNumberList[0]['index'];
                 this.addBarDetail(selectItem, documentIndex, BarcodeText, ItemCodeText, val, arr);
             } else {
-                this.presentService.presentToast('e04', 'warning');
+                this.presentService.presentToast('e55', 'warning');
             }
         } else {
             return false;

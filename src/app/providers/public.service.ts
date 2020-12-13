@@ -143,6 +143,10 @@ export class PublicService {
             prop: 'QTY',
         },
         {
+            name: '退料原因',
+            prop: 'remark',
+        },
+        {
             name: '批次/序列号',
             prop: 'BatchNo',
         },

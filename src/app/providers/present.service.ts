@@ -77,6 +77,7 @@ export class PresentService {
         e52: '不是本单据物料',
         e53: '送检数量不能等于0',
         e54: '请先扫描产品',
+        e55: '此物料不在清单中或未清量为0',
     };
 
     // async presentAlert(message: string) {

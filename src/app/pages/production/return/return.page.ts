@@ -31,6 +31,7 @@ export class ReturnPage implements OnInit {
         remark: null
     };
     BFlagObj = {};
+    remarkObj = {};
     LineNumberList = [];
     materieObj: any = {};
 
@@ -98,7 +99,8 @@ export class ReturnPage implements OnInit {
                 LiuNo: val.LiuNo,
                 OrderEntry: val.OrderEntry,
                 OrderLine: val.OrderLine,
-                NumPerMsr: val.NumPerMsr
+                NumPerMsr: val.NumPerMsr,
+                remark: val.remark
             });
         });
         const config = {
@@ -106,7 +108,7 @@ export class ReturnPage implements OnInit {
             User: this.infoObj.User,
             Bils_No: this.documentList[0].DocNum,
             Cus_No: this.documentList[0].CardCode || '',
-            remark: this.infoObj.remark,
+            // remark: this.infoObj.remark,
         };
         config['LstDetail'] = LstDetail;
         this.getDataService.submitPublicData('SC/SubmitScanData', config).then((resp) => {
@@ -133,7 +135,7 @@ export class ReturnPage implements OnInit {
                     this.infoObj.Bils_No = null;
                 }
                 this.documentList = resp['Data'];
-            }else {
+            } else {
                 this.infoObj.Bils_No = null;
             }
         });
@@ -152,7 +154,7 @@ export class ReturnPage implements OnInit {
             BarcodeText: any = this.publicService.getArrInfo(arr, 'Barcode'),
             BFlag = this.publicService.getArrInfo(arr, 'BFlag'),
             DistNumber = this.publicService.getArrInfo(arr, 'DistNumber'),
-            key = BFlag + DistNumber;
+            key = ItemCodeText + DistNumber;
         let selectItem = {}, documentIndex = null;
         // 清空行号
         this.LineNumberList = [];
@@ -197,7 +199,7 @@ export class ReturnPage implements OnInit {
                 documentIndex = this.LineNumberList[0]['index'];
                 this.addBarDetail(selectItem, documentIndex, BarcodeText, ItemCodeText, val, arr, key);
             } else {
-                this.presentService.presentToast('当前物料扫描完毕', 'warning');
+                this.presentService.presentToast('e55', 'warning');
             }
         } else {
             return false;
@@ -208,6 +210,8 @@ export class ReturnPage implements OnInit {
         const BFlag = this.publicService.getArrInfo(arr, 'BFlag');
         //  判断是否存在物料编码
         if (selectItem['ItemName']) {
+            const remarkkey = selectItem['LineNum'] + '&' + ItemCodeText;
+            console.log('addBarDetail', remarkkey);
             const obj = {
                 Bils_No: this.infoObj.Bils_No,
                 Wh: this.infoObj.Whs,
@@ -230,6 +234,7 @@ export class ReturnPage implements OnInit {
                 DocEntry: selectItem['DocEntry'],
                 QUA_DocEntry: 0,
                 QUA_LineNum: 0,
+                remark: this.remarkObj[remarkkey] || '',
                 // QTYNumber: this.publicService.getArrInfo(arr, 'QTY'),
                 GGXH: selectItem['GGXH'],
             };
@@ -275,6 +280,8 @@ export class ReturnPage implements OnInit {
         this.scanNum = this.documentList[documentIndex]['QTY_CUR'];
         this.maxNum = obj.QTY;
         this.materieObj = obj;
+        const remarkkey = obj['Itm'] + '&' + obj['ItemCode'];
+        this.remarkObj[remarkkey] = obj['remark'];
         if (type) {
             //修改物料收容数
             const index = this.publicService.arrSameId(this.scanList, 'ItemCode', obj['ItemCode'], 'index');
@@ -312,7 +319,7 @@ export class ReturnPage implements OnInit {
         }
         row['QTY'] = value;
         if (item) {
-            const QTY_NC = Number(item['QTY_NC']) + Number(oldNum), key = row['BFlag'] + row['BatchNo'];
+            const QTY_NC = Number(item['QTY_NC']) + Number(oldNum), key = row['ItemCode'] + row['BatchNo'];
             item['QTY_NC'] += Number(oldNum);
             item['QTY_CUR'] -= Number(oldNum);
             if (QTY_NC >= value) {
@@ -347,5 +354,19 @@ export class ReturnPage implements OnInit {
                 });
             }
         }
+    }
+
+    changeRemark(event, type?) {
+        let obj = {}, remark = '';
+        if (type === 'row') {
+            obj = this.scanList[0];
+            remark = event.detail.value;
+        } else {
+            obj = event;
+            remark = event['remark'];
+        }
+        const remarkkey = obj['Itm'] + '&' + obj['ItemCode'];
+        console.log('changeRemark', remarkkey);
+        this.remarkObj[remarkkey] = remark;
     }
 }

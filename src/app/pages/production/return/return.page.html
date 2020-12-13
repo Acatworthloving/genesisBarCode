@@ -48,9 +48,10 @@
                                [disabled]="!maxNum || materieObj['BFlag']==='S'"
                                class="ion-text-right ion-padding-start"></ion-input>
                 </ion-item>
-                <ion-item lines="full">
+                <ion-item lines="full" *ngIf="scanList.length">
                     <ion-label position="floating">退料原因</ion-label>
-                    <ion-textarea clearOnEdit="true" rows="3" mode="ios" type="text" [(ngModel)]="infoObj.remark"></ion-textarea>
+                    <ion-textarea clearOnEdit="true" rows="3" mode="ios" type="text"
+                                  [disabled]="!materieObj['BFlag']" [(ngModel)]="scanList[0].remark" (ionChange)="changeRemark($event,'row')"></ion-textarea>
                 </ion-item>
 
                 <app-materiel-item [scanNum]="scanNum" [materieObj]="materieObj" [hasTLQty]="true"
@@ -62,8 +63,8 @@
         <app-table [columns]="documentColumns" [tableList]="documentList" tableId="documentId"></app-table>
     </div>
     <div *ngIf="pageType==='orderDetails'">
-        <app-table-kc [columns]="columns" [tableList]="scanList" (changeQTY)="changeQTY($event)" tableId="returnId"
-                      hasDel="true"
+        <app-table-kc [hasRemark]="true" [columns]="columns" [tableList]="scanList" (changeQTY)="changeQTY($event)" tableId="returnId"
+                      hasDel="true" (changeRemark)="changeRemark($event)"
                       [documentList]="documentList"></app-table-kc>
     </div>
 </ion-content>

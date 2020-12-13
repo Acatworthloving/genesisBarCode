@@ -223,7 +223,7 @@ export class HomePage implements OnInit {
 
     async dblclick() {
         const toast = await this.toastController.create({
-            message: '当前版本 V1.6',
+            message: '当前版本 V1.7',
             position: 'bottom',
             duration: 2000
         });

@@ -316,7 +316,7 @@ export class OutPage implements OnInit {
                         };
                         if (selectItem['QTY_NC'] >= obj.QTY) {
                             // 未清量大于物料收容
-                            const key = obj.BFlag + obj.BatchNo;
+                            const key = obj.ItemCode + obj.BatchNo;
                             this.publicService.checkInventory(this.BFlagObj, selectItem, documentIndex, obj, obj['BFlag'], key).then((check) => {
                                 if (check) {
                                     this.successScan(check);
@@ -338,7 +338,7 @@ export class OutPage implements OnInit {
             BarcodeText: any = this.publicService.getArrInfo(arr, 'Barcode'),
             BFlag = this.publicService.getArrInfo(arr, 'BFlag'),
             DistNumber = this.publicService.getArrInfo(arr, 'DistNumber'),
-            key = BFlag + DistNumber;
+            key = ItemCodeText + DistNumber;
         let selectItem = {}, documentIndex = null;
         // 清空行号
         this.LineNumberList = [];
@@ -383,7 +383,7 @@ export class OutPage implements OnInit {
                 documentIndex = this.LineNumberList[0]['index'];
                 this.addBarDetail(selectItem, documentIndex, BarcodeText, ItemCodeText, val, arr, key);
             } else {
-                this.presentService.presentToast('e42', 'warning');
+                this.presentService.presentToast('e55', 'warning');
             }
         } else {
             return false;
@@ -493,7 +493,7 @@ export class OutPage implements OnInit {
         }
         row['QTY'] = value;
         if (item) {
-            const QTY_NC = Number(item['QTY_NC']) + Number(oldNum), key = row['BFlag'] + row['BatchNo'];
+            const QTY_NC = Number(item['QTY_NC']) + Number(oldNum), key = row['ItemCode'] + row['BatchNo'];
             item['QTY_NC'] += Number(oldNum);
             item['QTY_CUR'] -= Number(oldNum);
             if (QTY_NC >= value) {

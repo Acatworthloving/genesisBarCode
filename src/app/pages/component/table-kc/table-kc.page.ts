@@ -15,8 +15,10 @@ export class TableKcPage implements OnInit {
     @Input() tableList = [];
     @Input() tableId = '';
     @Input() hasDel = false;
+    @Input() hasRemark = false;
     @Input() documentList = [];
     @Output() changeQTY = new EventEmitter();
+    @Output() changeRemark = new EventEmitter();
 
     @ViewChild('table', {static: false}) tableView: ElementRef;
 
@@ -37,6 +39,11 @@ export class TableKcPage implements OnInit {
             index: i
         };
         this.changeQTY.emit(value);
+    }
+
+    changeTextarea(event, r) {
+        r['remark'] = event.detail.value;
+        this.changeRemark.emit(r);
     }
 
     public scroll(event) {

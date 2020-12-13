@@ -151,7 +151,7 @@ export class DumpRequestPage implements OnInit {
             BarcodeText: any = this.publicService.getArrInfo(arr, 'Barcode'),
             BFlag = this.publicService.getArrInfo(arr, 'BFlag'),
             DistNumber = this.publicService.getArrInfo(arr, 'DistNumber'),
-            key = BFlag + DistNumber;
+            key = ItemCodeText + DistNumber;
         let selectItem = {}, documentIndex = null;
         // 清空行号
         this.LineNumberList = [];
@@ -196,7 +196,7 @@ export class DumpRequestPage implements OnInit {
                 documentIndex = this.LineNumberList[0]['index'];
                 this.addBarDetail(selectItem, documentIndex, BarcodeText, ItemCodeText, val, arr, key);
             } else {
-                this.presentService.presentToast('e04', 'warning');
+                this.presentService.presentToast('e55', 'warning');
             }
         } else {
             return false;
@@ -311,7 +311,7 @@ export class DumpRequestPage implements OnInit {
         }
         row['QTY'] = value;
         if (item) {
-            const QTY_NC = Number(item['QTY_NC']) + Number(oldNum), key = row['BFlag'] + row['BatchNo'];
+            const QTY_NC = Number(item['QTY_NC']) + Number(oldNum), key = row['ItemCode'] + row['BatchNo'];
             item['QTY_NC'] += Number(oldNum);
             item['QTY_CUR'] -= Number(oldNum);
             if (QTY_NC >= value) {
