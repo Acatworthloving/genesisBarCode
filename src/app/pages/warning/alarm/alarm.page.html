@@ -9,10 +9,28 @@
 <ion-content>
     <div class="ion-margin ion-text-start scan-from">
         <ion-list>
-            <app-scan-input [infoObj]="infoObj" (getPL)="scanPL()" [scanType]="scanTypeArr"></app-scan-input>
+            <app-scan-input [infoObj]="infoObj" (getPL)="scanPL()" [scanType]="scanTypeArr" [hasUser]="true"></app-scan-input>
         </ion-list>
         <form [formGroup]="produceForm" novalidate class="ion-text-start">
             <ion-list>
+                <ion-item lines="full">
+                    <ion-label>
+                        员工名称
+                    </ion-label>
+                    <ion-label slot="end" class="ion-text-right pr-8">{{infoObj['User'] || ''}}</ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        生产线编码
+                    </ion-label>
+                    <ion-label slot="end" class="ion-text-right pr-8">{{infoObj['plcode'] || ''}}</ion-label>
+                </ion-item>
+                <!--                <ion-item lines="full">-->
+                <!--                    <ion-label>-->
+                <!--                        生产线名称-->
+                <!--                    </ion-label>-->
+                <!--                    <ion-label slot="end" class="ion-text-right pr-8">{{infoObj['plcode'] || ''}}</ion-label>-->
+                <!--                </ion-item>-->
                 <ion-item>
                     <ion-label>故障类型</ion-label>
                     <ion-select placeholder="选择故障类型" formControlName="FaultType" okText="确认" cancelText="取消">
@@ -21,11 +39,11 @@
                     </ion-select>
                 </ion-item>
                 <ion-item lines="full">
-                    <ion-label>
+                    <ion-label position="floating">
                         故障问题
                     </ion-label>
-                    <ion-textarea placeholder="故障问题" mode="ios" slot="end" type="text" formControlName="FaultProblem"
-                                  class="ion-text-right ion-padding-start"></ion-textarea>
+                    <ion-textarea rows="3" clearOnEdit="true" mode="ios" type="text"
+                                  formControlName="FaultProblem"></ion-textarea>
                 </ion-item>
             </ion-list>
         </form>
@@ -34,6 +52,6 @@
 <ion-footer>
     <ion-button expand="block" mode='ios' (click)="submit()"
                 [disabled]="infoObj['plcode'] && produceForm.invalid">
-        提交数据
+        {{title}}
     </ion-button>
 </ion-footer>

@@ -28,6 +28,7 @@ export class PickingPage implements OnInit {
         Bils_No: null,
         Cus_No: '',
         Whs: null,
+        ItemName:null
     };
     BFlagObj = {};
     LineNumberList = [];
@@ -47,7 +48,7 @@ export class PickingPage implements OnInit {
             }
         });
         this.documentColumns = this.publicService.DocumentColumns;
-        this.columns = this.publicService.TableColumns;
+        this.columns = this.publicService.TableColumns3;
     }
 
     ngOnInit() {
@@ -67,6 +68,7 @@ export class PickingPage implements OnInit {
         this.infoObj.Bils_No = null;
         this.infoObj.Cus_No = '';
         this.infoObj.Whs = null;
+        this.infoObj.ItemName = null;
         this.documentList = [];
         this.scanList = [];
         this.materieObj = {};
@@ -117,14 +119,18 @@ export class PickingPage implements OnInit {
         this.getDataService.getPublicData('SC/GetBillData', config).then((resp) => {
             if (resp) {
                 if (resp['Data'].length) {
+                    this.infoObj.ItemName=resp['Data'][0]['ItemName'];
                     resp['Data'].forEach((val) => {
                         const num = Number(val.Quantity) - Number(val.QTY_FIN);
                         val['QTY_NC'] = num < 0 ? 0 : num;
                     });
                 } else {
                     this.presentService.presentToast('e02', 'warning');
+                    this.infoObj.Bils_No = null;
                 }
                 this.documentList = resp['Data'];
+            } else {
+                this.infoObj.Bils_No = null;
             }
         });
     }

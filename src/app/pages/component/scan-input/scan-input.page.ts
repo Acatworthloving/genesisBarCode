@@ -4,6 +4,7 @@ import {Router, Params, NavigationExtras} from '@angular/router';
 import {forEach} from '@angular-devkit/schematics';
 import {PresentService} from '../../../providers/present.service';
 import {PublicService} from '../../../providers/public.service';
+import {GlobalFooService} from '../../../providers/events.service';
 
 @Component({
     selector: 'app-scan-input',
@@ -14,6 +15,8 @@ export class ScanInputPage implements OnInit, AfterContentInit {
     @Input() infoObj = {};
     @Input() scanType = [];
     @Input() hasTwoWh: boolean = false;
+    @Input() hasUser: boolean = false;
+    @Input() hasSCDoc: boolean = false;
     @Input() isSCSL: boolean = false;
     @Input() isXSSQTH: boolean = false;
     @Input() isStock: boolean = false;
@@ -21,6 +24,7 @@ export class ScanInputPage implements OnInit, AfterContentInit {
     @Input() docNum: number = 0;
     @Input() isOnlyNum: boolean = false;
     @Input() isSerialNum: boolean = false;
+    @Input() noFirstWh: boolean = false;
     @Output() addBar = new EventEmitter();
     @Output() funcDocEntry = new EventEmitter();
     @Output() getWX = new EventEmitter();
@@ -28,11 +32,16 @@ export class ScanInputPage implements OnInit, AfterContentInit {
     @Output() getPL = new EventEmitter();
 
     @ViewChild('inputElement', {static: true}) inputView: ElementRef;
+    inputText: any = null;
 
 
     constructor(public presentService: PresentService,
-                public publicService: PublicService) {
+                public publicService: PublicService,
+                private globalFooService: GlobalFooService) {
         // this.renderer2.setStyle(this.el.nativeElement.querySelector('.btn1'), 'background', 'green');
+        this.globalFooService.getObservable().subscribe((data) => {
+            this.selected();
+        });
     }
 
     ngOnInit() {
@@ -69,16 +78,18 @@ export class ScanInputPage implements OnInit, AfterContentInit {
     }
 
     selected() {
-        this.inputView.nativeElement.focus();
-        this.inputView.nativeElement.select();
+        setTimeout(() => {
+            this.inputView.nativeElement.focus();
+            this.inputView.nativeElement.select();
+        }, 1000);
     }
 
     scan(event) {
-        this.infoObj['User'] = localStorage.getItem('userName');
+        if (!this.hasUser) {
+            this.infoObj['User'] = localStorage.getItem('userName');
+        }
         if (this.isSCSL) {
             this.scanSCSL(event);
-        } else if (this.isXSSQTH) {
-            this.scanXSSQTH(event);
         } else if (this.isStock) {
             this.scanStock(event);
         } else if (this.isOnlyNum) {
@@ -88,6 +99,7 @@ export class ScanInputPage implements OnInit, AfterContentInit {
         } else {
             this.func_scan(event);
         }
+        this.inputText = null;
     }
 
     func_scan(event) {
@@ -103,7 +115,7 @@ export class ScanInputPage implements OnInit, AfterContentInit {
         let type: string;
 
         //扫描的数据非带*的数据并且允许客户输入
-        if (!scanArr) {
+        if (value.indexOf('*') == -1) {
             if (this.canEnter) {
                 type = 'DocEntry';
             } else {
@@ -157,12 +169,19 @@ export class ScanInputPage implements OnInit, AfterContentInit {
                                     if (this.infoObj['wxcode'] || !hasWX) {
                                         if (type === 'DocEntry') {
                                             if (hasDocEntry) {
-                                                if (!scanArr && this.canEnter) {
+                                                if (this.hasSCDoc && scanArr[0] === '63') {
+                                                    // this.infoObj['remark'] = scanArr[1];
+                                                    // this.presentService.presentToast('生产计划单扫描成功');
+                                                    // return false;
+                                                }
+                                                if (value.indexOf('*') == -1 && this.canEnter) {
                                                     this.infoObj['Bils_No'] = value;
+                                                    this.infoObj['isNumBils'] = true;
                                                 } else {
                                                     //判断标签类型是否正确
                                                     if (Number(scanArr[0]) == this.docNum) {
                                                         this.infoObj['Bils_No'] = scanArr[1];
+                                                        this.infoObj['isNumBils'] = false;
                                                     } else {
                                                         this.presentService.presentToast('e46', 'warning');
                                                         return;
@@ -191,14 +210,14 @@ export class ScanInputPage implements OnInit, AfterContentInit {
                                                             ];
                                                             // 需要扫描两个仓库时，需要选择仓库
                                                             this.presentService.presentAlertBaseRadio(list, '选择仓库').then((res) => {
-                                                                this.selected();
                                                                 if (res === 'Whs') {
                                                                     this.infoObj['Whs'] = scanArr[1];
                                                                     if (scanArr[2]) {
                                                                         this.infoObj['Kuwei'] = scanArr[2];
                                                                     }
                                                                     this.presentService.presentToast('e26');
-                                                                } else if (res === 'Wh_To') {
+                                                                }
+                                                                if (res === 'Wh_To') {
                                                                     this.infoObj['Wh_To'] = scanArr[1];
                                                                     this.infoObj['ToKuwei'] = scanArr[2];
                                                                     this.presentService.presentToast('e26');
@@ -212,25 +231,11 @@ export class ScanInputPage implements OnInit, AfterContentInit {
                                                         this.presentService.presentToast('e27');
                                                     }
                                                 } else {
-                                                    if (this.hasTwoWh) {
-                                                        if ((this.infoObj['Whs'] && this.infoObj['Wh_To']) || !hasWhs) {
-                                                            this.func_addBar(value, scanArr);
-                                                        } else {
-                                                            if (!this.infoObj['Whs']) {
-                                                                this.presentService.presentToast('e28', 'warning');
-                                                                return;
-                                                            } else if (!this.infoObj['Wh_To']) {
-                                                                this.presentService.presentToast('请先扫描到仓库标签', 'warning');
-                                                            }
-                                                        }
+                                                    if (this.infoObj['Whs'] || !hasWhs || this.noFirstWh) {
+                                                        this.func_addBar(value, scanArr);
                                                     } else {
-                                                        if (this.infoObj['Whs'] || !hasWhs) {
-                                                            this.func_addBar(value, scanArr);
-                                                        } else {
-                                                            this.presentService.presentToast('e39', 'warning');
-                                                        }
+                                                        this.presentService.presentToast('e39', 'warning');
                                                     }
-
                                                 }
                                             } else {
                                                 this.presentService.presentToast('e43', 'warning');
@@ -258,7 +263,7 @@ export class ScanInputPage implements OnInit, AfterContentInit {
         this.selected();
         const value = event.target.value,
             scanArr = this.publicService.splitStr(value);
-        if (!scanArr) {
+        if (value.indexOf('*') == -1) {
             return false;
         }
         const type = this.publicService.splitStr(value, 'type');
@@ -313,77 +318,20 @@ export class ScanInputPage implements OnInit, AfterContentInit {
         }
     }
 
-    scanXSSQTH(event) {
-        this.selected();
-        const value = event.target.value,
-            scanArr = this.publicService.splitStr(value);
-        if (!scanArr) {
-            return false;
-        }
-        const type = this.publicService.splitStr(value, 'type');
-        if (type === 'User') {
-            this.infoObj['User'] = scanArr[1];
-            this.presentService.presentToast('e16');
-        } else {
-            if (this.infoObj['User']) {
-                if (type === 'DocEntry') {
-                    //判断标签类型是否正确
-                    if (Number(scanArr[0]) == this.docNum) {
-                        this.infoObj['Bils_No'] = scanArr[1];
-                    } else {
-                        this.presentService.presentToast('e46', 'warning');
-                        return;
-                    }
-                    this.presentService.presentToast('e33');
-                    this.selected();
-                    this.func_DocEntry();
-                } else {
-                    if (this.infoObj['Bils_No']) {
-                        if (type === 'Whs') {
-                            this.infoObj['Whs'] = scanArr[1];
-                            if (scanArr[2]) {
-                                this.infoObj['Kuwei'] = scanArr[2];
-                            }
-                            this.presentService.presentToast('e26');
-                        } else {
-                            if (this.infoObj['Whs']) {
-                                if (type === 'WX') {
-                                    this.infoObj['wxcode'] = scanArr[1];
-                                    this.infoObj['ItemCode'] = scanArr[2];
-                                    this.presentService.presentToast('e22');
-                                    this.selected();
-                                    this.func_WX();
-                                } else if (type === 'KB') {
-                                    this.infoObj['kbcode'] = scanArr[1];
-                                    this.presentService.presentToast('e20');
-                                    this.selected();
-                                    this.func_KB();
-                                } else if (type === 'Bar') {
-                                    this.func_addBar(value, scanArr);
-                                } else {
-                                    this.presentService.presentToast('e32', 'danger');
-                                }
-                            } else {
-                                this.presentService.presentToast('e39', 'warning');
-                            }
-                        }
-                    } else {
-                        this.presentService.presentToast('请先扫描拣配清单标签', 'warning');
-                    }
-                }
-            } else {
-                this.presentService.presentToast('请先扫描员工标签', 'warning');
-            }
-        }
-    }
-
     scanStock(event) {
         this.selected();
         const value = event.target.value,
             scanArr = this.publicService.splitStr(value),
             hasUser = this.publicService.hasKey(this.scanType, 'User'),
             hasWhs = this.publicService.hasKey(this.scanType, 'Whs');
-        if (!scanArr) {
+        if (value.indexOf('*') == -1) {
+            if (this.canEnter) {
+                if (this.infoObj['Whs'] || !hasWhs) {
+                    this.func_addBar(value, scanArr);
+                } else {
+                    this.presentService.presentToast('e39', 'warning');
+                }
+            }
             return false;
         }
         const type = this.publicService.splitStr(value, 'type');
@@ -404,13 +352,14 @@ export class ScanInputPage implements OnInit, AfterContentInit {
                     this.presentService.presentToast('e26');
                 } else {
                     if (this.infoObj['Whs'] || !hasWhs) {
-                        if (type === 'WX') {
-                            this.infoObj['wxcode'] = scanArr[1];
-                            this.infoObj['ItemCode'] = scanArr[2];
-                            this.presentService.presentToast('e22');
-                            this.selected();
-                            this.func_WX();
-                        } else if (type === 'Bar') {
+                        // if (type === 'WX') {
+                        //     this.infoObj['wxcode'] = scanArr[1];
+                        //     this.infoObj['ItemCode'] = scanArr[2];
+                        //     this.presentService.presentToast('e22');
+                        //     this.selected();
+                        //     this.func_WX();
+                        // } else
+                        if (type === 'Bar') {
                             this.func_addBar(value, scanArr);
                         } else {
                             this.presentService.presentToast('e32', 'danger');
@@ -434,7 +383,7 @@ export class ScanInputPage implements OnInit, AfterContentInit {
         const hasWL = this.publicService.hasKey(this.scanType, 'WL'),
             hasKB = this.publicService.hasKey(this.scanType, 'KB'),
             hasWX = this.publicService.hasKey(this.scanType, 'WX');
-        if (!scanArr) {
+        if (value.indexOf('*') == -1) {
             this.infoObj['Bils_No'] = value;
             this.func_addBar(value, scanArr);
         } else {
@@ -470,7 +419,7 @@ export class ScanInputPage implements OnInit, AfterContentInit {
             hasWX = this.publicService.hasKey(this.scanType, 'WX'),
             hasKB = this.publicService.hasKey(this.scanType, 'KB');
         if (this.infoObj['Bils_No']) {// 存在单号
-            if (!scanArr) {// 扫描纯序列号
+            if (value.indexOf('*') == -1) {// 扫描纯序列号
                 this.infoObj['Bils_No'] = value;
                 this.func_addBar(value, scanArr);
             } else {
@@ -496,12 +445,12 @@ export class ScanInputPage implements OnInit, AfterContentInit {
                     }
                     this.presentService.presentToast('e26');
                 } else {
-                    this.presentService.presentToast('e47', 'warning');
+                    this.presentService.presentToast('e52', 'warning');
                 }
                 this.selected();
             }
         } else {// 不存在单号
-            if (!scanArr) {// 扫描纯序列号，提示先扫描单号
+            if (value.indexOf('*') == -1) {// 扫描纯序列号，提示先扫描单号
                 this.presentService.presentToast('e43', 'warning');
                 return;
             } else { // 扫描类型为单号，执行函数，非单号提示先扫描单号

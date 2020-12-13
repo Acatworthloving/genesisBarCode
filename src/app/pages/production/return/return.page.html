@@ -21,20 +21,39 @@
     <div *ngIf="pageType== 'getOrder'">
         <div class="ion-margin ion-text-start scan-from">
             <ion-list>
-                <app-scan-input [docNum]="publicService.DocNum.SC" (addBar)="scanInput($event)" [infoObj]="infoObj" (funcDocEntry)="scanPL()"
+                <app-scan-input [docNum]="publicService.DocNum.SC" (addBar)="scanInput($event)" [infoObj]="infoObj"
+                                (funcDocEntry)="scanPL()" [noFirstWh]="true"
                                 [scanType]="scanTypeArr"></app-scan-input>
+
                 <ion-item lines="full">
                     <ion-label>
-                        退货数
+                        生产计划号
                     </ion-label>
-                    <ion-input placeholder="退货数" color="primary" (change)="changeQTY($event,'row')" mode="ios"
+                    <ion-label slot="end" class="ion-text-right pr-8">{{infoObj['Bils_No'] || ''}}</ion-label>
+                </ion-item>
+                <ion-item lines="full" *ngIf="documentList.length">
+                    <ion-label>
+                        产品名称
+                    </ion-label>
+                    <ion-label slot="end" class="ion-text-right pr-8">{{documentList[0]['ItemName'] || ''}}</ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        退料数量
+                    </ion-label>
+                    <ion-input placeholder="退料数量" color="primary" (change)="changeQTY($event,'row')" mode="ios"
                                slot="end"
                                type="number"
                                [value]="maxNum"
                                [disabled]="!maxNum || materieObj['BFlag']==='S'"
                                class="ion-text-right ion-padding-start"></ion-input>
                 </ion-item>
-                <app-materiel-item [scanNum]="scanNum" [materieObj]="materieObj"
+                <ion-item lines="full">
+                    <ion-label position="floating">退料原因</ion-label>
+                    <ion-textarea clearOnEdit="true" rows="3" mode="ios" type="text" [(ngModel)]="infoObj.remark"></ion-textarea>
+                </ion-item>
+
+                <app-materiel-item [scanNum]="scanNum" [materieObj]="materieObj" [hasTLQty]="true"
                                    [infoObj]="infoObj"></app-materiel-item>
             </ion-list>
         </div>
@@ -52,6 +71,6 @@
 <ion-footer>
     <ion-button expand="block" mode='ios' (click)="submit()"
                 [disabled]="!scanList.length">
-        提交数据
+        {{title}}
     </ion-button>
 </ion-footer>

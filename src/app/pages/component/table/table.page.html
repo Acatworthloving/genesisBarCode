@@ -6,8 +6,8 @@
         </tr>
         <tr *ngFor="let r of tableList;let num = index">
             <td *ngFor="let c of columns;let i=index" [class.frozencol]="!i">
-                    <span *ngIf="!(r.BFlag!=='S'&&c.prop==='QTY'&&hasDel)">
-                        {{r[c.prop]}}
+                <span *ngIf="!(r.BFlag!=='S'&&c.prop==='QTY'&&hasDel)">
+                        {{c.prop === 'LineNum' ? r['LineNum'] + 1 : r[c.prop]}}
                     </span>
                 <ion-input *ngIf="r.BFlag!=='S'&&c.prop==='QTY'&&hasDel&&!r.exitQty" [value]="r[c.prop]" type="number"
                            (change)="changeInput($event,r[c.prop],r)"></ion-input>

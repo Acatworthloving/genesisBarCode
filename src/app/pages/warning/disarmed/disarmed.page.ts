@@ -53,8 +53,12 @@ export class DisarmedPage implements OnInit {
         };
         this.getDataService.getPublicData('Warn/GetWarnBillData', config).then((resp) => {
             if (resp) {
-                for (const item of resp['Data']) {
-                    item['State'] = '否';
+                if (resp['Data'].length) {
+                    for (const item of resp['Data']) {
+                        item['State'] = '否';
+                    }
+                } else {
+                    this.presentService.presentToast('此生产线没有待解除的故障警报', 'warning');
                 }
                 this.documentList = resp['Data'];
             }

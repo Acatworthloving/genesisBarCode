@@ -71,14 +71,18 @@ export class QualityReceivingPage implements OnInit {
     }
 
     submit() {
+        if (!this.infoObj['Whs']) {
+            this.presentService.presentToast('e39', 'warning');
+            return false;
+        }
         this.infoObj.Cus_No = this.documentList[0].CardCode || '';
         const LstDetail = [];
         this.scanList.forEach((val) => {
             LstDetail.push({
                 Bils_No: val.Bils_No,
-                Wh: val.Wh,
+                Wh: this.infoObj.Whs,
                 Wh_To: val.Wh_To,
-                Itm: val.Itm,
+                Itm: Number(val.Itm) + 1,
                 Barcode: val.Barcode,
                 BarcodeText: val.BarcodeText,
                 ItemCode: val.ItemCode,
@@ -111,11 +115,15 @@ export class QualityReceivingPage implements OnInit {
                 if (resp['Data'].length) {
                     resp['Data'].forEach((val) => {
                         val['QTY_NC'] = Number(val.Quantity) - Number(val.QTY_FIN);
+                        val['LineNum'] = Number(val['LineNum']) - 1;
                     });
                 } else {
                     this.presentService.presentToast('e02', 'warning');
+                    this.infoObj.Bils_No = null;
                 }
                 this.documentList = resp['Data'];
+            } else {
+                this.infoObj.Bils_No = null;
             }
         });
     }
@@ -209,8 +217,8 @@ export class QualityReceivingPage implements OnInit {
                 BFlag: this.publicService.getArrInfo(arr, 'BFlag'),
                 BatchNo: this.publicService.getArrInfo(arr, 'DistNumber'),
                 LiuNo: this.publicService.getArrInfo(arr, 'LiuNo'),
-                OrderEntry: selectItem['OrderEntry']|| '',
-                OrderLine: selectItem['OrderLine']|| '',
+                OrderEntry: selectItem['OrderEntry'] || '',
+                OrderLine: selectItem['OrderLine'] || '',
                 NumPerMsr: selectItem['NumPerMsr'],
                 DocNum: selectItem['DocNum'],
                 DocEntry: selectItem['DocEntry'],

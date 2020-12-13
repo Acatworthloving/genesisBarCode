@@ -73,6 +73,10 @@ export class ReturnGoodsPage implements OnInit {
     }
 
     submit() {
+        if (!this.infoObj['Whs']) {
+            this.presentService.presentToast('e39', 'warning');
+            return false;
+        }
         this.infoObj.Cus_No = this.documentList[0].CardCode || '';
         const LstDetail = [];
         this.scanList.forEach((val) => {
@@ -116,8 +120,11 @@ export class ReturnGoodsPage implements OnInit {
                     });
                 } else {
                     this.presentService.presentToast('e02', 'warning');
+                    this.infoObj.Bils_No = null;
                 }
                 this.documentList = resp['Data'];
+            } else {
+                this.infoObj.Bils_No = null;
             }
         });
     }

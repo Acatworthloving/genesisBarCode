@@ -5,6 +5,7 @@ import {GetDataService} from '../../../providers/get-data.service';
 import {DataService} from '../../../api/data.service';
 import {ActivatedRoute} from '@angular/router';
 import {PageRouterService} from '../../../providers/page-router.service';
+import {Platform} from '@ionic/angular';
 
 @Component({
     selector: 'app-dump-request',
@@ -19,7 +20,7 @@ export class DumpRequestPage implements OnInit {
     scanList: any = [];
     scanNum: number = 0;
     maxNum: number = 0;
-    scanTypeArr = ['User', 'DocEntry', 'Whs'];
+    scanTypeArr = ['User', 'DocEntry'];
     infoObj: any = {
         Bil_ID: null,
         User: null,
@@ -28,7 +29,8 @@ export class DumpRequestPage implements OnInit {
         Whs: null,
         Wh_To: null,
         Kuwei: null,
-        ToKuwei: null
+        ToKuwei: null,
+        remark: null,
     };
     BFlagObj = {};
     LineNumberList = [];
@@ -40,7 +42,7 @@ export class DumpRequestPage implements OnInit {
         public dataService: DataService,
         public getDataService: GetDataService,
         public activatedRoute: ActivatedRoute,
-        public pageRouterService: PageRouterService
+        public pageRouterService: PageRouterService,
     ) {
         this.pageRouterService.getPageParams().then((res) => {
             if (res) {
@@ -71,12 +73,16 @@ export class DumpRequestPage implements OnInit {
         this.infoObj.Cus_No = '';
         this.infoObj.Whs = null;
         this.infoObj.Wh_To = null;
+        this.infoObj.remark = null;
         this.documentList = [];
         this.scanList = [];
         this.materieObj = {};
     }
 
     submit() {
+        // if (!this.infoObj.remark) {
+        //     this.presentService.presentToast('请先扫描生产计划单', 'warning');
+        // }
         this.infoObj.Cus_No = this.documentList[0].CardCode || '';
         const LstDetail = [];
         this.scanList.forEach((val) => {
@@ -96,7 +102,7 @@ export class DumpRequestPage implements OnInit {
                 BatchNo: val.BatchNo,
                 LiuNo: val.LiuNo,
                 OrderEntry: val.OrderEntry || '',
-                OrderLine: val.OrderLine|| '',
+                OrderLine: val.OrderLine || '',
                 NumPerMsr: val.NumPerMsr,
                 // QUA_DocEntry: val.QUA_DocEntry,
                 // QUA_LineNum: val.QUA_LineNum,
@@ -104,6 +110,7 @@ export class DumpRequestPage implements OnInit {
         });
         const config = this.infoObj;
         config['LstDetail'] = LstDetail;
+        config['remark'] = this.infoObj.remark;
         this.getDataService.SubmitScanData(config).then((resp) => {
             if (resp) {
                 this.clearData();
@@ -115,11 +122,18 @@ export class DumpRequestPage implements OnInit {
         this.getDataService.getBillData(this.infoObj).then((resp) => {
             if (resp) {
                 if (resp['Data'].length) {
+                    this.infoObj.Wh_To = resp['Data'][0]['Wh_To'];
+                    this.infoObj.Whs = resp['Data'][0]['Wh'];
                     resp['Data'].forEach((val) => {
                         val['QTY_NC'] = Number(val.Quantity) - Number(val.QTY_FIN);
                     });
+                } else {
+                    this.presentService.presentToast('e02', 'warning');
+                    this.infoObj.Bils_No = null;
                 }
                 this.documentList = resp['Data'];
+            } else {
+                this.infoObj.Bils_No = null;
             }
         });
     }
@@ -213,7 +227,7 @@ export class DumpRequestPage implements OnInit {
                 BatchNo: this.publicService.getArrInfo(arr, 'DistNumber'),
                 LiuNo: this.publicService.getArrInfo(arr, 'LiuNo'),
                 OrderEntry: selectItem['OrderEntry'] || '',
-                OrderLine: selectItem['OrderLine']|| '',
+                OrderLine: selectItem['OrderLine'] || '',
                 NumPerMsr: selectItem['NumPerMsr'],
                 DocNum: selectItem['DocNum'],
                 DocEntry: selectItem['DocEntry'],

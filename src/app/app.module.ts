@@ -12,6 +12,7 @@ import {IonicStorageModule} from '@ionic/storage';
 import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
 import {CacheModule} from 'ionic-cache';
 import {HttpsInterceptor} from './interceptors/https.interceptor';
+import {GlobalFooService} from './providers/events.service';
 import {SharedModule} from './module/shared.module';
 
 @NgModule({
@@ -34,6 +35,7 @@ import {SharedModule} from './module/shared.module';
     providers: [
         StatusBar,
         SplashScreen,
+        GlobalFooService,
         {
             provide: HTTP_INTERCEPTORS,
             useClass: HttpsInterceptor,

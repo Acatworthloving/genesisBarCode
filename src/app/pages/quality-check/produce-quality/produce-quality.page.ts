@@ -67,7 +67,7 @@ export class ProduceQualityPage implements OnInit {
                 this.documentObj = resp.Data[0];
             } else {
                 this.documentObj = {};
-                this.presentService.presentToast('生产计划单无数据', 'warning');
+                this.presentService.presentToast('e31', 'warning');
             }
         }, error => {
             this.presentService.presentToast(error.message);

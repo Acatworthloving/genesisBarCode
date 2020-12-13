@@ -13,6 +13,9 @@ import {PublicService} from '../../../providers/public.service';
 export class MaterielItemPage implements OnInit {
     @Input() scanNum: any = 0;
     @Input() hasScanNum: boolean = true;
+    @Input() hasJHQty: boolean = false;
+    @Input() hasTLQty: boolean = false;
+    @Input() hideWh: boolean = false;
     @Input() materieObj = {};
     @Input() infoObj = {};
 

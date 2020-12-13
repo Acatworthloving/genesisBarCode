@@ -18,7 +18,7 @@ export class BundlingCardPage implements OnInit {
     columns = [];
     documentList: any = [];
     scanList: any = [];
-    scanTypeArr = ['User', 'WX', 'WL', 'KB'];
+    scanTypeArr = ['User', 'WX', 'KB'];
     infoObj: any = {
         wxcode: null,
         kbcode: null,
@@ -40,7 +40,7 @@ export class BundlingCardPage implements OnInit {
                 this.title = res['name'];
             }
         });
-        this.columns = this.publicService.Columns7;
+        this.columns = this.publicService.Columns71;
         this.documentColumns = this.publicService.Columns7;
     }
 

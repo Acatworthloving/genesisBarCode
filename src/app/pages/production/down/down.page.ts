@@ -48,8 +48,10 @@ export class DownPage implements OnInit {
             actType: this.infoObj.Bil_ID
         };
         this.getDataService.getPublicData('SCSCAN/GetSCPlanData', config).then((resp) => {
-            if (resp) {
+            if (resp && resp['Data']) {
                 this.documentObj = resp['Data'];
+            } else {
+                this.presentService.presentToast('e31', 'warning');
             }
         });
     }
@@ -65,6 +67,7 @@ export class DownPage implements OnInit {
             PLineCode: this.documentObj.PLineCode,
             User: this.infoObj.User,
             ScanType: 'DOWN',
+            Numbers: 0,
         };
         this.getDataService.submitPublicData('SCSCAN/ScanSubmitScanData', config).then((resp) => {
             if (resp) {

@@ -21,15 +21,23 @@
     <div *ngIf="pageType== 'getOrder'">
         <div class="ion-margin ion-text-start scan-from">
             <ion-list>
-                <app-scan-input (addBar)="scanInput($event)" [infoObj]="infoObj" (getWX)="scanWX()" [isStock]="true"
+<!--                (getWX)="scanWX()"-->
+                <app-scan-input [canEnter]="true" (addBar)="scanInput($event)" [infoObj]="infoObj"  [isStock]="true"
                                 [scanType]="scanTypeArr"></app-scan-input>
                 <ion-item>
                     <ion-label>盘点类型</ion-label>
-                    <ion-select placeholder="选择盘点类型" okText="确认" cancelText="取消" [(ngModel)]="infoObj.PDType">
+                    <ion-select placeholder="选择盘点类型" okText="确认" cancelText="取消" [disabled]="scanList.length"
+                                [(ngModel)]="infoObj.PDType" (ngModelChange)="changePD($event)">
                         <ion-select-option value="非批次盘点">非批次盘点</ion-select-option>
                         <ion-select-option value="批次盘点">批次盘点</ion-select-option>
                         <ion-select-option value="序列号盘点">序列号盘点</ion-select-option>
                     </ion-select>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        仓库
+                    </ion-label>
+                    <ion-label slot="end" class="ion-text-right pr-8">{{infoObj['Whs'] || ''}}</ion-label>
                 </ion-item>
             </ion-list>
         </div>
@@ -38,13 +46,13 @@
         <app-table [columns]="columns" [tableList]="documentList" [hasPD]="true"  tableId="documentId" [hasDel]="true"></app-table>
     </div>
     <div *ngIf="pageType==='orderDetails'">
-        <app-table-kc [columns]="columns" [tableList]="scanList" (changeQTY)="changeQTY($event)" tableId="inventoryId"
+        <app-table-kc [columns]="columns2" [tableList]="scanList" (changeQTY)="changeQTY($event)" tableId="inventoryId"
                       hasDel="true"></app-table-kc>
     </div>
 </ion-content>
 <ion-footer>
     <ion-button expand="block" mode='ios' (click)="submit()"
                 [disabled]="!this.infoObj.PDType">
-        提交数据
+        {{title}}
     </ion-button>
 </ion-footer>

@@ -119,6 +119,11 @@ export class CompletionPage implements OnInit {
     }
 
     scanWX() {
+        const selectItem = this.documentList[0];
+        if (selectItem['BFlag'] !== 'S') {
+            this.presentService.presentToast('e51', 'warning');
+            return false;
+        }
         const hascode = this.wxList.indexOf(this.infoObj.wxcode);
         if (hascode < 0) {
             const item = this.publicService.arrSameId(this.documentList, 'ItemCode', this.infoObj.ItemCode);
@@ -160,10 +165,10 @@ export class CompletionPage implements OnInit {
                                         const documentItem = this.publicService.arrSameId(this.documentList, 'ItemCode', val.ItemCode);
                                         this.documentList[index]['QTY_NC'] -= val.QTY;
                                         this.documentList[index]['QTY_CUR'] += val.QTY;
+                                        val['BatchNo'] = val['BatNo'];
                                         const result = Object.assign(val, documentItem);
                                         this.scanList.push(result);
                                     });
-                                    console.log('this.scanList',this.scanList)
                                 }
                             });
                         }
@@ -193,6 +198,8 @@ export class CompletionPage implements OnInit {
                     this.presentService.presentToast('e02', 'warning');
                 }
                 this.documentList = resp['Data'];
+            } else {
+                this.infoObj.Bils_No = null;
             }
         });
     }
@@ -279,7 +286,6 @@ export class CompletionPage implements OnInit {
         if (ItemCodeText) {
             // 查找单号中是否包含此物料编码
             this.documentList.forEach((item, index) => {
-                console.log('e04', item.ItemCode, ItemCodeText);
                 if (item.ItemCode === ItemCodeText) {
                     if (item['QTY_NC'] > 0) {
                         item['index'] = index;
@@ -398,7 +404,6 @@ export class CompletionPage implements OnInit {
             this.scanList.unshift(obj);
             this.presentService.presentToast('e15');
         }
-        console.log(this.scanList);
     }
 
     changeQTY(event, type?) {

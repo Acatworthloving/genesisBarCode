@@ -1,4 +1,5 @@
 <div class="margin-bottom" style="border: 1px solid #ddd;">
-<!--    <ion-label>扫描框</ion-label>-->
-    <input #inputElement placeholder="扫描框" (change)="scan($event)" type="text" autofocus="autofocus">
+    <!--    <ion-label>扫描框</ion-label>-->
+    <input #inputElement placeholder="扫描框" (change)="scan($event)" [(ngModel)]="inputText" type="text"
+           autofocus='autofocus'>
 </div>

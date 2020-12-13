@@ -20,7 +20,7 @@ export class ReturnPage implements OnInit {
     scanNum: number = 0;
     maxNum: number = 0;
     scanBFlagS: boolean = false;
-    scanTypeArr = ['User', 'PL', 'WX', 'Whs'];
+    scanTypeArr = ['WL', 'Whs'];
     infoObj: any = {
         Bil_ID: null,
         wxcode: null,
@@ -81,6 +81,10 @@ export class ReturnPage implements OnInit {
     }
 
     submit() {
+        if (!this.infoObj.Whs) {
+            this.presentService.presentToast('e39', 'warning');
+            return false;
+        }
         const LstDetail = [], iObj = this.infoObj;
         this.scanList.forEach((val) => {
             LstDetail.push({
@@ -117,108 +121,6 @@ export class ReturnPage implements OnInit {
         });
     }
 
-    scanWX() {
-        const hascode = this.wxList.indexOf(this.infoObj.wxcode);
-        if (hascode < 0) {
-            const item = this.publicService.arrSameId(this.documentList, 'ItemCode', this.infoObj.ItemCode);
-            if (item && item['ItemCode']) {
-                this.wxList.push(this.infoObj.wxcode);
-                const config = {
-                    wxcode: this.infoObj.wxcode,
-                };
-                this.getDataService.getPublicData('PXKB/GetWXItemCodeNum', config).then((resp) => {
-                    if (resp) {
-                        if (Number(resp['Data']) == 0) {
-                            this.presentService.presentToast('e03', 'warning');
-                        } else if (Number(resp['Data']) > Number(item['QTY_NC'])) {
-                            //外箱数量大于未清量
-                            this.presentService.presentToast('e05', 'warning');
-                        } else {
-                            //外箱数量小于未清量
-                            this.getDataService.getPublicData('PXKB/GetWXBillData', config).then((res) => {
-                                if (res['Data'] && res['Data'].length) {
-                                    res['Data'].forEach((val) => {
-                                        // 判断是否扫描重复物料
-                                        const scanItem = this.publicService.arrSameId(this.scanList, 'Barcode', val.BarCode);
-                                        const index = this.publicService.arrSameId(this.documentList, 'ItemCode', val.ItemCode, 'index');
-                                        const documentItem = this.publicService.arrSameId(this.documentList, 'ItemCode', val.ItemCode);
-                                        if (scanItem) {
-                                            const name = '【' + val.ItemCode + '】物料已存在';
-                                            this.presentService.presentToast(name, 'warning');
-                                        } else {
-                                            if (documentItem) {
-                                                if (this.documentList[index]['QTY_NC'] - Number(val.Qty) >= 0) {
-                                                    this.documentList[index]['QTY_NC'] -= val.Qty;
-                                                    this.documentList[index]['QTY_CUR'] += val.Qty;
-                                                    const result = Object.assign(val, documentItem);
-                                                    this.scanList.push(result);
-                                                } else {
-                                                    const name = '【' + val.ItemCode + '】标签数量超过未清数量';
-                                                    this.presentService.presentToast(name, 'warning');
-                                                }
-                                            }
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    }
-                });
-            } else {
-                this.presentService.presentToast('e07', 'warning');
-            }
-        } else {
-            this.presentService.presentToast('当前外箱已扫描', 'warning');
-        }
-    }
-
-    scanKB() {
-        const hascode = this.kbList.indexOf(this.infoObj.kbcode);
-        if (hascode < 0) {
-            this.kbList.push(this.infoObj.kbcode);
-            const config = {
-                kbcode: this.infoObj.kbcode,
-            };
-            this.getDataService.getPublicData('PXKB/GetKBItemCodeNum', config).then((resp) => {
-                if (resp) {
-                    if (Number(resp['Data']) == 0) {
-                        this.presentService.presentToast('卡板物料数量为0', 'warning');
-                    } else {
-                        this.getDataService.getPublicData('PXKB/GetKBItemCodeData', config).then((res) => {
-                            if (res['Data'] && res['Data'].length) {
-                                res['Data'].forEach((val) => {
-                                    // 判断是否扫描重复物料
-                                    const scanItem = this.publicService.arrSameId(this.scanList, 'Barcode', val.BarCode);
-                                    const index = this.publicService.arrSameId(this.documentList, 'ItemCode', val.ItemCode, 'index');
-                                    const documentItem = this.publicService.arrSameId(this.documentList, 'ItemCode', val.ItemCode);
-                                    if (scanItem) {
-                                        const name = '外箱【' + val.WXNum + '】,【' + val.ItemCode + '】物料已存在';
-                                        this.presentService.presentToast(name, 'warning');
-                                    } else {
-                                        if (documentItem) {
-                                            if (this.documentList[index]['QTY_NC'] - Number(val.QTY) >= 0) {
-                                                this.documentList[index]['QTY_NC'] -= val.QTY;
-                                                this.documentList[index]['QTY_CUR'] += val.QTY;
-                                                const result = Object.assign(val, documentItem);
-                                                this.scanList.push(result);
-                                                this.wxList.push(val.WXNum);
-                                            } else {
-                                                const name = '外箱【' + val.WXNum + '】,【' + val.ItemCode + '】标签数量超过未清数量';
-                                                this.presentService.presentToast(name, 'warning');
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-                        });
-                    }
-                }
-            });
-        } else {
-            this.presentService.presentToast('当前卡板已扫描', 'warning');
-        }
-    }
-
     getBillData() {
         const config = {
             order: this.infoObj.Bils_No,
@@ -232,21 +134,91 @@ export class ReturnPage implements OnInit {
                     });
                 } else {
                     this.presentService.presentToast('e02', 'warning');
+                    this.infoObj.Bils_No = null;
                 }
                 this.documentList = resp['Data'];
+            } else {
+                this.infoObj.Bils_No = null;
             }
         });
     }
 
     scanInput(event) {
-        this.addBar(event.value, event.arr);
-    }
-
-    addBar(val, arr) {
         if (!this.documentList.length) {
             this.presentService.presentToast('e02', 'warning');
             return false;
         }
+        if (!this.infoObj.Whs) {
+            this.presentService.presentToast('e39', 'warning');
+            return false;
+        }
+        if (event.arr) {
+            // 扫描物料标签
+            this.addBar(event.value, event.arr);
+        } else {
+            const value = event.value;
+            // 扫描纯序列号标签
+            const config = {
+                wh: this.infoObj.Whs,
+                kw: '',
+                batNo: value
+            };
+            this.getDataService.getPublicData('WH/GetXLData', config).then((res) => {
+                if (res['Data']) {
+                    const data = res['Data'];
+                    const docItem = this.publicService.arrSameId(this.documentList, 'ItemCode', data.ItemCode);
+                    // 判断是否扫描重复物料
+                    const scanItem = this.publicService.arrSameId(this.scanList, 'Barcode', data.Barcode);
+                    if (scanItem) {
+                        this.presentService.presentToast('e04', 'warning');
+                        return false;
+                    }
+                    if (!docItem) {
+                        this.presentService.presentToast('e48', 'warning');
+                    } else {
+                        const documentIndex = this.publicService.arrSameId(this.documentList, 'ItemCode', data.ItemCode, 'index'),
+                            selectItem = this.documentList[documentIndex];
+                        const obj = {
+                            Bils_No: this.infoObj.Bils_No,
+                            Wh: this.infoObj.Whs,
+                            Wh_To: '',
+                            Itm: selectItem['LineNum'],
+                            Barcode: data['BarCode'],
+                            BarcodeText: data['BarcodeText'],
+                            ItemCode: data['ItemCode'],
+                            ItemName: data['ItemName'],
+                            QTY: data['QTY'],
+                            Kuwei: '',
+                            ToKuwei: '',
+                            BFlag: 'S',
+                            BatchNo: data['BatNo'],
+                            LiuNo: data['LiuNo'],
+                            OrderEntry: selectItem['OrderEntry'] || '',
+                            OrderLine: selectItem['OrderLine'] || '',
+                            NumPerMsr: selectItem['NumPerMsr'],
+                            DocNum: selectItem['DocNum'],
+                            DocEntry: selectItem['DocEntry'],
+                            QUA_DocEntry: 0,
+                            QUA_LineNum: 0,
+                            GGXH: selectItem['GGXH'],
+                        };
+                        const returnObj = {
+                            dIndex: documentIndex,
+                            Obj: obj,
+                            Key: obj.BFlag + obj.BatchNo,
+                            N: Number(selectItem['QTY_NC']) - Number(obj.QTY),
+                            C: Number(selectItem['QTY_CUR']) + Number(obj.QTY)
+                        };
+                        this.successScan(returnObj);
+                    }
+                } else {
+                    this.presentService.presentToast('e47', 'warning');
+                }
+            });
+        }
+    }
+
+    addBar(val, arr) {
         const ItemCodeText: any = this.publicService.getArrInfo(arr, 'ItemCode'),
             BarcodeText: any = this.publicService.getArrInfo(arr, 'Barcode'),
             BFlag = this.publicService.getArrInfo(arr, 'BFlag'),
@@ -322,8 +294,8 @@ export class ReturnPage implements OnInit {
                 BFlag: this.publicService.getArrInfo(arr, 'BFlag'),
                 BatchNo: this.publicService.getArrInfo(arr, 'DistNumber'),
                 LiuNo: this.publicService.getArrInfo(arr, 'LiuNo'),
-                OrderEntry: selectItem['OrderEntry']|| '',
-                OrderLine: selectItem['OrderLine']|| '',
+                OrderEntry: selectItem['OrderEntry'] || '',
+                OrderLine: selectItem['OrderLine'] || '',
                 NumPerMsr: selectItem['NumPerMsr'],
                 DocNum: selectItem['DocNum'],
                 DocEntry: selectItem['DocEntry'],

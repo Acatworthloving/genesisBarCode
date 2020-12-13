@@ -118,8 +118,11 @@ export class DeliverPage implements OnInit {
                     });
                 } else {
                     this.presentService.presentToast('e02', 'warning');
+                    this.infoObj.Bils_No = null;
                 }
                 this.documentList = resp['Data'];
+            } else {
+                this.infoObj.Bils_No = null;
             }
         });
     }

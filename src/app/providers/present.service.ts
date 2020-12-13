@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ToastController, LoadingController, AlertController} from '@ionic/angular';
 import {Router} from '@angular/router';
+import {GlobalFooService} from '../providers/events.service';
 
 // import {UserDataService} from './user-data.service';
 
@@ -16,6 +17,7 @@ export class PresentService {
         public loadingController: LoadingController,
         public alertController: AlertController,
         public router: Router,
+        private globalFooService: GlobalFooService
         // public userData: UserDataService,
     ) {
     }
@@ -49,7 +51,7 @@ export class PresentService {
         e26: '仓库扫描成功',
         e27: '不需要扫描仓库',
         e28: '请先扫描发出仓库',
-        e29: '账户已在其他条码枪登录',
+        e29: '请先扫描员工',
         e30: '当前物料库存不足',
         e31: '请检查单据状态',
         e32: '无效扫描',
@@ -72,6 +74,9 @@ export class PresentService {
         e49: '当前外箱已被绑定',
         e50: '请勿重复扫描外箱',
         e51: '当前单据明细的物料非序列号管理',
+        e52: '不是本单据物料',
+        e53: '送检数量不能等于0',
+        e54: '请先扫描产品',
     };
 
     // async presentAlert(message: string) {
@@ -91,6 +96,12 @@ export class PresentService {
     presentAlertRadio(list) {
         return new Promise((resolve, reject) => {
             this.AlertRadio(list, resolve);
+        });
+    }
+
+    presentAlertReturn() {
+        return new Promise((resolve, reject) => {
+            this.AlertReturn(resolve);
         });
     }
 
@@ -117,11 +128,17 @@ export class PresentService {
                     cssClass: 'secondary',
                     handler: (blah) => {
                         resolve(false);
+                        this.globalFooService.publishSomeData({
+                            foo: 'bar'
+                        });
                     }
                 }, {
                     text: '确定',
                     handler: () => {
                         resolve(true);
+                        this.globalFooService.publishSomeData({
+                            foo: 'bar'
+                        });
                     }
                 }
             ]
@@ -134,9 +151,9 @@ export class PresentService {
         const inputList = [];
         list.forEach((val, index) => {
             inputList.push({
-                name: val.LineNum,
+                name: Number(val.LineNum) + 1,
                 type: 'radio',
-                label: val.LineNum,
+                label: Number(val.LineNum) + 1,
                 value: index,
             });
         });
@@ -151,11 +168,17 @@ export class PresentService {
                     cssClass: 'secondary',
                     handler: () => {
                         resolve(false);
+                        this.globalFooService.publishSomeData({
+                            foo: 'bar'
+                        });
                     }
                 }, {
                     text: '确定',
                     handler: (resp) => {
                         resolve(resp);
+                        this.globalFooService.publishSomeData({
+                            foo: 'bar'
+                        });
                     }
                 }
             ]
@@ -179,11 +202,75 @@ export class PresentService {
                     cssClass: 'secondary',
                     handler: () => {
                         resolve(false);
+                        this.globalFooService.publishSomeData({
+                            foo: 'bar'
+                        });
                     }
                 }, {
                     text: '确定',
                     handler: (resp) => {
                         resolve(resp);
+                        this.globalFooService.publishSomeData({
+                            foo: 'bar'
+                        });
+                    }
+                }
+            ]
+        });
+        await alert.present();
+    }
+
+    async AlertReturnInput(resolve) {
+        const alert = await this.alertController.create({
+            cssClass: 'my-custom-class',
+            header: '输入打印次数',
+            buttons: [
+                {
+                    text: '取消',
+                    role: 'cancel',
+                    cssClass: 'secondary',
+                    handler: () => {
+                        resolve('false');
+                        this.globalFooService.publishSomeData({
+                            foo: 'bar'
+                        });
+                    }
+                }, {
+                    text: '确定',
+                    handler: (resp) => {
+                        resolve('true');
+                        this.globalFooService.publishSomeData({
+                            foo: 'bar'
+                        });
+                    }
+                }
+            ]
+        });
+        await alert.present();
+    }
+
+    async AlertReturn(resolve) {
+        const alert = await this.alertController.create({
+            cssClass: 'my-custom-class',
+            header: '确定退出当前页？',
+            buttons: [
+                {
+                    text: '取消',
+                    role: 'cancel',
+                    cssClass: 'secondary',
+                    handler: () => {
+                        resolve('false');
+                        this.globalFooService.publishSomeData({
+                            foo: 'bar'
+                        });
+                    }
+                }, {
+                    text: '确定',
+                    handler: (resp) => {
+                        resolve('true');
+                        this.globalFooService.publishSomeData({
+                            foo: 'bar'
+                        });
                     }
                 }
             ]
@@ -212,11 +299,17 @@ export class PresentService {
                     cssClass: 'secondary',
                     handler: () => {
                         resolve(false);
+                        this.globalFooService.publishSomeData({
+                            foo: 'bar'
+                        });
                     }
                 }, {
                     text: '确定',
                     handler: (resp) => {
                         resolve(resp);
+                        this.globalFooService.publishSomeData({
+                            foo: 'bar'
+                        });
                     }
                 }
             ]
@@ -243,7 +336,8 @@ export class PresentService {
                 this.router.navigateByUrl('/login');
             }, 2000);
         }
-        if (this.loading) {
+        if (this.toast) {
+            this.toast.dismiss();
             setTimeout(() => {
                 this.toast.present();
             }, 500);
@@ -254,14 +348,13 @@ export class PresentService {
 
     dismissToast() {
         if (this.toast) {
-            console.log('dismissToast', this.toast);
             this.toast.dismiss();
         }
     }
 
     async presentLoading(messages?: string, position?: any, duration?: number) {
         const config = {
-            duration: duration || 10000
+            duration: duration || 1000
         };
         if (messages) {
             Object.assign(config, {message: messages});
@@ -276,8 +369,6 @@ export class PresentService {
             if (this.loading) {
                 this.loading.dismiss();
             }
-        }, Math.random() * (1000 + 1 - 300) + 300);
+        }, 1000);
     }
-
-
 }

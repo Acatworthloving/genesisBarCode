@@ -19,24 +19,50 @@
 </ion-header>
 <ion-content>
     <div *ngIf="pageType== 'getOrder'">
-        <form class="ion-margin ion-text-start scan-from">
+        <div class="ion-margin ion-text-start scan-from">
             <ion-list>
-                <app-scan-input [docNum]="publicService.DocNum.KCZC" (addBar)="scanInput($event)" [infoObj]="infoObj" (funcDocEntry)="getBillData()"
-                                hasTwoWh="true" [scanType]="scanTypeArr"></app-scan-input>
+                <app-scan-input [docNum]="publicService.DocNum.KCZC" (addBar)="scanInput($event)" [infoObj]="infoObj"
+                                (funcDocEntry)="getBillData()"
+                                hasTwoWh="true" hasSCDoc="true" [scanType]="scanTypeArr"></app-scan-input>
                 <ion-item lines="full">
                     <ion-label>
-                        收货数
+                        单号
                     </ion-label>
-                    <ion-input placeholder="收货数" color="primary" (change)="changeQTY($event,'row')" mode="ios"
-        slot="end" type="number"
-        [value]="maxNum"
-        [disabled]="!maxNum || materieObj['BFlag']==='S'"
-        class="ion-text-right ion-padding-start"></ion-input>
-        </ion-item>
-        <app-materiel-item [scanNum]="scanNum" [materieObj]="materieObj"
-                           [infoObj]="infoObj"></app-materiel-item>
-        </ion-list>
-        </form>
+                    <ion-label slot="end" class="ion-text-right pr-8">{{infoObj['Bils_No'] || ''}}</ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        备注
+                    </ion-label>
+                    <ion-input placeholder="备注" mode="ios"
+                               slot="end" class="ion-text-right ion-padding-start" [(ngModel)]="infoObj.remark" [ngModelOptions]="{standalone: true}"></ion-input>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        仓库
+                    </ion-label>
+                    <ion-label slot="end" class="ion-text-right pr-8">{{infoObj['Whs'] || ''}}</ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        到仓库
+                    </ion-label>
+                    <ion-label slot="end" class="ion-text-right pr-8">{{infoObj['Wh_To'] || ''}}</ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        转储数
+                    </ion-label>
+                    <ion-input placeholder="转储数" color="primary" (change)="changeQTY($event,'row')" mode="ios"
+                               slot="end" type="number"
+                               [value]="maxNum"
+                               [disabled]="!maxNum || materieObj['BFlag']==='S'"
+                               class="ion-text-right ion-padding-start"></ion-input>
+                </ion-item>
+                <app-materiel-item [scanNum]="scanNum" [materieObj]="materieObj" [hideWh]="true"
+                                   [infoObj]="infoObj"></app-materiel-item>
+            </ion-list>
+        </div>
     </div>
     <div *ngIf="pageType==='documentDetails'">
         <app-table [columns]="documentColumns" [tableList]="documentList" tableId="documentId"></app-table>

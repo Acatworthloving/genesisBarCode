@@ -39,7 +39,7 @@ export class UnbundlingPage implements OnInit {
                 this.title = res['name'];
             }
         });
-        this.columns = this.publicService.Columns7;
+        this.columns = this.publicService.Columns71;
         this.documentColumns = this.publicService.Columns7;
     }
 

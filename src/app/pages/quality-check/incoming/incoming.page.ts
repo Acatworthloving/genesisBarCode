@@ -19,6 +19,7 @@ export class IncomingPage implements OnInit {
         Bils_No: null,
         Bil_ID: null,
         User: null,
+        isNumBils: false,
     };
 
     constructor(
@@ -52,6 +53,9 @@ export class IncomingPage implements OnInit {
                 LstDetail.push(val);
             }
         });
+        if (!LstDetail.length) {
+            this.presentService.presentToast('e53', 'warning');
+        }
         const config = this.infoObj;
         config['LstDetail'] = LstDetail;
         this.getDataService.CGSJSubmitScanData(config).then((resp) => {
@@ -63,10 +67,18 @@ export class IncomingPage implements OnInit {
 
     getBillData() {
         const config = {
-            order: this.infoObj.Bils_No
+            order: this.infoObj.Bils_No,
+            actType: this.infoObj.isNumBils ? 1 : 0
         };
         const request = this.dataService.getData('QC/GetCGSJBillData', config);
         request.subscribe(resp => {
+            if (!resp['Data'].length) {
+                this.presentService.presentToast('e02', 'warning');
+            } else {
+                resp.Data.forEach((val) => {
+                    val.SJQty = val.SJQty || '';
+                });
+            }
             this.documentList = resp.Data;
         }, error => {
             this.presentService.presentToast(error.message);

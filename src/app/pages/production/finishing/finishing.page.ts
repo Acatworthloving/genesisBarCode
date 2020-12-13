@@ -49,8 +49,10 @@ export class FinishingPage implements OnInit {
             actType: this.infoObj.Bil_ID
         };
         this.getDataService.getPublicData('SCSCAN/GetSCPlanData', config).then((resp) => {
-            if (resp) {
+            if (resp && resp['Data']) {
                 this.documentObj = resp['Data'];
+            } else {
+                this.presentService.presentToast('e31', 'warning');
             }
         });
     }
@@ -58,6 +60,7 @@ export class FinishingPage implements OnInit {
 
     clearData() {
         this.documentObj = {};
+        this.infoObj.BGQty = 0;
     }
 
     submit() {

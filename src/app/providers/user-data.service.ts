@@ -1,9 +1,10 @@
-import { Injectable } from '@angular/core';
-import { Storage } from '@ionic/storage';
-import { CacheService } from 'ionic-cache';
-import { Observable, Subject, BehaviorSubject} from 'rxjs';
+import {Injectable} from '@angular/core';
+import {Storage} from '@ionic/storage';
+import {CacheService} from 'ionic-cache';
+import {Observable, Subject, BehaviorSubject} from 'rxjs';
 import {Router} from '@angular/router';
 import {NavController} from '@ionic/angular';
+
 @Injectable({
     providedIn: 'root'
 })
@@ -15,15 +16,17 @@ export class UserDataService {
     LANGUAGE: any = 'genesisNewsLanguage';
     switchRole = new BehaviorSubject(undefined);
     publishProfile = new BehaviorSubject(undefined);
-    systemData =  new BehaviorSubject(undefined);
+    systemData = new BehaviorSubject(undefined);
     branchDistrict = new BehaviorSubject(undefined);
+
     constructor(
         private storage: Storage,
         private router: Router,
         private navCtrl: NavController,
         // public timeService: TimeService,
         // private dataService: DataService,
-    ) { }
+    ) {
+    }
 
     isLoggedIn(): Promise<boolean> {
         return this.storage.get(this.HAS_LOGGED_IN).then((value) => {
@@ -43,7 +46,9 @@ export class UserDataService {
     }
 
     logout() {
+        const account = localStorage.getItem('lastUserName') || '';
         localStorage.clear();
+        localStorage.setItem('lastUserName', account);
         // this.router.navigateByUrl('/login');
         this.navCtrl.navigateRoot('/login');
     }
@@ -122,7 +127,6 @@ export class UserDataService {
         }
         return tempSub.asObservable();
     }
-
 
 
     getSwitchRole() {

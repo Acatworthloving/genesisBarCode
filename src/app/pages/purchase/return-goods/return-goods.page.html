@@ -22,12 +22,24 @@
         <form class="ion-margin ion-text-start scan-from">
             <ion-list>
                 <app-scan-input [docNum]="publicService.DocNum.CGTH" (addBar)="scanInput($event)" [infoObj]="infoObj" (funcDocEntry)="getBillData()"
-                                [scanType]="scanTypeArr"></app-scan-input>
+                                [scanType]="scanTypeArr" [noFirstWh]="true"></app-scan-input>
                 <ion-item lines="full">
                     <ion-label>
-                        收货数
+                        订单号
                     </ion-label>
-                    <ion-input placeholder="收货数" color="primary" (change)="changeQTY($event,'row')" mode="ios"
+                    <ion-label slot="end" class="ion-text-right pr-8">{{infoObj['Bils_No'] || ''}}</ion-label>
+                </ion-item>
+                <ion-item lines="full" *ngIf="documentList.length">
+                    <ion-label>
+                        供应商名称
+                    </ion-label>
+                    <ion-label slot="end" class="ion-text-right pr-8">{{documentList[0]['CardName'] || ''}}</ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        退货数
+                    </ion-label>
+                    <ion-input placeholder="退货数" color="primary" (change)="changeQTY($event,'row')" mode="ios"
                                slot="end" type="number"
                                [value]="maxNum"
                                [disabled]="!maxNum || materieObj['BFlag']==='S'"

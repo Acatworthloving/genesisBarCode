@@ -1,8 +1,8 @@
-<ion-item lines="full" *ngIf="hasScanNum">
+<ion-item lines="full">
     <ion-label>
-        已扫描数量
+        行号
     </ion-label>
-    <ion-label slot="end" class="ion-text-right pr-8">{{scanNum}}</ion-label>
+    <ion-label slot="end" class="ion-text-right pr-8">{{materieObj['Itm'] + 1 || ''}}</ion-label>
 </ion-item>
 <ion-item lines="full">
     <ion-label>
@@ -10,29 +10,41 @@
     </ion-label>
     <ion-label slot="end" class="ion-text-right pr-8">{{materieObj['ItemCode'] || ''}}</ion-label>
 </ion-item>
+<ion-item lines="full" *ngIf="hasScanNum">
+    <ion-label>
+        已扫描数量
+    </ion-label>
+    <ion-label slot="end" class="ion-text-right pr-8">{{scanNum}}</ion-label>
+</ion-item>
+<ion-item lines="full" *ngIf="hasJHQty">
+    <ion-label>
+        计划数量
+    </ion-label>
+    <ion-label slot="end" class="ion-text-right pr-8">{{materieObj['Quantity'] || ''}}</ion-label>
+</ion-item>
+<ion-item lines="full" *ngIf="hasTLQty">
+    <ion-label>
+        可退料数量
+    </ion-label>
+    <ion-label slot="end" class="ion-text-right pr-8">{{materieObj['Quantity'] || ''}}</ion-label>
+</ion-item>
 <ion-item lines="full">
     <ion-label>
         序列/批次号
     </ion-label>
     <ion-label slot="end" class="ion-text-right pr-8">{{materieObj['BatchNo'] || ''}}</ion-label>
 </ion-item>
-<ion-item lines="full">
+<ion-item lines="full" *ngIf="infoObj['Whs'] && !hideWh">
     <ion-label>
-        编号
+        仓库
     </ion-label>
-    <ion-label slot="end" class="ion-text-right pr-8">{{materieObj['DocNum'] || ''}}</ion-label>
+    <ion-label slot="end" class="ion-text-right pr-8">{{infoObj['Whs'] || ''}}</ion-label>
 </ion-item>
-<ion-item lines="full">
+<ion-item lines="full" *ngIf="infoObj['Wh_To'] && !hideWh">
     <ion-label>
-        单号
+        到仓库
     </ion-label>
-    <ion-label slot="end" class="ion-text-right pr-8">{{materieObj['DocEntry'] || ''}}</ion-label>
-</ion-item>
-<ion-item lines="full">
-    <ion-label>
-        行号
-    </ion-label>
-    <ion-label slot="end" class="ion-text-right pr-8">{{materieObj['Itm'] || ''}}</ion-label>
+    <ion-label slot="end" class="ion-text-right pr-8">{{infoObj['Wh_To'] || ''}}</ion-label>
 </ion-item>
 <ion-item lines="full">
     <ion-label>
@@ -40,24 +52,23 @@
     </ion-label>
     <ion-label slot="end" class="ion-text-right pr-8">{{materieObj['ItemName'] || ''}}</ion-label>
 </ion-item>
-
-<ion-item lines="full" *ngIf="infoObj['Whs']">
+<ion-item lines="full">
     <ion-label>
-        仓库
+        规格型号
     </ion-label>
-    <ion-label slot="end" class="ion-text-right pr-8">{{infoObj['Whs'] || ''}}</ion-label>
-</ion-item>
-
-<ion-item lines="full" *ngIf="infoObj['Wh_To']">
-    <ion-label>
-        到仓库
-    </ion-label>
-    <ion-label slot="end" class="ion-text-right pr-8">{{infoObj['Wh_To'] || ''}}</ion-label>
+    <ion-label slot="end" class="ion-text-right pr-8">{{materieObj['GGXH'] || ''}}</ion-label>
 </ion-item>
 <!--<ion-item lines="full">-->
 <!--    <ion-label>-->
-<!--        物料规格-->
+<!--        编号-->
 <!--    </ion-label>-->
-<!--    <ion-label slot="end" class="ion-text-right pr-8">{{materieObj['GGXH'] || ''}}</ion-label>-->
+<!--    <ion-label slot="end" class="ion-text-right pr-8">{{materieObj['DocNum'] || ''}}</ion-label>-->
 <!--</ion-item>-->
+<!--<ion-item lines="full">-->
+<!--    <ion-label>-->
+<!--        单号-->
+<!--    </ion-label>-->
+<!--    <ion-label slot="end" class="ion-text-right pr-8">{{materieObj['DocNum'] || ''}}</ion-label>-->
+<!--</ion-item>-->
+
 

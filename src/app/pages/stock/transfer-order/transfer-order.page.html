@@ -16,13 +16,32 @@
 </ion-header>
 <ion-content>
     <div *ngIf="pageType== 'getOrder'">
-        <form class="ion-margin ion-text-start scan-from">
+        <div class="ion-margin ion-text-start scan-from">
             <ion-list>
-                <app-scan-input [docNum]="publicService.DocNum.KCZC" (addBar)="scanInput($event)" [infoObj]="infoObj" hasTwoWh="true"
+                <app-scan-input [docNum]="publicService.DocNum.SC" (addBar)="scanInput($event)" [infoObj]="infoObj" hasTwoWh="true"
                                 [scanType]="scanTypeArr"></app-scan-input>
-                <app-materiel-item [materieObj]="materieObj" [hasScanNum]="false" [infoObj]="infoObj"></app-materiel-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        备注
+                    </ion-label>
+                    <ion-input placeholder="备注" mode="ios"
+                               slot="end" class="ion-text-right ion-padding-start" [(ngModel)]="infoObj.remark" [ngModelOptions]="{standalone: true}"></ion-input>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        仓库
+                    </ion-label>
+                    <ion-label slot="end" class="ion-text-right pr-8">{{infoObj['Whs'] || ''}}</ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        到仓库
+                    </ion-label>
+                    <ion-label slot="end" class="ion-text-right pr-8">{{infoObj['Wh_To'] || ''}}</ion-label>
+                </ion-item>
+                <app-materiel-item [materieObj]="materieObj" [hasScanNum]="false" [hideWh]="true" [infoObj]="infoObj"></app-materiel-item>
             </ion-list>
-        </form>
+        </div>
     </div>
     <div *ngIf="pageType==='orderDetails'">
         <app-table [columns]="columns" [tableList]="scanList" tableId="scanId" hasDel="true"></app-table>

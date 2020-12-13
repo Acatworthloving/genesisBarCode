@@ -22,19 +22,31 @@
         <div class="ion-margin ion-text-start scan-from">
             <ion-list>
                 <app-scan-input [docNum]="publicService.DocNum.XSTH" (addBar)="scanInput($event)" [infoObj]="infoObj" (funcDocEntry)="getBillData()"
-                                [scanType]="scanTypeArr" (getWX)="scanWX()" (getKB)="scanKB()" [isXSSQTH]="true"></app-scan-input>
+                                [scanType]="scanTypeArr" [isSerialNum]="true"></app-scan-input>
                 <ion-item lines="full">
                     <ion-label>
-                        收容数量
+                        单号
                     </ion-label>
-                    <ion-input placeholder="收容数量" color="primary" (change)="changeQTY($event,'row')" mode="ios"
+                    <ion-label slot="end" class="ion-text-right pr-8">{{infoObj['Bils_No'] || ''}}</ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        仓库
+                    </ion-label>
+                    <ion-label slot="end" class="ion-text-right pr-8">{{infoObj['Whs'] || ''}}</ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        退货数
+                    </ion-label>
+                    <ion-input placeholder="退货数" color="primary" (change)="changeQTY($event,'row')" mode="ios"
                                slot="end"
                                type="number"
                                [value]="maxNum"
                                [disabled]="!maxNum || materieObj['BFlag']==='S'"
                                class="ion-text-right ion-padding-start"></ion-input>
                 </ion-item>
-                <app-materiel-item [scanNum]="scanNum" [materieObj]="materieObj"
+                <app-materiel-item [hideWh]="true" [scanNum]="scanNum" [materieObj]="materieObj"
                                    [infoObj]="infoObj"></app-materiel-item>
             </ion-list>
         </div>
@@ -51,6 +63,6 @@
 <ion-footer>
     <ion-button expand="block" mode='ios' (click)="submit()"
                 [disabled]="!scanList.length">
-        提交数据
+        {{title}}
     </ion-button>
 </ion-footer>

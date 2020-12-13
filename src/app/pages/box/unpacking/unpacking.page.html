@@ -25,21 +25,33 @@
                                 [scanType]="scanTypeArr"></app-scan-input>
                 <ion-item lines="full">
                     <ion-label>
-                        物料编码
-                    </ion-label>
-                    <ion-label slot="end" class="ion-text-right pr-8">{{materieObj['ItemCode'] || ''}}</ion-label>
-                </ion-item>
-                <ion-item lines="full">
-                    <ion-label>
                         序列号
                     </ion-label>
                     <ion-label slot="end" class="ion-text-right pr-8">{{materieObj['BatNo'] || ''}}</ion-label>
                 </ion-item>
                 <ion-item lines="full">
                     <ion-label>
-                        产品外箱序号
+                        物料编码
+                    </ion-label>
+                    <ion-label slot="end" class="ion-text-right pr-8">{{materieObj['ItemCode'] || ''}}</ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        外箱编码
                     </ion-label>
                     <ion-label slot="end" class="ion-text-right pr-8">{{infoObj['wxcode'] || ''}}</ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        物料名称
+                    </ion-label>
+                    <ion-label slot="end" class="ion-text-right pr-8">{{materieObj['ItemName'] || ''}}</ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        规格型号
+                    </ion-label>
+                    <ion-label slot="end" class="ion-text-right pr-8">{{materieObj['GGXH'] || ''}}</ion-label>
                 </ion-item>
                 <ion-item lines="full">
                     <ion-label>

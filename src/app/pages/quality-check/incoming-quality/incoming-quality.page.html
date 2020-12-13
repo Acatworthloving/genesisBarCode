@@ -9,13 +9,19 @@
 <ion-content>
     <div class="ion-margin ion-text-start scan-from">
         <ion-list>
-            <app-scan-input [docNum]="publicService.DocNum.CGSJ" (funcDocEntry)="getBillData()" [infoObj]="infoObj" [scanType]="scanTypeArr"></app-scan-input>
+            <app-scan-input [docNum]="publicService.DocNum.CGSJ" [canEnter]="true"  (funcDocEntry)="getBillData()" [infoObj]="infoObj" [scanType]="scanTypeArr"></app-scan-input>
+            <ion-item lines="full">
+                <ion-label>
+                    送检单号
+                </ion-label>
+                <ion-label slot="end" class="ion-text-right pr-8">{{infoObj['Bils_No'] || ''}}</ion-label>
+            </ion-item>
         </ion-list>
     </div>
     <app-table-edit [columns]="documentColumns" [tableList]="documentList" tableId="SJTableId"></app-table-edit>
 </ion-content>
 <ion-footer>
     <ion-button expand="block"  mode='ios' (click)="submit()" [disabled]="!documentList.length">
-        提交数据
+        {{title}}
     </ion-button>
 </ion-footer>

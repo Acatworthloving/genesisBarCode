@@ -18,7 +18,8 @@ export class UpPage implements OnInit {
     infoObj: any = {
         Bil_ID: null,
         User: null,
-        Bils_No: null
+        Bils_No: null,
+        Numbers: null
     };
     documentColumns = [];
 
@@ -48,8 +49,10 @@ export class UpPage implements OnInit {
             actType: this.infoObj.Bil_ID
         };
         this.getDataService.getPublicData('SCSCAN/GetSCPlanData', config).then((resp) => {
-            if (resp) {
+            if (resp && resp['Data']) {
                 this.documentObj = resp['Data'];
+            } else {
+                this.presentService.presentToast('e31', 'warning');
             }
         });
     }
@@ -57,6 +60,7 @@ export class UpPage implements OnInit {
 
     clearData() {
         this.documentObj = {};
+        this.infoObj.Numbers = null;
     }
 
     submit() {
@@ -65,6 +69,7 @@ export class UpPage implements OnInit {
             PLineCode: this.documentObj.PLineCode,
             User: this.infoObj.User,
             ScanType: 'UP',
+            Numbers: this.infoObj.Numbers
         };
         this.getDataService.submitPublicData('SCSCAN/ScanSubmitScanData', config).then((resp) => {
             if (resp) {

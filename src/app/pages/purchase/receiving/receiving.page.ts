@@ -112,9 +112,12 @@ export class ReceivingPage implements OnInit {
                         val['QTY_NC'] = Number(val.Quantity) - Number(val.QTY_FIN);
                     });
                 } else {
+                    this.infoObj.Bils_No = null;
                     this.presentService.presentToast('e02', 'warning');
                 }
                 this.documentList = resp['Data'];
+            } else {
+                this.infoObj.Bils_No = null;
             }
         });
     }

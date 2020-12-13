@@ -28,6 +28,7 @@ export class ReturnPage implements OnInit {
         Bils_No: null,
         Cus_No: '',
         Whs: null,
+        remark: null
     };
     BFlagObj = {};
     LineNumberList = [];
@@ -47,7 +48,7 @@ export class ReturnPage implements OnInit {
             }
         });
         this.documentColumns = this.publicService.DocumentColumns;
-        this.columns = this.publicService.TableColumns;
+        this.columns = this.publicService.TableColumns4;
     }
 
     ngOnInit() {
@@ -67,12 +68,17 @@ export class ReturnPage implements OnInit {
         this.infoObj.Bils_No = null;
         this.infoObj.Cus_No = '';
         this.infoObj.Whs = null;
+        this.infoObj.remark = null;
         this.documentList = [];
         this.scanList = [];
         this.materieObj = {};
     }
 
     submit() {
+        if (!this.infoObj['Whs']) {
+            this.presentService.presentToast('e39', 'warning');
+            return false;
+        }
         const LstDetail = [];
         this.scanList.forEach((val) => {
             LstDetail.push({
@@ -100,6 +106,7 @@ export class ReturnPage implements OnInit {
             User: this.infoObj.User,
             Bils_No: this.documentList[0].DocNum,
             Cus_No: this.documentList[0].CardCode || '',
+            remark: this.infoObj.remark,
         };
         config['LstDetail'] = LstDetail;
         this.getDataService.submitPublicData('SC/SubmitScanData', config).then((resp) => {
@@ -123,8 +130,11 @@ export class ReturnPage implements OnInit {
                     });
                 } else {
                     this.presentService.presentToast('e02', 'warning');
+                    this.infoObj.Bils_No = null;
                 }
                 this.documentList = resp['Data'];
+            }else {
+                this.infoObj.Bils_No = null;
             }
         });
     }
@@ -213,8 +223,8 @@ export class ReturnPage implements OnInit {
                 BFlag: this.publicService.getArrInfo(arr, 'BFlag'),
                 BatchNo: this.publicService.getArrInfo(arr, 'DistNumber'),
                 LiuNo: this.publicService.getArrInfo(arr, 'LiuNo'),
-                OrderEntry: selectItem['OrderEntry']|| '',
-                OrderLine: selectItem['OrderLine']|| '',
+                OrderEntry: selectItem['OrderEntry'] || '',
+                OrderLine: selectItem['OrderLine'] || '',
                 NumPerMsr: selectItem['NumPerMsr'],
                 DocNum: selectItem['DocNum'],
                 DocEntry: selectItem['DocEntry'],

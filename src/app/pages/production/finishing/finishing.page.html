@@ -9,65 +9,8 @@
 <ion-content>
     <div class="ion-margin ion-text-start scan-from">
         <ion-list>
-            <app-scan-input [docNum]="publicService.DocNum.SC" (funcDocEntry)="scanPL()" [infoObj]="infoObj" [scanType]="scanTypeArr"></app-scan-input>
-        </ion-list>
-        <ion-list>
-            <ion-item lines="full">
-                <ion-label>
-                    生产计划单号
-                </ion-label>
-                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['DocEntry'] || ''}}</ion-label>
-            </ion-item>
-        </ion-list>
-        <ion-list>
-            <ion-item lines="full">
-                <ion-label>
-                    生产订单号
-                </ion-label>
-                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['Order'] || ''}}</ion-label>
-            </ion-item>
-        </ion-list>
-        <ion-list>
-            <ion-item lines="full">
-                <ion-label>
-                    产线编码
-                </ion-label>
-                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['PLineCode'] || ''}}</ion-label>
-            </ion-item>
-        </ion-list>
-        <ion-list>
-            <ion-item lines="full">
-                <ion-label>
-                    物料编码
-                </ion-label>
-                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['ItemCode'] || ''}}</ion-label>
-            </ion-item>
-        </ion-list>
-        <ion-list>
-            <ion-item lines="full">
-                <ion-label>
-                    物料名称
-                </ion-label>
-                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['ItemName'] || ''}}</ion-label>
-            </ion-item>
-        </ion-list>
-        <ion-list>
-            <ion-item lines="full">
-                <ion-label>
-                    规格型号
-                </ion-label>
-                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['GGXH'] || ''}}</ion-label>
-            </ion-item>
-        </ion-list>
-        <ion-list>
-            <ion-item lines="full">
-                <ion-label>
-                    计划数量
-                </ion-label>
-                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['PlanQty'] || ''}}</ion-label>
-            </ion-item>
-        </ion-list>
-        <ion-list>
+            <app-scan-input [docNum]="publicService.DocNum.SC" (funcDocEntry)="scanPL()" [infoObj]="infoObj"
+                            [scanType]="scanTypeArr"></app-scan-input>
             <ion-item lines="full">
                 <ion-label>
                     报工数量
@@ -76,6 +19,60 @@
                            type="number"
 
                            class="ion-text-right ion-padding-start"></ion-input>
+            </ion-item>
+            <ion-item lines="full">
+                <ion-label>
+                    计划数量
+                </ion-label>
+                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['PlanQty'] || ''}}</ion-label>
+            </ion-item>
+            <ion-item lines="full">
+                <ion-label>
+                    已报工数量
+                </ion-label>
+                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['YWGQty'] || ''}}</ion-label>
+            </ion-item>
+            <ion-item lines="full">
+                <ion-label>
+                    生产计划号
+                </ion-label>
+                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['DocEntry'] || ''}}</ion-label>
+            </ion-item>
+            <ion-item lines="full">
+                <ion-label>
+                    生产订单号
+                </ion-label>
+                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['Order'] || ''}}</ion-label>
+            </ion-item>
+            <ion-item lines="full">
+                <ion-label>
+                    产线编码
+                </ion-label>
+                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['PLineCode'] || ''}}</ion-label>
+            </ion-item>
+            <ion-item lines="full">
+                <ion-label>
+                    产线描述
+                </ion-label>
+                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['PLineName'] || ''}}</ion-label>
+            </ion-item>
+            <ion-item lines="full">
+                <ion-label>
+                    产品编码
+                </ion-label>
+                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['ItemCode'] || ''}}</ion-label>
+            </ion-item>
+            <ion-item lines="full">
+                <ion-label>
+                    产品描述
+                </ion-label>
+                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['ItemName'] || ''}}</ion-label>
+            </ion-item>
+            <ion-item lines="full">
+                <ion-label>
+                    规格型号
+                </ion-label>
+                <ion-label slot="end" class="ion-text-right pr-8">{{documentObj['GGXH'] || ''}}</ion-label>
             </ion-item>
         </ion-list>
     </div>

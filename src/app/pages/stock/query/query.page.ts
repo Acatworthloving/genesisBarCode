@@ -3,7 +3,7 @@ import {PresentService} from '../../../providers/present.service';
 import {PublicService} from '../../../providers/public.service';
 import {DataService} from '../../../api/data.service';
 import {GetDataService} from '../../../providers/get-data.service';
-import {AlertController} from '@ionic/angular';
+import {AlertController, Platform} from '@ionic/angular';
 import {ActivatedRoute} from '@angular/router';
 import {PageRouterService} from '../../../providers/page-router.service';
 
@@ -32,7 +32,7 @@ export class QueryPage implements OnInit {
         public dataService: DataService,
         public getDataService: GetDataService,
         public activatedRoute: ActivatedRoute,
-        public pageRouterService: PageRouterService
+        public pageRouterService: PageRouterService,
     ) {
         this.pageRouterService.getPageParams().then((res) => {
             if (res) {

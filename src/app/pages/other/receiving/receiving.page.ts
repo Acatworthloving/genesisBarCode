@@ -72,6 +72,10 @@ export class ReceivingPage implements OnInit {
     }
 
     submit() {
+        if (!this.infoObj['Whs']) {
+            this.presentService.presentToast('e39', 'warning');
+            return false;
+        }
         this.infoObj.Cus_No = this.documentList[0].CardCode || '';
         const hasQTYNC = this.publicService.hasQTY_NC(this.documentList);
         if (hasQTYNC) {
@@ -95,7 +99,7 @@ export class ReceivingPage implements OnInit {
                 BatchNo: val.BatchNo,
                 LiuNo: val.LiuNo,
                 OrderEntry: val.OrderEntry || '',
-                OrderLine: val.OrderLine|| '',
+                OrderLine: val.OrderLine || '',
                 NumPerMsr: val.NumPerMsr,
                 // QUA_DocEntry: val.QUA_DocEntry,
                 // QUA_LineNum: val.QUA_LineNum,
@@ -119,8 +123,11 @@ export class ReceivingPage implements OnInit {
                     });
                 } else {
                     this.presentService.presentToast('e02', 'warning');
+                    this.infoObj.Bils_No = null;
                 }
                 this.documentList = resp['Data'];
+            } else {
+                this.infoObj.Bils_No = null;
             }
         });
     }
@@ -205,7 +212,7 @@ export class ReceivingPage implements OnInit {
                 BatchNo: this.publicService.getArrInfo(arr, 'DistNumber'),
                 LiuNo: this.publicService.getArrInfo(arr, 'LiuNo'),
                 OrderEntry: selectItem['OrderEntry'] || '',
-                OrderLine: selectItem['OrderLine']|| '',
+                OrderLine: selectItem['OrderLine'] || '',
                 NumPerMsr: selectItem['NumPerMsr'],
                 DocNum: selectItem['DocNum'],
                 DocEntry: selectItem['DocEntry'],

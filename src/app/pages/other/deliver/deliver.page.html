@@ -25,6 +25,18 @@
                                 [scanType]="scanTypeArr"></app-scan-input>
                 <ion-item lines="full">
                     <ion-label>
+                        单号
+                    </ion-label>
+                    <ion-label slot="end" class="ion-text-right pr-8">{{infoObj['Bils_No'] || ''}}</ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
+                        仓库
+                    </ion-label>
+                    <ion-label slot="end" class="ion-text-right pr-8">{{infoObj['Whs'] || ''}}</ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-label>
                         收货数
                     </ion-label>
                     <ion-input placeholder="收货数" color="primary"  (change)="changeQTY($event,'row')" mode="ios" slot="end" type="number"
@@ -32,7 +44,7 @@
                                [disabled]="!maxNum || materieObj['BFlag']==='S'"
                                class="ion-text-right ion-padding-start"></ion-input>
                 </ion-item>
-                <app-materiel-item [scanNum]="scanNum" [materieObj]="materieObj" [infoObj]="infoObj"></app-materiel-item>
+                <app-materiel-item [hideWh]="true" [scanNum]="scanNum" [materieObj]="materieObj" [infoObj]="infoObj"></app-materiel-item>
             </ion-list>
         </form>
     </div>
@@ -48,6 +60,6 @@
 <ion-footer>
     <ion-button expand="block" mode='ios' (click)="submit()"
                 [disabled]="!scanList.length">
-        库存转储
+        {{title}}
     </ion-button>
 </ion-footer>

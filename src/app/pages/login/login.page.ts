@@ -27,10 +27,10 @@ export class LoginPage {
     }
 
     ionViewWillEnter() {
-        const token = localStorage.getItem(this.userData.TOKEN);
-        if (token) {
-            this.navCtrl.navigateRoot('home');
-        }
+        // const token = localStorage.getItem(this.userData.TOKEN);
+        // if (token) {
+        //     this.navCtrl.navigateRoot('home');
+        // }
         // this.userData.isLoggedIn().then(isLogin => {
         //     if (isLogin == true) {
         //         this.router.navigateByUrl('/home');

@@ -47,19 +47,46 @@ export class IncomingQualityPage implements OnInit {
 
     submit() {
         const LstDetail = [];
-        this.documentList.forEach((val) => {
-            const ZJQty = Number(val.ZJQty), JSQty = Number(val.JSQty), SJQty = Number(val.SJQty), BHGQty = Number(val.BHGQty);
-            if (JSQty > 0 && ZJQty > 0 && SJQty >= ZJQty && ZJQty >= BHGQty) {
-                LstDetail.push(val);
+        for (const val of this.documentList) {
+            const ZJQty = Number(val.ZJQty), JSQty = Number(val.JSQty), SJQty = Number(val.SJQty),
+                BHGQty = Number(val.BHGQty), RejectQty = Number(val.RejectQty), Quantity = Number(val.Quantity);
+            if (ZJQty > Quantity) {
+                this.presentService.presentToast('质检数量不能大于待检数量', 'warning');
+                return;
             }
-        });
-        const config = this.infoObj;
-        config['LstDetail'] = LstDetail;
-        this.getDataService.CGZJSubmitScanData(config).then((resp) => {
-            if (resp) {
-                this.clearData();
+            if (val.ZJType === '全检') {
+                if (ZJQty != RejectQty + JSQty) {
+                    this.presentService.presentToast('全检时,质检数量必须等于接收数量加拒收数量', 'warning');
+                    return;
+                }
             }
-        });
+            if (BHGQty > ZJQty) {
+                this.presentService.presentToast('不合格数量不能大于质检数量', 'warning');
+                return;
+            }
+            if (val.JSType === '全收') {
+                if (RejectQty || JSQty < ZJQty) {
+                    this.presentService.presentToast('全收时,不能有拒收数量,接收数量不能小于质检数量', 'warning');
+                    return;
+                }
+            }
+            if (val.JSType === '退货') {
+                if (JSQty) {
+                    this.presentService.presentToast('退货时,不能有接收数量', 'warning');
+                    return;
+                }
+            }
+            LstDetail.push(val);
+        }
+        if (LstDetail.length) {
+            const config = this.infoObj;
+            config['LstDetail'] = LstDetail;
+            this.getDataService.CGZJSubmitScanData(config).then((resp) => {
+                if (resp) {
+                    this.clearData();
+                }
+            });
+        }
     }
 
     getBillData() {
@@ -68,6 +95,9 @@ export class IncomingQualityPage implements OnInit {
         };
         const request = this.dataService.getData('QC/GetCGZJBillData', config);
         request.subscribe(resp => {
+            if (!resp['Data'].length) {
+                this.presentService.presentToast('e02', 'warning');
+            }
             this.documentList = resp.Data;
         }, error => {
             this.presentService.presentToast(error.message);

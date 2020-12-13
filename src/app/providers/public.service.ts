@@ -1,46 +1,49 @@
 import {Injectable} from '@angular/core';
 import {PresentService} from './present.service';
 import {GetDataService} from './get-data.service';
+import {NavController, Platform} from '@ionic/angular';
+import {Subscription} from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
 })
 export class PublicService {
+    private backButtonSub: Subscription;
     DocumentColumns: any = [
         {
             name: '物料编码',
             prop: 'ItemCode',
         },
         {
-            name: '单据数量',
-            prop: 'Quantity',
+            name: '行号',
+            prop: 'LineNum',
         },
         {
             name: '未清量',
             prop: 'QTY_NC',
         },
+        // {
+        //     name: '单据数量',
+        //     prop: 'Quantity',
+        // },
         {
-            name: '当前扫描量',
+            name: '已扫描数量',
             prop: 'QTY_CUR',
         },
-        {
-            name: '单号',
-            prop: 'DocEntry',
-        },
-        {
-            name: '编号',
-            prop: 'DocNum',
-        },
-        {
-            name: '行号',
-            prop: 'LineNum',
-        },
+        // {
+        //     name: '单号',
+        //     prop: 'DocNum',
+        // },
+        // {
+        //     name: '编号',
+        //     prop: 'DocNum',
+        // },
         {
             name: '物料名称',
             prop: 'ItemName',
         },
         {
-            name: '物料规格',
+            name: '规格型号',
             prop: 'GGXH',
         },
     ];
@@ -50,20 +53,106 @@ export class PublicService {
             prop: 'ItemCode',
         },
         {
+            name: '行号',
+            prop: 'LineNum',
+        },
+        {
             name: '收货数',
             prop: 'QTY',
+        },
+        {
+            name: '批次/序列号',
+            prop: 'BatchNo',
+        },
+        {
+            name: '仓库',
+            prop: 'Wh',
         },
         {
             name: '物料名称',
             prop: 'ItemName',
         },
         {
-            name: '物料规格',
+            name: '规格型号',
+            prop: 'GGXH',
+        },
+    ];
+    TableColumns21 = [
+        {
+            name: '物料编码',
+            prop: 'ItemCode',
+        },
+        {
+            name: '行号',
+            prop: 'LineNum',
+        },
+        {
+            name: '交货数',
+            prop: 'QTY',
+        },
+        {
+            name: '批次/序列号',
+            prop: 'BatchNo',
+        },
+        {
+            name: '仓库',
+            prop: 'Wh',
+        },
+        {
+            name: '物料名称',
+            prop: 'ItemName',
+        },
+        {
+            name: '规格型号',
+            prop: 'GGXH',
+        },
+    ];
+    TableColumns3 = [
+        {
+            name: '物料编码',
+            prop: 'ItemCode',
+        },
+        {
+            name: '领料数',
+            prop: 'QTY',
+        },
+        {
+            name: '批次/序列号',
+            prop: 'BatchNo',
+        },
+        {
+            name: '物料名称',
+            prop: 'ItemName',
+        },
+        {
+            name: '规格型号',
             prop: 'GGXH',
         },
         {
-            name: '批次号/外箱序列号/序列号',
+            name: '仓库',
+            prop: 'Wh',
+        },
+    ];
+    TableColumns4 = [
+        {
+            name: '物料编码',
+            prop: 'ItemCode',
+        },
+        {
+            name: '退料数',
+            prop: 'QTY',
+        },
+        {
+            name: '批次/序列号',
             prop: 'BatchNo',
+        },
+        {
+            name: '物料名称',
+            prop: 'ItemName',
+        },
+        {
+            name: '规格型号',
+            prop: 'GGXH',
         },
         {
             name: '仓库',
@@ -76,20 +165,20 @@ export class PublicService {
             prop: 'ItemCode',
         },
         {
-            name: '收货数',
+            name: '转储数',
             prop: 'QTY',
+        },
+        {
+            name: '批次/序列号',
+            prop: 'BatchNo',
         },
         {
             name: '物料名称',
             prop: 'ItemName',
         },
         {
-            name: '物料规格',
+            name: '规格型号',
             prop: 'GGXH',
-        },
-        {
-            name: '批次号/外箱序列号/序列号',
-            prop: 'BatchNo',
         },
         {
             name: '从仓库',
@@ -119,32 +208,32 @@ export class PublicService {
             name: '已送检量',
             prop: 'JSQty',
         },
-        {
-            name: '单号',
-            prop: 'DocEntry',
-        },
-        {
-            name: '编号',
-            prop: 'DocNum',
-        },
+        // {
+        //     name: '单号',
+        //     prop: 'DocNum',
+        // },
+        // {
+        //     name: '编号',
+        //     prop: 'DocNum',
+        // },
         {
             name: '行号',
             prop: 'LineNum',
         },
-        {
-            name: '客户编码',
-            prop: 'CardCode',
-        },
-        {
-            name: '客户名称',
-            prop: 'CardName',
-        },
+        // {
+        //     name: '客户编码',
+        //     prop: 'CardCode',
+        // },
+        // {
+        //     name: '客户名称',
+        //     prop: 'CardName',
+        // },
         {
             name: '物料名称',
             prop: 'ItemName',
         },
         {
-            name: '物料规格',
+            name: '规格型号',
             prop: 'GGXH',
         },
     ];
@@ -153,13 +242,13 @@ export class PublicService {
             name: '物料编码',
             prop: 'ItemCode',
         },
+        // {
+        //     name: '送检数量',
+        //     prop: 'SJQty',
+        // },
         {
-            name: '物料名称',
-            prop: 'ItemName',
-        },
-        {
-            name: '物料规格',
-            prop: 'GGXH',
+            name: '待检数量',
+            prop: 'Quantity',
         },
         {
             name: '质检方式',
@@ -168,18 +257,22 @@ export class PublicService {
             type: 'select',
         },
         {
-            name: '待检量',
-            prop: 'Quantity',
-        },
-        {
-            name: '送检数量',
-            prop: 'SJQty',
-        },
-        {
             name: '质检数量',
             prop: 'ZJQty',
             type: 'input',
             inputtype: 'number',
+        },
+        {
+            name: '接收数量',
+            prop: 'JSQty',
+            type: 'input',
+            inputtype: 'number',
+        },
+        {
+            name: '接收方式',
+            prop: 'JSType',
+            type: 'select',
+            arr: ['全收', '让步接收', '部分接收', '退货']
         },
         {
             name: '不合格数量',
@@ -194,36 +287,24 @@ export class PublicService {
             inputtype: 'text',
         },
         {
-            name: '接收方式',
-            prop: 'JSType',
-            type: 'select',
-            arr: ['全收', '让步接收', '部分接收', '退货']
-        },
-        {
-            name: '接收数量',
-            prop: 'JSQty',
-            type: 'input',
-            inputtype: 'number',
-        },
-        {
             name: '拒收数量',
             prop: 'RejectQty',
             type: 'input',
             inputtype: 'number',
-        },
-    ];
-    Columns4: any = [
-        {
-            name: '物料编码',
-            prop: 'ItemCode',
         },
         {
             name: '物料名称',
             prop: 'ItemName',
         },
         {
-            name: '外箱单号',
-            prop: 'DocEntry',
+            name: '规格型号',
+            prop: 'GGXH',
+        },
+    ];
+    Columns4: any = [
+        {
+            name: '物料编码',
+            prop: 'ItemCode',
         },
         {
             name: '外箱编码',
@@ -234,9 +315,21 @@ export class PublicService {
             prop: 'BatNo',
         },
         {
-            name: '已送检量',
-            prop: 'Qty',
+            name: '物料名称',
+            prop: 'ItemName',
         },
+        {
+            name: '规格型号',
+            prop: 'GGXH',
+        },
+        // {
+        //     name: '外箱单号',
+        //     prop: 'DocNum',
+        // },
+        // {
+        //     name: '已送检量',
+        //     prop: 'Qty',
+        // },
     ];
     Columns5 = [
         {
@@ -244,20 +337,20 @@ export class PublicService {
             prop: 'ItemCode',
         },
         {
-            name: '收货数',
-            prop: 'Qty',
+            name: '序列号',
+            prop: 'BatNo',
         },
+        // {
+        //     name: '收货数',
+        //     prop: 'Qty',
+        // },
         {
             name: '物料名称',
             prop: 'ItemName',
         },
         {
-            name: '物料规格',
+            name: '规格型号',
             prop: 'GGXH',
-        },
-        {
-            name: '序列号',
-            prop: 'BatNo',
         },
     ];
     Columns6: any = [
@@ -324,16 +417,58 @@ export class PublicService {
             prop: 'KBNum',
         },
         {
-            name: '产品外箱序列号',
-            prop: 'BarCode',
-        },
-        {
-            name: '产品编码',
+            name: '物料编码',
             prop: 'ItemCode',
         },
         {
-            name: '产品数量',
+            name: '物料名称',
+            prop: 'ItemName',
+        },
+        {
+            name: '外箱编码/标签序号',
+            prop: 'BarCode',
+        },
+        {
+            name: '批次号/序列号',
+            prop: 'BarCode',
+        },
+        {
+            name: '数量',
             prop: 'QTY',
+        },
+        {
+            name: '规格型号',
+            prop: 'GGXH',
+        }
+    ];
+    Columns71 = [
+        {
+            name: '卡板编码',
+            prop: 'KBNum',
+        },
+        {
+            name: '外箱编码/标签序号',
+            prop: 'BarCode',
+        },
+        {
+            name: '物料编码',
+            prop: 'ItemCode',
+        },
+        {
+            name: '物料名称',
+            prop: 'ItemName',
+        },
+        {
+            name: '批次号/序列号',
+            prop: 'BarCode',
+        },
+        {
+            name: '数量',
+            prop: 'QTY',
+        },
+        {
+            name: '规格型号',
+            prop: 'GGXH',
         }
     ];
     Columns8 = [
@@ -370,8 +505,8 @@ export class PublicService {
         {
             name: '故障类型',
             prop: 'FaultType',
-            arr: ['品质异常', '设备异常'],
-            type: 'select',
+            // arr: ['品质异常', '设备异常'],
+            // type: 'select',
         },
         {
             name: '故障问题',
@@ -396,24 +531,50 @@ export class PublicService {
             prop: 'ItemCode',
         },
         {
-            name: '收货数',
+            name: '批次/序列号',
+            prop: 'BatNo',
+        },
+        {
+            name: '已盘点数量',
             prop: 'QTY',
         },
+        // {
+        //     name: '仓库管理类型',
+        //     prop: 'BFlag',
+        // },
         {
-            name: '仓库管理类型',
-            prop: 'BFlag',
+            name: '物料名称',
+            prop: 'ItemName',
         },
         {
-            name: '批次号/外箱序列号/序列号',
+            name: '规格型号',
+            prop: 'GGXH',
+        },
+    ];
+    Columns12 = [
+        {
+            name: '物料编码',
+            prop: 'ItemCode',
+        },
+        {
+            name: '批次/序列号',
             prop: 'BatNo',
+        },
+        {
+            name: '盘点数',
+            prop: 'QTY',
         },
         {
             name: '物料名称',
             prop: 'ItemName',
         },
         {
-            name: '物料规格',
+            name: '规格型号',
             prop: 'GGXH',
+        },
+        {
+            name: '仓库',
+            prop: 'WH',
         },
     ];
     Columns11 = [
@@ -421,10 +582,10 @@ export class PublicService {
             name: '物料编码',
             prop: 'ItemCode',
         },
-        {
-            name: '物料标签标识',
-            prop: 'Barcode',
-        },
+        // {
+        //     name: '物料标签标识',
+        //     prop: 'Barcode',
+        // },
         {
             name: '扫描量',
             prop: 'QTY',
@@ -432,17 +593,17 @@ export class PublicService {
             inputtype: 'number',
         },
         {
-            name: '打印次数',
+            name: '打印张数',
             prop: 'NUM',
             type: 'input',
             inputtype: 'number',
         },
-        {
-            name: '打印机',
-            prop: 'PRINTER',
-            arr: ['#1打印机', '#2打印机', '#3打印机'],
-            type: 'select',
-        },
+        // {
+        //     name: '打印机',
+        //     prop: 'PRINTER',
+        //     arr: ['#1打印机', '#2打印机', '#3打印机'],
+        //     type: 'select',
+        // },
     ];
     DocNum = {
         CG: 40,
@@ -458,7 +619,9 @@ export class PublicService {
     };
 
     constructor(public presentService: PresentService,
-                public getDataService: GetDataService) {
+                public getDataService: GetDataService,
+                private navCtrl: NavController,
+                private platform: Platform) {
     }
 
     splitStr(str, type?, sp?, canEnter?) {
@@ -702,6 +865,27 @@ export class PublicService {
                 }
             });
         });
+    }
+
+    //返回按钮监听
+    backPage() {
+        // this.backButtonSub = this.platform.backButton.subscribeWithPriority(100, () => {
+        // this.presentService.presentAlertReturn().then(res => {
+        //     console.log('test2');
+        //     if (res) {
+        //         console.log('test3');
+        //         this.navCtrl.navigateRoot('home');
+        //     } else {
+        //         console.log('test1');
+        //     }
+        // });
+        // });
+    }
+
+    unsubBackPage() {
+        if (this.backButtonSub) {
+            this.backButtonSub.unsubscribe();
+        }
     }
 
 }

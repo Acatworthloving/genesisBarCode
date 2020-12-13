@@ -6,6 +6,7 @@ import {DataService} from '../../../api/data.service';
 import {ActivatedRoute} from '@angular/router';
 import {PageRouterService} from '../../../providers/page-router.service';
 import {ScanInputPage} from '../../component/scan-input/scan-input.page';
+import {AlertController} from '@ionic/angular';
 
 @Component({
     selector: 'app-receiving',
@@ -30,7 +31,7 @@ export class RetypePage implements OnInit {
         CRKType: '供应商赠品'
     };
     LineNumberList: any = [];
-    PRINTERLIST: any = ['#1打印机', '#2打印机', '#3打印机'];
+    PRINTERLIST: any = [];
     selectPRINTER: string = '';
     materieObj: any = {};
     @ViewChild('scanInputView', {static: false}) InputView: ScanInputPage;
@@ -41,6 +42,7 @@ export class RetypePage implements OnInit {
         public dataService: DataService,
         public getDataService: GetDataService,
         public activatedRoute: ActivatedRoute,
+        public alertController: AlertController,
         public pageRouterService: PageRouterService
     ) {
         this.pageRouterService.getPageParams().then((res) => {
@@ -54,8 +56,45 @@ export class RetypePage implements OnInit {
 
     ngOnInit() {
         this.getPrinterData();
+        // this.presentAlertRadio();
     }
-
+    // async presentAlertRadio() {
+    //     const alert = await this.alertController.create({
+    //         cssClass: 'my-custom-class',
+    //         header: 'Radio',
+    //         inputs: [
+    //             {
+    //                 name: 'radio1',
+    //                 type: 'radio',
+    //                 label: 'Radio 1',
+    //                 value: 'value1',
+    //             },
+    //             {
+    //                 name: 'radio5',
+    //                 type: 'radio',
+    //                 label: 'Radio 5',
+    //                 value: 'value5'
+    //             }
+    //         ],
+    //         buttons: [
+    //             {
+    //                 text: 'Cancel',
+    //                 role: 'cancel',
+    //                 cssClass: 'secondary',
+    //                 handler: () => {
+    //                     console.log('Confirm Cancel');
+    //                 }
+    //             }, {
+    //                 text: 'Ok',
+    //                 handler: () => {
+    //                     console.log('Confirm Ok');
+    //                 }
+    //             }
+    //         ]
+    //     });
+    //
+    //     await alert.present();
+    // }
     changPrinter(event) {
         this.scanList.forEach((val) => {
             val.PRINTER = this.selectPRINTER;
@@ -97,7 +136,7 @@ export class RetypePage implements OnInit {
                     arr.push(item.Value);
                 }
                 this.PRINTERLIST = arr;
-                this.columns[4]['arr'] = arr;
+                // this.columns[4]['arr'] = arr;
             }
         });
     }
@@ -118,21 +157,20 @@ export class RetypePage implements OnInit {
         }
         //  判断是否存在物料编码
         if (ItemCodeText) {
-            this.presentService.presentAlertBaseInput().then((res) => {
-                this.InputView.selected();
-                let num = 0;
-                if (res) {
-                    num = res['NUM'];
-                }
+            // this.presentService.presentAlertBaseInput().then((res) => {
+            //     this.InputView.selected();
+            //     let num = 0;
+            //     if (res) {
+            //         num = res['NUM'];
+            //     }
                 this.scanList.push({
                     ItemCode: ItemCodeText,
                     Barcode: BarcodeText,
                     QTY: QTYText,
-                    NUM: num,
+                    NUM: 1,
                     PRINTER: this.selectPRINTER
                 });
-            });
-
+            // });
         }
     }
 }

@@ -27,7 +27,8 @@ export class TransferOrderPage implements OnInit {
         Whs: null,
         Wh_To: null,
         Kuwei: null,
-        ToKuwei: null
+        ToKuwei: null,
+        remark: null
     };
     BFlagObj = {};
     materieObj: any = {};
@@ -63,22 +64,26 @@ export class TransferOrderPage implements OnInit {
     clearData() {
         this.scanNum = 0;
         this.maxNum = 0;
-
         this.infoObj.Bils_No = null;
         this.infoObj.Cus_No = '';
         this.infoObj.Whs = null;
         this.infoObj.Wh_To = null;
+        this.infoObj.remark = null;
         this.scanList = [];
         this.materieObj = {};
     }
 
     submit() {
+        if (!this.infoObj.Wh_To) {
+            this.presentService.presentToast('请先扫描到仓库', 'warning');
+            return;
+        }
         const LstDetail = [];
         this.scanList.forEach((val) => {
             LstDetail.push({
                 Bils_No: val.Bils_No,
                 Wh: val.Wh,
-                Wh_To: val.Wh_To,
+                Wh_To: this.infoObj.Wh_To,
                 Itm: '',
                 Barcode: val.Barcode,
                 BarcodeText: val.BarcodeText,
@@ -96,6 +101,7 @@ export class TransferOrderPage implements OnInit {
             });
         });
         const config = this.infoObj;
+        // config['remark'] = this.infoObj.Bils_No;
         config['LstDetail'] = LstDetail;
         this.getDataService.SubmitScanData(config).then((resp) => {
             if (resp) {
@@ -130,7 +136,7 @@ export class TransferOrderPage implements OnInit {
         //  判断是否存在物料编码
         if (ItemCodeText) {
             const obj = {
-                Bils_No: this.infoObj.Bils_No,
+                Bils_No: null,
                 Wh: this.infoObj.Whs,
                 Wh_To: this.infoObj.Wh_To,
                 Itm: '',

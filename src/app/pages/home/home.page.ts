@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
+import {ToastController} from '@ionic/angular';
 import {PageRouterService} from '../../providers/page-router.service';
 import {UserDataService} from '../../providers/user-data.service';
 import {PresentService} from '../../providers/present.service';
@@ -78,13 +79,13 @@ export class HomePage implements OnInit {
             icon: 'assets/svg/svg24.svg'
         },
         {
-            name: '其他收货',
+            name: '库存收货',
             prop: 'WHSH',
             href: 'other/receiving',
             icon: 'assets/svg/svg21.svg'
         },
         {
-            name: '其他发货',
+            name: '库存发货',
             prop: 'WHFH',
             href: 'other/deliver',
             icon: 'assets/svg/svg22.svg'
@@ -196,7 +197,8 @@ export class HomePage implements OnInit {
     constructor(private router: Router,
                 public presentService: PresentService,
                 private pageRouterService: PageRouterService,
-                private userDataService: UserDataService) {
+                private userDataService: UserDataService,
+                private toastController: ToastController) {
 
     }
 
@@ -217,5 +219,14 @@ export class HomePage implements OnInit {
                 // this.router.navigate([item.href, item.prop]);
             }
         }
+    }
+
+    async dblclick() {
+        const toast = await this.toastController.create({
+            message: '当前版本 V1.6',
+            position: 'bottom',
+            duration: 2000
+        });
+        toast.present();
     }
 }

@@ -15,6 +15,7 @@ export class TableEditPage implements OnInit {
     @Input() tableList = [];
     @Input() tableId = '';
     @Input() hasDel = false;
+    @Input() hasWQL = false;
     @Input() documentList = [];
 
     @ViewChild('table', {static: false}) tableView: ElementRef;
@@ -40,5 +41,21 @@ export class TableEditPage implements OnInit {
                 // tds[i]['style']['left'] = num + 'px';
             }
         }
+    }
+
+    delete(num, r) {
+        this.presentService.presentAlert('确认删除当前物料?').then((res) => {
+            if (res) {
+                for (const item of this.documentList) {
+                    if (item.ItemCode === r.ItemCode) {
+                        item['QTY_NC'] += r['QTY'];
+                        item['QTY_CUR'] -= r['QTY'];
+                        break;
+                    }
+                }
+                this.tableList.splice(num, 1);
+                this.presentService.presentToast('e08');
+            }
+        });
     }
 }
